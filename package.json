@@ -1,0 +1,50 @@
+{
+  "name": "storefront-core",
+  "version": "0.0.0-development",
+  "description": "Core library for StoreFront components",
+  "repository": "https://github.com/groupby/storefront-core.git",
+  "author": "Ben Teichman <ben.teichman@groupbyinc.com>",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "start": "start-runner -p re-start/presets/typescript",
+    "prepush": "yarn start prepush",
+    "prepublish": "yarn start build"
+  },
+  "release": {
+    "verifyConditions": "condition-circle"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "devDependencies": {
+    "@types/chai": "^3.4.34",
+    "@types/lodash.camelcase": "^4.3.1",
+    "@types/mocha": "^2.2.39",
+    "@types/sinon": "^1.16.35",
+    "chai": "^3.5.0",
+    "condition-circle": "^1.5.0",
+    "cz-conventional-changelog": "^1.2.0",
+    "husky": "^0.13.1",
+    "lodash.camelcase": "^4.3.0",
+    "re-start": "^1.8.6",
+    "sinon": "^1.17.7",
+    "start-simple-cli": "^4.1.1",
+    "tslint": "^4.4.2",
+    "tslint-config-groupby": "^1.0.0",
+    "typescript": "next",
+    "webpack": "^2.2.1"
+  },
+  "dependencies": {
+    "@types/loglevel": "^1.4.29",
+    "dot-prop": "^4.1.0",
+    "gb-tracker-client": "^3.4.0",
+    "groupby-api": "^1.0.83",
+    "loglevel": "^1.4.1"
+  }
+}

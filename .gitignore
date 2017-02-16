@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+typings/
+.scratch/
+src/**/*.js
+src/**/*.d.ts
+test/**/*.js
+test/**/*.d.ts
+
+*.log
