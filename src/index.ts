@@ -1,1 +1,3 @@
-import './storefront';
+import StoreFront from './storefront';
+
+export = StoreFront;

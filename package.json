@@ -1,5 +1,5 @@
 {
-  "name": "storefront-core",
+  "name": "core",
   "version": "0.0.0-development",
   "description": "Core library for StoreFront components",
   "repository": "https://github.com/groupby/storefront-core.git",
@@ -10,7 +10,7 @@
     "dist/"
   ],
   "scripts": {
-    "start": "start-runner -p re-start/presets/typescript",
+    "start": "start-runner -f tasks.js",
     "prepush": "yarn start prepush",
     "prepublish": "yarn start build"
   },
@@ -20,31 +20,60 @@
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
+    },
+    "restart": {
+      "testFiles": ["test/bootstrap.ts", "test/**/*.ts"]
     }
   },
   "devDependencies": {
-    "@types/chai": "^3.4.34",
-    "@types/lodash.camelcase": "^4.3.1",
-    "@types/mocha": "^2.2.39",
-    "@types/sinon": "^1.16.35",
+    "@easy-webpack/config-env-development": "^2.1.6",
+    "@easy-webpack/config-env-production": "^3.0.0",
+    "@easy-webpack/config-typescript": "^5.1.0",
+    "@easy-webpack/config-uglify": "^2.2.3",
+    "@easy-webpack/core": "^2.0.1",
+    "@types/chai": "^3.4.35",
+    "@types/mocha": "^2.2.40",
+    "@types/node": "^7.0.11",
+    "@types/sinon": "^1.16.36",
+    "babel-preset-latest": "^6.24.0",
+    "babel-preset-stage-3": "^6.22.0",
     "chai": "^3.5.0",
     "condition-circle": "^1.5.0",
-    "cz-conventional-changelog": "^1.2.0",
-    "husky": "^0.13.1",
+    "cz-conventional-changelog": "^2.0.0",
+    "expose-loader": "^0.7.3",
+    "husky": "^0.13.3",
     "lodash.camelcase": "^4.3.0",
-    "re-start": "^1.8.6",
-    "sinon": "^1.17.7",
-    "start-simple-cli": "^4.1.1",
-    "tslint": "^4.4.2",
+    "re-start": "^1.8.10",
+    "sinon": "^2.1.0",
+    "start-babel-cli": "^4.0.1",
+    "start-clean": "^2.0.0",
+    "start-env": "^3.0.0",
+    "start-files": "^2.0.0",
+    "start-webpack": "^0.2.0",
+    "tslint": "^4.5.1",
     "tslint-config-groupby": "^1.0.0",
-    "typescript": "next",
-    "webpack": "^2.2.1"
+    "typescript": "^2.2.1",
+    "typings": "^2.1.0",
+    "webpack": "^2.3.2"
   },
   "dependencies": {
+    "@types/deep-assign": "^0.1.0",
+    "@types/eventemitter3": "^1.2.0",
+    "@types/js-cookie": "^2.0.28",
+    "@types/lodash.camelcase": "^4.3.2",
     "@types/loglevel": "^1.4.29",
-    "dot-prop": "^4.1.0",
+    "@types/query-string": "^4.3.0",
+    "@types/urijs": "^1.15.31",
+    "@types/uuid": "3.3.28",
+    "deep-assign": "^2.0.0",
+    "dot-prop": "^4.1.1",
     "gb-tracker-client": "^3.4.0",
     "groupby-api": "^1.0.83",
-    "loglevel": "^1.4.1"
+    "js-cookie": "^2.1.3",
+    "loglevel": "^1.4.1",
+    "query-string": "^4.3.2",
+    "riot": "^3.4.0",
+    "urijs": "^1.18.9",
+    "uuid": "^3.0.1"
   }
 }

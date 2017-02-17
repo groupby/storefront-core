@@ -1,13 +1,23 @@
-import * as log from 'loglevel';
+import { utils, Service } from '../core';
+import { core } from '../core/system';
 import StoreFront from '../storefront';
-import Service from './service';
 
-export default class Logging extends Service<any> {
+@core
+class Logging implements Service {
 
-  constructor(app: StoreFront) {
-    super(Object.assign(app, { log }));
+  constructor(private app: StoreFront, opts: Logging.Options) {
+    utils.log.setLevel(opts.level);
   }
 
-  // tslint:disable-next-line no-empty
-  init() { }
+  init() {
+    this.app.log = utils.log;
+  }
 }
+
+namespace Logging {
+  export interface Options {
+    level?: string;
+  }
+}
+
+export default Logging;

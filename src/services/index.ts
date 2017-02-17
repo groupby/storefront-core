@@ -1,7 +1,11 @@
-import Logging from './logging';
-import Tracker from './tracker';
+import { Service } from '../core';
+import logging from './logging';
 
-export default [
-  Logging,
-  Tracker
-];
+const SERVICES: Service.Constructor.Map = { logging };
+
+export default SERVICES;
+
+export interface CoreServices {
+  [key: string]: Service.Options<any>;
+  logging?: Service.Options<logging.Options>;
+}
