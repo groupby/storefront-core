@@ -1,8 +1,15 @@
 {
-  "name": "core",
+  "name": "@storefront/core",
   "version": "0.0.0-development",
   "description": "Core library for StoreFront components",
-  "repository": "https://github.com/groupby/storefront-core.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/groupby/storefront-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/groupby/storefront-core/issues"
+  },
+  "homepage": "https://github.com/groupby/storefront-core#readme",
   "author": "Ben Teichman <ben.teichman@groupbyinc.com>",
   "license": "MIT",
   "main": "dist/index.js",
@@ -22,7 +29,10 @@
       "path": "./node_modules/cz-conventional-changelog"
     },
     "restart": {
-      "testFiles": ["test/bootstrap.ts", "test/**/*.ts"]
+      "testFiles": [
+        "test/bootstrap.ts",
+        "test/**/*.ts"
+      ]
     }
   },
   "devDependencies": {
