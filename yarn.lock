@@ -2450,11 +2450,11 @@ inflight@^1.0.4:
     once "^1.3.0"
     wrappy "1"
 
-inherits@2, inherits@2.0.1, inherits@^2.0.1, inherits@~2.0.0, inherits@~2.0.1:
+inherits@2, inherits@2.0.1, inherits@^2.0.1, inherits@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.1.tgz#b17d08d326b4423e568eff719f91b0b1cbdf69f1"
 
-inherits@^2.0.3:
+inherits@^2.0.3, inherits@~2.0.0:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
 
@@ -3781,9 +3781,9 @@ rc@^1.0.1, rc@^1.1.5, rc@^1.1.6, rc@~1.1.6:
     minimist "^1.2.0"
     strip-json-comments "~1.0.4"
 
-re-start@^1.8.10:
-  version "1.8.10"
-  resolved "https://registry.yarnpkg.com/re-start/-/re-start-1.8.10.tgz#2722fca89d15a85673f84f6d98938989aafe1209"
+re-start@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/re-start/-/re-start-1.9.0.tgz#a73c429c1f73b901b439b4605643ae012bdc1087"
   dependencies:
     start "^5.0.0"
     start-babel "^3.0.0"
@@ -3796,7 +3796,7 @@ re-start@^1.8.10:
     start-mocha "^3.0.0"
     start-pretty-reporter "^0.3.0"
     start-read "^0.3.0"
-    start-release "^1.3.10"
+    start-release "^1.4.0"
     start-split "^1.0.7"
     start-typescript "^1.2.4"
     start-watch "^3.0.0"
@@ -4440,9 +4440,9 @@ start-read@^0.3.0:
     graceful-fs "^4.1.5"
     makethen "^0.1.0"
 
-start-release@^1.3.10:
-  version "1.3.10"
-  resolved "https://registry.yarnpkg.com/start-release/-/start-release-1.3.10.tgz#1bc4d93a8116c9e3dfbfedee69de5c0f206930fb"
+start-release@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/start-release/-/start-release-1.4.0.tgz#3439d4bb9d14fbbdf43158548cc923735b7e9d1a"
   dependencies:
     nerf-dart "^1.0.0"
     normalize-package-data "^2.3.6"
@@ -4813,9 +4813,13 @@ typescript-compiler@^1.4.1-2:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/typescript-compiler/-/typescript-compiler-1.4.1.tgz#3639a276d7f3bc97ddbe121fd933713d475a9aa8"
 
-typescript@^2.1.4, typescript@^2.2.1:
+typescript@^2.1.4:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.2.1.tgz#4862b662b988a4c8ff691cc7969622d24db76ae9"
+
+typescript@^2.2.1, typescript@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.2.2.tgz#606022508479b55ffa368b58fee963a03dfd7b0c"
 
 typings-core@^2.2.0:
   version "2.3.2"
