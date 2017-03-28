@@ -2,7 +2,6 @@ import commands from 're-start/presets/typescript';
 import clean from 'start-clean';
 import env from 'start-env';
 import files from 'start-files';
-import watch from 'start-watch';
 import webpack from 'start-webpack';
 
 module.exports = commands;

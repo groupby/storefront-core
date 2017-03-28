@@ -1,6 +1,6 @@
 {
   "name": "@storefront/core",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "description": "Core library for StoreFront components",
   "repository": {
     "type": "git",

@@ -26,21 +26,22 @@ const config = generateConfig({
     module: {
       rules: [{
         test: /src\/index\.ts$/,
-        use: [{
-          loader: 'expose-loader',
-          options: 'storefront'
-        }, {
-          loader: 'expose-loader',
-          options: 'sf'
-        }]
+        use: [
+          { loader: 'expose-loader', options: 'storefront' },
+          { loader: 'expose-loader', options: 'sf' }
+        ]
+      }, {
+        test: require.resolve('riot'),
+        use: { loader: 'expose-loader', options: 'riot' }
       }]
     }
   },
   (ENV === TEST || ENV === DEV) ?
   envDev(ENV !== TEST ? {} : { devtool: 'inline-source-map' }) :
-  envProd({}),
+  envProd(),
   typescript(ENV !== TEST ? {} : {
     options: {
+      declaration: false,
       doTypeCheck: false,
       sourceMap: false,
       inlineSourceMap: true,

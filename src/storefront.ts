@@ -1,22 +1,24 @@
-import { FluxCapacitor } from 'groupby-api';
-import { Configuration, Service, System } from './core';
+// import { FluxCapacitor } from 'groupby-api';
+import { utils, view, Configuration, Service, System } from './core';
 import { TAGS } from './core/system';
 import services from './services';
 
-declare var VERSION;
+// declare var VERSION;
 
 @((target) => { target[TAGS] = []; })
 export default class StoreFront {
 
   static _instance: StoreFront;
-  static version: string = VERSION;
+  static view: typeof view = view;
+  // static version: string = VERSION;
+  riot: typeof utils.riot = this.config.riot || utils.riot;
+  register: (...args: any[]) => void = utils.register(this.riot);
 
   log: Log;
-  config: Configuration;
-  flux: FluxCapacitor;
+  // flux: FluxCapacitor;
   services: Service.Map;
 
-  constructor(config: Configuration = <any>{}) {
+  constructor(public config: Configuration = <any>{}) {
     if (StoreFront._instance) {
       return StoreFront._instance;
     }
@@ -30,14 +32,14 @@ export default class StoreFront {
     system.initMixin();
     system.registerTags();
 
-    this.log.info(`StoreFront v${VERSION} loaded! 🏬`);
+    // this.log.info(`StoreFront v${VERSION} loaded! 🏬`);
   }
 
-  register(registerTag: (app: StoreFront) => void) {
-    registerTag(this);
+  static mount() {
+    return (<any>StoreFront._instance.riot.mount)(...Array.from(arguments));
   }
 
-  static register(registerTag: (app: StoreFront) => void) {
+  static register(registerTag: (register: (clazz: any, name: string) => void) => void) {
     StoreFront[TAGS].push(registerTag);
   }
 }

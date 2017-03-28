@@ -55,6 +55,7 @@ interface Configuration {
   initialSearch?: boolean;
   simpleAttach?: boolean;
   globalMixin?: boolean;
+  riot?: any;
 }
 
 export default Configuration;

@@ -1,10 +1,12 @@
-import * as riot from 'riot';
 import { Configuration, Service } from '.';
 import StoreFront from '../storefront';
 import Tag from '../tag';
 
 export const CORE = Symbol('core');
 export const TAGS = Symbol('tags');
+export const VIEW = Symbol('view');
+export const CSS = Symbol('css');
+export const ATTRS = Symbol('attrs');
 export const core = (target) => { target[CORE] = true; };
 
 export default class System {
@@ -44,10 +46,10 @@ export default class System {
     const mixin = Tag.mixin(this.app);
 
     if (this.app.config.globalMixin) {
-      riot.mixin(mixin);
+      this.app.riot.mixin(mixin);
     } else {
-      riot.mixin('storefront', mixin);
-      riot.mixin('sf', mixin);
+      this.app.riot.mixin('storefront', mixin);
+      this.app.riot.mixin('sf', mixin);
     }
   }
 
@@ -55,7 +57,7 @@ export default class System {
    * register any tags that were registered before StoreFront started
    */
   registerTags() {
-    StoreFront[TAGS].forEach((registerTag) => registerTag(this.app));
+    StoreFront[TAGS].forEach((registerTag) => registerTag(this.app.register));
   }
 
   static buildServices(app: StoreFront, services: Service.Constructor.Map, config: any): Service.Map {

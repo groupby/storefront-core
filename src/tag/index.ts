@@ -7,12 +7,8 @@ namespace Tag {
   export type Instance = riot.Tag.Instance & {
     state: any;
   };
-}
 
-// tslint:disable-next-line:variable-name
-const Tag = {
-
-  mixin({ config, services }: StoreFront) {
+  export function mixin({ config, services }: StoreFront) {
     return {
       config,
       services,
@@ -21,21 +17,11 @@ const Tag = {
         Tag.wrap(this);
       }
     };
-  },
-
-  wrap(tag: Tag.Instance) {
-    const { update: rawUpdate } = tag;
-
-    tag.state = {};
-    // layman's immutability
-    tag.update = (data?: any) => {
-      if (data) {
-        rawUpdate({ state: { ...tag.state, ...data } });
-      } else {
-        rawUpdate();
-      }
-    };
   }
-};
+
+  export function wrap(tag: Tag.Instance) {
+    
+  }
+}
 
 export default Tag;
