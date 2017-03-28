@@ -1,6 +1,6 @@
 {
   "name": "@storefront/core",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "Core library for StoreFront components",
   "repository": {
     "type": "git",
@@ -13,6 +13,7 @@
   "author": "Ben Teichman <ben.teichman@groupbyinc.com>",
   "license": "MIT",
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "files": [
     "dist/"
   ],

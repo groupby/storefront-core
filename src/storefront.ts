@@ -1,19 +1,26 @@
 // import { FluxCapacitor } from 'groupby-api';
-import { attr, css, utils, view, Configuration, Service, System } from './core';
+import {
+  attr as _attr,
+  css as _css,
+  defaults as _defaults,
+  utils,
+  view as _view,
+  Configuration,
+  Service,
+  System,
+  Tag
+} from './core';
 import { TAGS } from './core/system';
 import services from './services';
 
 // declare var VERSION;
 
 @((target) => { target[TAGS] = []; })
-export default class StoreFront {
+class StoreFront {
 
   static _instance: StoreFront;
-  static attr: typeof attr = attr;
-  static css: typeof css = css;
-  static view: typeof view = view;
   // static version: string = VERSION;
-  
+
   riot: typeof utils.riot = this.config.riot || utils.riot;
   register: (...args: any[]) => void = utils.register(this.riot);
 
@@ -46,3 +53,13 @@ export default class StoreFront {
     StoreFront[TAGS].push(registerTag);
   }
 }
+
+namespace StoreFront {
+  export const attr = _attr;
+  export const css = _css;
+  export const defaults = _defaults;
+  export const view = _view;
+  export type Tag = Tag.Instance;
+}
+
+export default StoreFront;

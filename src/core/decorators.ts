@@ -1,10 +1,13 @@
 import StoreFront from '../storefront';
-import { ATTRS, CSS, NAME, VIEW } from '../tag';
+import { ATTRS, CSS, DEFAULTS, NAME, VIEW } from '../tag';
 
-export function view(name: string, template: string, css?: string, attrs?: string) {
+export function view(name: string, template: string, defaults?: any, css?: string, attrs?: string) {
   return function (target: any) {
     target[NAME] = name;
     target[VIEW] = template;
+    if (defaults) {
+      target[DEFAULTS] = defaults;
+    }
     if (css) {
       target[CSS] = css;
     }
@@ -25,5 +28,11 @@ export function attr(name: string, expression: string) {
 export function css(style: string) {
   return function (target: any) {
     target[CSS] = style;
+  };
+}
+
+export function defaults(config: any) {
+  return function (target: any) {
+    target[DEFAULTS] = config;
   };
 }

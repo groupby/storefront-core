@@ -1,13 +1,16 @@
 import * as deepAssign from 'deep-assign';
 import * as log from 'loglevel';
 import * as riot from 'riot';
-import Tag, { ATTRS, CSS, NAME, VIEW } from '../tag';
+import Tag, { ATTRS, CSS, DEFAULTS, NAME, VIEW } from '../tag';
 
 export { deepAssign, log, riot };
 
 export function register(r: any) {
   return function registerRiot(clazz: Function) {
-    r.tag(clazz[NAME], clazz[VIEW], clazz[CSS], clazz[ATTRS], Tag.initializer(clazz));
+    r.tag(clazz[NAME], clazz[VIEW], clazz[CSS], clazz[ATTRS], function init(opts: any) {
+      this[DEFAULTS] = clazz[DEFAULTS];
+      Tag.initializer(clazz).bind(this)(opts);
+    });
   };
 }
 

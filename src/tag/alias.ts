@@ -1,3 +1,5 @@
+import Tag, { ALIASES } from '.';
+
 namespace Alias {
   export interface Definition {
     flags: string[];
@@ -9,7 +11,7 @@ namespace Alias {
 
   export function parse(aliasDefinition: string) {
     const [, alias, child]: any[] = aliasDefinition.match(/^([^\[]*)?(?:\[(.*)\])?/);
-    const definition: Definition = tokenize(alias);
+    const definition: Definition = Alias.tokenize(alias);
     if (child) {
       definition.child = parse(child);
     } else if (aliasDefinition.endsWith('[]')) {
@@ -31,6 +33,21 @@ namespace Alias {
     }
 
     return definition;
+  }
+
+  export function subscribe(tag: Tag.Instance) {
+    tag['on']('before-mount', enrichState(tag.state, tag));
+    tag['on']('update', enrichState(tag.state, tag));
+  }
+
+  export function enrichState(state: any, tag: Tag.Instance) {
+    return () => {
+      if (tag.parent) {
+        Alias.enrichState(state, tag.parent);
+      }
+      Object.keys(tag[ALIASES])
+        .forEach((key: string) => tag.state[`$${key}`] = tag[ALIASES][key].value);
+    };
   }
 }
 
