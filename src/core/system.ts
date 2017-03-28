@@ -4,9 +4,6 @@ import Tag from '../tag';
 
 export const CORE = Symbol('core');
 export const TAGS = Symbol('tags');
-export const VIEW = Symbol('view');
-export const CSS = Symbol('css');
-export const ATTRS = Symbol('attrs');
 export const core = (target) => { target[CORE] = true; };
 
 export default class System {

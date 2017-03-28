@@ -1,17 +1,13 @@
 import * as deepAssign from 'deep-assign';
 import * as log from 'loglevel';
 import * as riot from 'riot';
-import { ATTRS, CSS, VIEW } from './system';
+import Tag, { ATTRS, CSS, NAME, VIEW } from '../tag';
 
 export { deepAssign, log, riot };
 
 export function register(r: any) {
-  return function registerRiot(clazz: Function, name: string) {
-    r.tag(name, clazz[VIEW], clazz[CSS], clazz[ATTRS], function init(opts: any) {
-      inherit(this, clazz);
-
-      clazz.call(this, opts);
-    });
+  return function registerRiot(clazz: Function) {
+    r.tag(clazz[NAME], clazz[VIEW], clazz[CSS], clazz[ATTRS], Tag.initializer(clazz));
   };
 }
 
@@ -25,3 +21,5 @@ export function inherit(target: any, superclass: any) {
       .forEach(({ name, descriptor }) => Object.defineProperty(target, name, descriptor));
   }
 }
+
+export const rayify = <T>(values: T | T[]): T[] => Array.isArray(values) ? values : [values];

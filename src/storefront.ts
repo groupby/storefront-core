@@ -1,5 +1,5 @@
 // import { FluxCapacitor } from 'groupby-api';
-import { utils, view, Configuration, Service, System } from './core';
+import { attr, css, utils, view, Configuration, Service, System } from './core';
 import { TAGS } from './core/system';
 import services from './services';
 
@@ -9,8 +9,11 @@ import services from './services';
 export default class StoreFront {
 
   static _instance: StoreFront;
+  static attr: typeof attr = attr;
+  static css: typeof css = css;
   static view: typeof view = view;
   // static version: string = VERSION;
+  
   riot: typeof utils.riot = this.config.riot || utils.riot;
   register: (...args: any[]) => void = utils.register(this.riot);
 
