@@ -6,6 +6,10 @@ import DEFAULTS from './defaults';
 
 namespace Configuration {
   export const Transformer = { // tslint:disable-line:variable-name
+
+    /**
+     * transform and validate raw configuration
+     */
     transform(rawConfig: Configuration): Configuration {
       const config = Transformer.deprecationTransform(rawConfig);
       const finalConfig = Transformer.applyDefaults(config);
@@ -23,12 +27,15 @@ namespace Configuration {
     },
 
     /**
-     * Apply default configuration options
+     * apply default configuration options
      */
     applyDefaults(config: Configuration): Configuration {
       return utils.deepAssign({}, DEFAULTS, config);
     },
 
+    /**
+     * check final configuration for validity
+     */
     validate(config: Configuration) { }
   };
 }

@@ -1,5 +1,4 @@
-import { utils, Service } from '../core';
-import { core } from '../core/system';
+import { core, utils, Service } from '../core';
 import StoreFront from '../storefront';
 
 @core

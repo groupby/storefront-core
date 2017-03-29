@@ -1,7 +1,7 @@
 // tslint:disable-next-line:no-unused-variable
 import { utils, Configuration, Service } from '../core';
 import StoreFront from '../storefront';
-import Aliasing from './alias';
+import _Alias from './alias';
 
 export const DEFAULTS = Symbol('defaults');
 export const NAME = Symbol('name');
@@ -12,7 +12,7 @@ export const ALIASES = Symbol('aliases');
 
 namespace Tag {
   // tslint:disable-next-line variable-name
-  export const Alias = Aliasing;
+  export const Alias = _Alias;
 
   export function initializer(clazz: any) {
     return function init(opts: any) {
@@ -28,6 +28,10 @@ namespace Tag {
 
       init: Tag.initializer(Instance)
     };
+  }
+
+  export function getDefaults(obj: any) {
+    return obj[DEFAULTS] || {};
   }
 
   export interface Instance extends utils.riot.Tag.Instance {
@@ -50,12 +54,8 @@ namespace Tag {
 
     expose(aliases: string | string[], value: any = this.state, opts: any = {}) {
       utils.rayify(aliases)
-        .forEach((alias) => this[ALIASES][alias] = { value, opts, ...Aliasing.parse(alias) });
+        .forEach((alias) => this[ALIASES][alias] = { value, opts, ...Alias.parse(alias) });
     }
-  }
-
-  export function getDefaults(obj: any) {
-    return obj[DEFAULTS] || {};
   }
 }
 

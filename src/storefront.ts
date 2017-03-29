@@ -24,7 +24,7 @@ class StoreFront {
   riot: typeof utils.riot = this.config.riot || utils.riot;
   register: (...args: any[]) => void = utils.register(this.riot);
 
-  log: Log;
+  log: typeof utils.log;
   // flux: FluxCapacitor;
   services: Service.Map;
 

@@ -4,7 +4,6 @@ import Tag from '../tag';
 
 export const CORE = Symbol('core');
 export const TAGS = Symbol('tags');
-export const core = (target) => { target[CORE] = true; };
 
 export default class System {
 

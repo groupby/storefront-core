@@ -1,8 +1,11 @@
 import StoreFront from '../storefront';
 import { ATTRS, CSS, DEFAULTS, NAME, VIEW } from '../tag';
+import { CORE } from './system';
+
+export const core = (target) => { target[CORE] = true; };
 
 export function view(name: string, template: string, defaults?: any, css?: string, attrs?: string) {
-  return function (target: any) {
+  return (target: any) => {
     target[NAME] = name;
     target[VIEW] = template;
     if (defaults) {
@@ -20,19 +23,15 @@ export function view(name: string, template: string, defaults?: any, css?: strin
 }
 
 export function attr(name: string, expression: string) {
-  return function (target: any) {
+  return (target: any) => {
     target[ATTRS] = `${(target[ATTRS] || '')} ${name}="${expression}"`;
   };
 }
 
 export function css(style: string) {
-  return function (target: any) {
-    target[CSS] = style;
-  };
+  return (target: any) => { target[CSS] = style; };
 }
 
 export function defaults(config: any) {
-  return function (target: any) {
-    target[DEFAULTS] = config;
-  };
+  return (target: any) => { target[DEFAULTS] = config; };
 }

@@ -1,6 +1,5 @@
 import * as riot from 'riot';
-import { Configuration, System } from '../../src/core';
-import { core } from '../../src/core/system';
+import { core, Configuration, System } from '../../src/core';
 import Tag from '../../src/tag';
 import { expect, sinon } from '../_suite';
 
