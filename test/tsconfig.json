@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig",
+  "compilerOptions": {
+    "types": [
+      "node",
+      "mocha",
+      "sinon-chai"
+    ]
+  }
+}

@@ -1,9 +1,10 @@
-import { Configuration, Service } from '.';
+import FluxCapacitor from '@storefront/flux-capacitor';
+import { utils, Configuration } from '.';
+import Globals, { CORE } from '../globals';
+import { SystemServices } from '../services';
 import StoreFront from '../storefront';
 import Tag from '../tag';
-
-export const CORE = Symbol('core');
-export const TAGS = Symbol('tags');
+import Service from './service';
 
 export default class System {
 
@@ -14,6 +15,7 @@ export default class System {
    */
   bootstrap(services: Service.Constructor.Map, config: Configuration) {
     config = this.app.config = Configuration.Transformer.transform(config);
+    this.app.flux = new FluxCapacitor(config);
 
     const servicesConfig = config.services || {};
     const allServices = { ...services, ...System.extractUserServices(servicesConfig) };
@@ -41,7 +43,7 @@ export default class System {
   initMixin() {
     const mixin = Tag.mixin(this.app);
 
-    if (this.app.config.globalMixin) {
+    if (this.app.config.options.globalMixin) {
       this.app.riot.mixin(mixin);
     } else {
       this.app.riot.mixin('storefront', mixin);
@@ -53,11 +55,12 @@ export default class System {
    * register any tags that were registered before StoreFront started
    */
   registerTags() {
-    StoreFront[TAGS].forEach((registerTag) => registerTag(this.app.register));
+    Globals.getTags()
+      .forEach((registerTag) => registerTag(this.app.register));
   }
 
-  static buildServices(app: StoreFront, services: Service.Constructor.Map, config: any): Service.Map {
-    return Object.keys(services)
+  static buildServices(app: StoreFront, services: Service.Constructor.Map, config: any) {
+    return <SystemServices>Object.keys(services)
       .filter((key) => services[key][CORE] || config[key] !== false)
       .reduce((svcs, key) => {
         const serviceConfig = typeof config[key] === 'object' ? config[key] : {};

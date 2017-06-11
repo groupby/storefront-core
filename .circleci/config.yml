@@ -1,0 +1,24 @@
+version: 2
+
+jobs:
+  build:
+    working_directory: ~/storefront-core
+    docker:
+      - image: kkarczmarczyk/node-yarn
+    steps:
+      - checkout
+      - restore_cache:
+          key: storefront-core-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install
+          command: yarn
+      - save_cache:
+          key: storefront-core-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/node_modules
+      - run:
+          name: Test
+          command: yarn start ci
+      - run:
+          name: Release
+          command: yarn start release || true

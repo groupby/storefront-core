@@ -1,6 +1,0 @@
-{
-  "name": "storefront-core",
-  "dependencies": {
-    "riot": "registry:npm/riot#3.0.1+20161130094052"
-  }
-}

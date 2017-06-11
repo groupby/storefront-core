@@ -1,37 +1,36 @@
+import { CORE } from '../globals';
 import StoreFront from '../storefront';
-import { ATTRS, CSS, DEFAULTS, NAME, VIEW } from '../tag';
-import { CORE } from './system';
+import Tag from '../tag';
 
 export const core = (target) => { target[CORE] = true; };
 
-export function view(name: string, template: string, defaults?: any, css?: string, attrs?: string) {
-  return (target: any) => {
-    target[NAME] = name;
-    target[VIEW] = template;
-    if (defaults) {
-      target[DEFAULTS] = defaults;
-    }
+export function tag(name: string, template: string, css?: string) {
+  return (target: any = function() { return this; }) => {
+    const description = Tag.getDescription(target);
+
+    description.name = name;
+    description.view = template;
+
     if (css) {
-      target[CSS] = css;
-    }
-    if (attrs) {
-      target[ATTRS] = attrs;
+      description.css = css;
     }
 
     StoreFront.register((register) => register(target, name));
   };
 }
 
-export function attr(name: string, expression: string) {
-  return (target: any) => {
-    target[ATTRS] = `${(target[ATTRS] || '')} ${name}="${expression}"`;
-  };
+export function view(name: string, template: string, css?: string) {
+  exports.tag(name, template, css)();
 }
 
 export function css(style: string) {
-  return (target: any) => { target[CSS] = style; };
+  return (target: any) => {
+    Object.assign(Tag.getDescription(target), { css: style.toString() });
+  };
 }
 
-export function defaults(config: any) {
-  return (target: any) => { target[DEFAULTS] = config; };
+export function alias(name: string) {
+  return (target: any) => {
+    Object.assign(Tag.getDescription(target), { alias: name });
+  };
 }

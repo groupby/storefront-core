@@ -1,34 +1,25 @@
-// import { FluxCapacitor } from 'groupby-api';
-import {
-  attr as _attr,
-  css as _css,
-  defaults as _defaults,
-  utils,
-  view as _view,
-  Configuration,
-  Service,
-  System,
-  Tag
-} from './core';
-import { TAGS } from './core/system';
+import FluxCapacitor from '@storefront/flux-capacitor';
+import Configuration from './core/configuration';
+import System from './core/system';
+import { log, register, riot } from './core/utils';
+import Globals from './globals';
+import { SystemServices } from './services';
 import services from './services';
 
 // declare var VERSION;
-
-@((target) => { target[TAGS] = []; })
-class StoreFront {
+export default class StoreFront {
 
   static _instance: StoreFront;
   // static version: string = VERSION;
 
-  riot: typeof utils.riot = this.config.riot || utils.riot;
-  register: (...args: any[]) => void = utils.register(this.riot);
+  riot: typeof riot = this.config.options.riot || Globals.getRiot();
+  register: (...args: any[]) => void = register(this.riot);
 
-  log: typeof utils.log;
-  // flux: FluxCapacitor;
-  services: Service.Map;
+  log: typeof log;
+  flux: FluxCapacitor;
+  services: SystemServices;
 
-  constructor(public config: Configuration = <any>{}) {
+  constructor(public config: Configuration = <any>{ options: {} }) {
     if (StoreFront._instance) {
       return StoreFront._instance;
     }
@@ -43,6 +34,7 @@ class StoreFront {
     system.registerTags();
 
     // this.log.info(`StoreFront v${VERSION} loaded! 🏬`);
+    this.flux.store.dispatch(this.flux.actions.startApp());
   }
 
   static mount() {
@@ -50,16 +42,6 @@ class StoreFront {
   }
 
   static register(registerTag: (register: (clazz: any, name: string) => void) => void) {
-    StoreFront[TAGS].push(registerTag);
+    Globals.getTags().push(registerTag);
   }
 }
-
-namespace StoreFront {
-  export const attr = _attr;
-  export const css = _css;
-  export const defaults = _defaults;
-  export const view = _view;
-  export type Tag = Tag.Instance;
-}
-
-export default StoreFront;

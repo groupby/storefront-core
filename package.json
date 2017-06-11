@@ -1,6 +1,6 @@
 {
   "name": "@storefront/core",
-  "version": "0.0.0-development",
+  "version": "0.0.30-development",
   "description": "Core library for StoreFront components",
   "repository": {
     "type": "git",
@@ -13,14 +13,21 @@
   "author": "Ben Teichman <ben.teichman@groupbyinc.com>",
   "license": "MIT",
   "main": "dist/index.js",
+  "module:esnext": "esnext/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist/"
+    "dist/",
+    "esnext/",
+    "src/"
   ],
   "scripts": {
-    "start": "start-runner -f tasks.js",
-    "prepush": "yarn start prepush",
-    "prepublish": "yarn start build"
+    "start": "start-runner -p re-start/presets/typescript",
+    "esnext": "npm start build -- -- --compileOpts.configFile tsconfig.esnext.json --outDir esnext",
+    "dev": "npm start dev",
+    "test": "npm start test",
+    "tdd": "npm start tdd",
+    "prepush": "npm start prepush",
+    "prepublish": "npm start build && npm run esnext"
   },
   "release": {
     "verifyConditions": "condition-circle"
@@ -32,7 +39,7 @@
     "restart": {
       "testFiles": [
         "test/bootstrap.ts",
-        "test/**/*.ts"
+        "test/unit/**/*.ts"
       ],
       "releaseOpts": {
         "public": true
@@ -40,54 +47,41 @@
     }
   },
   "devDependencies": {
-    "@easy-webpack/config-env-development": "^2.1.6",
-    "@easy-webpack/config-env-production": "^3.0.0",
-    "@easy-webpack/config-typescript": "^5.1.0",
-    "@easy-webpack/config-uglify": "^2.2.3",
-    "@easy-webpack/core": "^2.0.1",
-    "@types/chai": "^3.4.35",
-    "@types/mocha": "^2.2.40",
-    "@types/node": "^7.0.11",
-    "@types/sinon": "^1.16.36",
-    "babel-preset-latest": "^6.24.0",
-    "babel-preset-stage-3": "^6.22.0",
-    "chai": "^3.5.0",
+    "@types/chai": "^4.0.0",
+    "@types/mocha": "^2.2.41",
+    "@types/node": "^7.0.18",
+    "@types/sinon": "^2.2.1",
+    "@types/sinon-chai": "^2.7.28",
+    "chai": "^4.0.0",
     "condition-circle": "^1.5.0",
     "cz-conventional-changelog": "^2.0.0",
-    "expose-loader": "^0.7.3",
     "husky": "^0.13.3",
-    "lodash.camelcase": "^4.3.0",
-    "re-start": "^1.9.0",
-    "sinon": "^2.1.0",
-    "start-babel-cli": "^4.0.1",
-    "start-clean": "^2.0.0",
-    "start-env": "^3.0.0",
-    "start-files": "^2.0.0",
-    "start-webpack": "^0.2.0",
-    "tslint": "^4.5.1",
+    "mocha-suite": "^1.0.9",
+    "re-start": "^1.14.8",
+    "sinon": "^2.3.4",
+    "sinon-chai": "^2.10.0",
+    "start-simple-cli": "^4.1.1",
+    "tslint": "^5.2.0",
     "tslint-config-groupby": "^1.0.0",
-    "typescript": "^2.2.2",
-    "typings": "^2.1.0",
-    "webpack": "^2.3.2"
+    "typescript": "^2.3.2",
+    "webpack": "^2.5.1"
   },
   "dependencies": {
+    "@storefront/flux-capacitor": "^1.0.0",
     "@types/deep-assign": "^0.1.0",
-    "@types/eventemitter3": "^1.2.0",
     "@types/js-cookie": "^2.0.28",
-    "@types/lodash.camelcase": "^4.3.2",
     "@types/loglevel": "^1.4.29",
-    "@types/query-string": "^4.3.0",
-    "@types/urijs": "^1.15.31",
-    "@types/uuid": "3.3.28",
+    "@types/query-string": "^4.3.1",
+    "@types/riot": "^2.6.2",
+    "@types/urijs": "^1.15.32",
     "deep-assign": "^2.0.0",
     "dot-prop": "^4.1.1",
-    "gb-tracker-client": "^3.4.0",
-    "groupby-api": "^1.0.83",
-    "js-cookie": "^2.1.3",
+    "gb-tracker-client": "^3.4.3",
+    "js-cookie": "^2.1.4",
+    "lodash.kebabcase": "^4.1.1",
     "loglevel": "^1.4.1",
-    "query-string": "^4.3.2",
-    "riot": "^3.4.0",
-    "urijs": "^1.18.9",
-    "uuid": "^3.0.1"
+    "query-string": "^4.3.4",
+    "riot": "^3.4.4",
+    "urijs": "^1.18.10"
   }
 }

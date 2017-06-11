@@ -1,68 +1,63 @@
+import FluxCapacitor from '@storefront/flux-capacitor';
 import { Request } from 'groupby-api';
-import { utils, Structure } from '.';
-import { CoreServices } from '../services';
+import { ServiceConfiguration } from '../services';
 import StoreFront from '../storefront';
 import DEFAULTS from './defaults';
+import { Structure } from './types';
+import * as utils from './utils';
+
+interface Configuration extends FluxCapacitor.Configuration {
+  structure?: Structure;
+
+  tags?: { [key: string]: any };
+
+  services?: ServiceConfiguration;
+
+  bootstrap?: (app: StoreFront) => void;
+
+  options?: {
+    stylish?: boolean;
+    initialSearch?: boolean;
+    simpleAttach?: boolean;
+    globalMixin?: boolean;
+    riot?: any;
+  };
+}
 
 namespace Configuration {
-  export const Transformer = { // tslint:disable-line:variable-name
+  export namespace Transformer {
 
     /**
      * transform and validate raw configuration
      */
-    transform(rawConfig: Configuration): Configuration {
+    export function transform(rawConfig: Configuration): Configuration {
       const config = Transformer.deprecationTransform(rawConfig);
       const finalConfig = Transformer.applyDefaults(config);
 
       Transformer.validate(finalConfig);
 
       return finalConfig;
-    },
+    }
 
     /**
      * transform to handle graceful deprecation of configuration options
      */
-    deprecationTransform(config: Configuration): Configuration {
+    export function deprecationTransform(config: Configuration): Configuration {
       return config;
-    },
+    }
 
     /**
      * apply default configuration options
      */
-    applyDefaults(config: Configuration): Configuration {
+    export function applyDefaults(config: Configuration): Configuration {
       return utils.deepAssign({}, DEFAULTS, config);
-    },
+    }
 
     /**
      * check final configuration for validity
      */
-    validate(config: Configuration) { }
-  };
-}
-
-interface Configuration {
-  customerId: string;
-  structure: Structure;
-
-  collection?: string;
-  area?: string;
-  language?: string;
-  visitorId?: string;
-  sessionId?: string;
-
-  query?: Partial<Request>;
-
-  tags?: { [key: string]: any };
-
-  services?: CoreServices;
-
-  bootstrap?: (app: StoreFront) => void;
-
-  stylish?: boolean;
-  initialSearch?: boolean;
-  simpleAttach?: boolean;
-  globalMixin?: boolean;
-  riot?: any;
+    export function validate(config: Configuration) { }
+  }
 }
 
 export default Configuration;

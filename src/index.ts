@@ -1,3 +1,8 @@
+import './globals';
+
+import { utils } from './core';
 import StoreFront from './storefront';
 
-export = StoreFront;
+export * from './core';
+export { Events, Selectors, Store } from '@storefront/flux-capacitor';
+export default StoreFront;

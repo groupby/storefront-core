@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "ES2015",
+      "ES2016.Array.Include",
+      "DOM"
+    ],
+    "types": [
+      "node"
+    ],
+    "module": "es2015",
+    "moduleResolution": "node",
+    "target": "es2015",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  }
+}

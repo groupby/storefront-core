@@ -9,34 +9,16 @@ export namespace Structure {
     url?: string;
   }
 
-  export interface Tranformable extends Base {
-    _transform?: (metadata: any) => any;
+  export interface Tranformable<T> extends Base {
+    _transform?: T;
   }
 
   export interface Variant {
     field: string;
-    structure: Partial<Structure.Tranformable>;
+    structure: Partial<Structure.Tranformable<(variantData: any, index: number, baseData: any) => any>>;
   }
 }
 
-export interface Structure extends Structure.Tranformable {
+export interface Structure extends Structure.Tranformable<(data: any) => any> {
   _variant?: Partial<Structure.Variant>;
-}
-
-export namespace Service {
-  export namespace Constructor {
-    export type Map = { [key: string]: Constructor };
-  }
-
-  export interface Constructor {
-    new (app: StoreFront, config: any): Service;
-  }
-
-  export type Map = { [key: string]: Service };
-
-  export type Options<T> = Service.Constructor | T | false;
-}
-
-export interface Service {
-  init(services: Service.Map): void;
 }

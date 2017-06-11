@@ -4,14 +4,10 @@
     "lib": [
       "ES2015",
       "ES2016.Array.Include",
-      "ES2017.Object",
-      "DOM",
-      "ScriptHost"
+      "DOM"
     ],
     "types": [
-      "node",
-      "loglevel",
-      "mocha"
+      "node"
     ],
     "module": "commonjs",
     "moduleResolution": "node",
@@ -24,10 +20,6 @@
     "node_modules",
     "dist"
   ],
-  "atom": {
-    "rewriteTsconfig": true,
-    "formatOnSave": true
-  },
   "formatCodeOptions": {
     "indentSize": 2,
     "tabSize": 2
