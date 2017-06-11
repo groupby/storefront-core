@@ -6,8 +6,7 @@
       "DOM"
     ],
     "types": [
-      "node",
-      "urijs"
+      "node"
     ],
     "module": "es2015",
     "moduleResolution": "node",

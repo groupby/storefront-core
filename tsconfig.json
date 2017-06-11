@@ -7,8 +7,7 @@
       "DOM"
     ],
     "types": [
-      "node",
-      "urijs"
+      "node"
     ],
     "module": "commonjs",
     "moduleResolution": "node",

@@ -49,7 +49,7 @@ class UrlBeautifier {
     }
   }
 
-  static extractAppRoute({ query, path }: uri.URIOptions, route: string) {
+  static extractAppRoute({ query, path }: { query: string, path: string }, route: string) {
     return new URI({ path: path.substr(route.length), query }).toString();
   }
 }
