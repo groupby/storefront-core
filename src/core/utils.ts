@@ -10,7 +10,10 @@ export { deepAssign, dot, kebabCase, log, riot };
 
 export const WINDOW = {
   addEventListener: (event, cb) => window.addEventListener(event, cb),
-  Image: () => new Image()
+  Image: () => new Image(),
+  document: () => window.document,
+  location: () => window.location,
+  history: () => window.history
 };
 
 export function register(_riot: any) {

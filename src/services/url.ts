@@ -2,9 +2,10 @@ import { Events, Selectors, Store } from '@storefront/flux-capacitor';
 import { core } from '../core/decorators';
 import { BaseService } from '../core/service';
 import UrlBeautifier from '../core/url-beautifier';
+import { WINDOW } from '../core/utils';
 import StoreFront from '../storefront';
 
-const STOREFRONT_APP_ID = 'GroupBy StoreFront';
+export const STOREFRONT_APP_ID = 'GroupBy StoreFront';
 
 @core
 class UrlService extends BaseService<UrlService.Options> {
@@ -13,74 +14,35 @@ class UrlService extends BaseService<UrlService.Options> {
 
   init() {
     this.beautifier = new UrlBeautifier(this.opts.routes, this.opts.beautifier);
-    window.addEventListener('popstate', this.rewind);
+    WINDOW.addEventListener('popstate', this.rewind);
     this.readInitialUrl();
   }
 
   readInitialUrl() {
     try {
-      const request = this.beautifier.parse<UrlBeautifier.SearchRequest>(window.location.href);
-      const currentState = this.app.flux.store.getState().data;
-      const pageSizeIndex = currentState.page.sizes.items.indexOf(request.pageSize);
-      // TODO this should probably go somewhere else
-      const newState = {
-        ...currentState,
-        query: {
-          ...currentState.query,
-          original: request.query
-        },
-        page: {
-          ...currentState.page,
-          current: request.page,
-          sizes: {
-            ...currentState.page.sizes,
-            selected: pageSizeIndex === -1 ? currentState.page.sizes.selected : pageSizeIndex
-          }
-        },
-        navigations: {
-          allIds: request.refinements.reduce((fields, refinement) => {
-            if (!fields.includes(refinement.navigationName)) {
-              fields.push(refinement.navigationName);
-            }
-            return fields;
-          }, []),
-          byId: request.refinements.reduce((navigations, refinement) => {
-            const field = refinement.navigationName;
-            const transformed = refinement.type === 'Range'
-              ? { low: refinement.low, high: refinement.high }
-              : { value: refinement.value };
+      const request = this.beautifier.parse<UrlBeautifier.SearchRequest>(WINDOW.location().href);
+      const newState = UrlService.mergeSearchState(this.app.flux.store.getState(), request);
 
-            if (field in navigations) {
-              const navigation = navigations[field];
-              navigation.selected.push(navigation.refinements.push(transformed) - 1);
-            } else {
-              navigations[field] = <Store.Navigation>{
-                field,
-                label: field,
-                range: refinement.type === 'Range',
-                refinements: [transformed],
-                selected: [0]
-              };
-            }
+      const unsubscribe = this.app.flux.store.subscribe(() => {
+        unsubscribe();
+        this.augmentHistory();
+      });
 
-            return navigations;
-          }, {})
-        }
-      };
-
-      this.refreshState(newState)
-        .then(() => {
-          const state = this.app.flux.store.getState();
-          const url = window.location.pathname + window.location.search;
-
-          window.history.replaceState({ url, state: state.data, app: STOREFRONT_APP_ID }, document.title, url);
-          this.app.flux.once(Events.HISTORY_SAVE, this.listenForHistoryChange);
-          this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchProducts());
-        });
+      this.refreshState(newState);
     } catch (e) {
       this.app.log.warn('unable to parse state from url', e);
       this.listenForHistoryChange();
     }
+  }
+
+  augmentHistory() {
+    const location = WINDOW.location();
+    const state = this.app.flux.store.getState();
+    const url = location.pathname + location.search;
+
+    WINDOW.history().replaceState({ url, state: state.data, app: STOREFRONT_APP_ID }, WINDOW.document().title, url);
+    this.app.flux.once(Events.HISTORY_SAVE, this.listenForHistoryChange);
+    this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchProducts());
   }
 
   listenForHistoryChange = () => {
@@ -96,19 +58,69 @@ class UrlService extends BaseService<UrlService.Options> {
     };
     const url = this.beautifier.build('search', urlState);
 
-    window.history.pushState({ url, state: state.data, app: STOREFRONT_APP_ID }, urlState.query, url);
+    WINDOW.history().pushState({ url, state: state.data, app: STOREFRONT_APP_ID }, urlState.query, url);
   }
 
   rewind = (event: PopStateEvent) => {
     const eventState = event.state;
     if (eventState && event.state.app === STOREFRONT_APP_ID) {
-      const historyState = eventState.state;
-      this.refreshState(historyState);
+      this.refreshState(eventState.state);
     }
   }
 
   refreshState(state: any): Promise<any> {
     return <any>this.app.flux.store.dispatch(this.app.flux.actions.refreshState(state));
+  }
+
+  static mergeSearchState(state: Store.State, request: UrlBeautifier.SearchRequest) {
+    const currentState = state.data;
+    const pageSizeIndex = currentState.page.sizes.items.indexOf(request.pageSize);
+
+    return {
+      ...currentState,
+      query: {
+        ...currentState.query,
+        original: request.query
+      },
+      page: {
+        ...currentState.page,
+        current: request.page,
+        sizes: {
+          ...currentState.page.sizes,
+          selected: pageSizeIndex === -1 ? currentState.page.sizes.selected : pageSizeIndex
+        }
+      },
+      navigations: {
+        ...currentState.navigations,
+        allIds: request.refinements.reduce((fields, refinement) => {
+          if (!fields.includes(refinement.navigationName)) {
+            fields.push(refinement.navigationName);
+          }
+          return fields;
+        }, []),
+        byId: request.refinements.reduce((navigations, refinement) => {
+          const field = refinement.navigationName;
+          const transformed = refinement.type === 'Range'
+            ? { low: refinement.low, high: refinement.high }
+            : { value: refinement.value };
+
+          if (field in navigations) {
+            const navigation = navigations[field];
+            navigation.selected.push(navigation.refinements.push(transformed) - 1);
+          } else {
+            navigations[field] = <Store.Navigation>{
+              field,
+              label: field,
+              range: refinement.type === 'Range',
+              refinements: [transformed],
+              selected: [0]
+            };
+          }
+
+          return navigations;
+        }, {})
+      }
+    };
   }
 }
 
