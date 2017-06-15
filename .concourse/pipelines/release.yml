@@ -47,6 +47,7 @@ jobs:
       - get: npm-cache
 
   - name: update-flux
+    serial: true
     plan:
       - get: flux
         trigger: true
@@ -58,7 +59,9 @@ jobs:
       - task: release
         file: core/.concourse/tasks/release.yml
       - put: core-built
-        params: {repository: updated-core}
+        params:
+          repository: updated-core
+          force: true
 
   - name: unit-test
     plan:
@@ -68,5 +71,11 @@ jobs:
       - task: test
         file: core-built/.concourse/tasks/unit-test.yml
         input_mapping: {core: core-built}
+
+  - name: release
+    serial: true
+    plan:
+      - get: core-built
+        passed: [unit-test]
       - put: core
         params: {repository: core-built}

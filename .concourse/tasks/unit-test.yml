@@ -13,5 +13,5 @@ run:
   args:
     - -exc
     - |
-      yarn
+      yarn --no-progress
       yarn test
