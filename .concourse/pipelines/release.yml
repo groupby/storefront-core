@@ -77,5 +77,6 @@ jobs:
     plan:
       - get: core-built
         passed: [unit-test]
+        trigger: true
       - put: core
         params: {repository: core-built}
