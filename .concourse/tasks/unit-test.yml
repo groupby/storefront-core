@@ -13,4 +13,5 @@ run:
   args:
     - -exc
     - |
+      yarn
       yarn test

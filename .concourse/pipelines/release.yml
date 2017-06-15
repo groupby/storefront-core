@@ -66,7 +66,7 @@ jobs:
         trigger: true
         passed: [update-flux]
       - task: test
-        file: core/.concourse/tasks/unit-test.yml
+        file: core-built/.concourse/tasks/unit-test.yml
         input_mapping: {core: core-built}
       - put: core
         params: {repository: core-built}
