@@ -24,6 +24,12 @@ resources:
       uri: git@github.com:groupby/storefront-core.git
       branch: master
       private_key: {{git-repo-key}}
+  - name: core-built
+    type: git
+    source:
+      uri: git@github.com:groupby/storefront-core.git
+      branch: concourse/update-flux
+      private_key: {{git-repo-key}}
   - name: npm-cache
     type: npm-cache
     source:
@@ -51,12 +57,16 @@ jobs:
           passed: [cache-npm-dependencies]
       - task: release
         file: core/.concourse/tasks/release.yml
+      - put: core-built
+        params: {repository: updated-core}
 
   - name: unit-test
     plan:
-      - get: updated-core
+      - get: core-built
+        trigger: true
         passed: [update-flux]
       - task: test
         file: core/.concourse/tasks/unit-test.yml
+        input_mapping: {core: core-built}
       - put: core
-        params: {repository: updated-core}
+        params: {repository: core-built}

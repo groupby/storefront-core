@@ -5,11 +5,11 @@ image_resource:
   source: {repository: i6group/docker-node-git-yarn}
 
 inputs:
-  - name: updated-core
+  - name: core
 
 run:
   path: sh
-  dir: updated-core
+  dir: core
   args:
     - -exc
     - |
