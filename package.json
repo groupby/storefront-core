@@ -67,7 +67,7 @@
     "webpack": "^2.5.1"
   },
   "dependencies": {
-    "@storefront/flux-capacitor": "1.0.1",
+    "@storefront/flux-capacitor": "1.0.2",
     "@types/deep-assign": "^0.1.0",
     "@types/js-cookie": "^2.0.28",
     "@types/loglevel": "^1.4.29",
