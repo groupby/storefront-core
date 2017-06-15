@@ -1,0 +1,62 @@
+resource_types:
+  - name: npm-cache
+    type: docker-image
+    source: {repository: ymedlop/npm-cache-resource}
+  - name: npm
+    type: docker-image
+    source:
+      repository: docker.groupbyinc.com/concourse-npm-resource
+      tag: 0.0.15
+      email: {{docker-registry-email}}
+      username: {{docker-registry-user}}
+      password: {{docker-registry-passwd}}
+      insecure_registries:
+        - docker.groupbyinc.com:80
+
+resources:
+  - name: flux
+    type: npm
+    source:
+      package: '@storefront/flux-capacitor'
+  - name: core
+    type: git
+    source: &core-source
+      uri: git@github.com:groupby/storefront-core.git
+      branch: master
+      private_key: {{git-repo-key}}
+  - name: npm-cache
+    type: npm-cache
+    source:
+      <<: *core-source
+      yarn-support: true
+      paths:
+        - package.json
+        - yarn.lock
+
+jobs:
+  - name: cache-npm-dependencies
+    plan:
+      - get: core
+        trigger: true
+      - get: npm-cache
+
+  - name: update-flux
+    plan:
+      - get: flux
+        trigger: true
+      - aggregate:
+        - get: core
+          passed: [cache-npm-dependencies]
+        - get: npm-cache
+          passed: [cache-npm-dependencies]
+      - task: release
+        file: core/.concourse/tasks/release.yml
+
+  - name: unit-test
+    plan:
+      - get: updated-core
+        passed: [update-flux]
+      - task: test
+        file: core/.concourse/tasks/unit-test.yml
+      - put: core
+        params: {repository: updated-core}

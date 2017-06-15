@@ -1,0 +1,16 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: i6group/docker-node-git-yarn}
+
+inputs:
+  - name: updated-core
+
+run:
+  path: sh
+  dir: updated-core
+  args:
+    - -exc
+    - |
+      yarn test

@@ -1,0 +1,32 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: i6group/docker-node-git-yarn}
+
+inputs:
+  - name: flux
+  - name: core
+  - name: npm-cache
+
+outputs:
+  - name: updated-core
+
+run:
+  path: sh
+  args:
+    - -exc
+    - |
+      version=$(cat flux/version)
+      git config --global user.email "ops@groupbyinc.com"
+      git config --global user.name "GroupBy Ops"
+      git clone core updated-core
+
+      mv npm-cache/node_modules updated-core/node_modules
+
+      cd updated-core
+      yarn
+      yarn add "@storefront/flux-capacitor@$version" --no-progress
+
+      git add package.json yarn.lock
+      git commit -am "fix(flux-capacitor): update @storefront/flux-capacitor to $version"
