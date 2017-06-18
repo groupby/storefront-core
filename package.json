@@ -75,7 +75,6 @@
     "@types/riot": "^2.6.2",
     "@types/urijs": "^1.15.32",
     "deep-assign": "^2.0.0",
-    "dot-prop": "^4.1.1",
     "gb-tracker-client": "^3.4.3",
     "js-cookie": "^2.1.4",
     "lodash.kebabcase": "^4.1.1",

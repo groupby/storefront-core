@@ -1,12 +1,12 @@
 import FluxCapacitor, { Store } from '@storefront/flux-capacitor';
 import * as deepAssign from 'deep-assign';
-import * as dot from 'dot-prop';
+// import * as dot from 'dot-prop';
 import * as kebabCase from 'lodash.kebabcase';
 import * as log from 'loglevel';
 import * as riot from 'riot';
 import Tag, { TAG_DESC, TAG_META } from '../tag';
 
-export { deepAssign, dot, kebabCase, log, riot };
+export { deepAssign, kebabCase, log, riot };
 
 export const WINDOW = {
   addEventListener: (event, cb) => window.addEventListener(event, cb),
@@ -14,6 +14,20 @@ export const WINDOW = {
   document: () => window.document,
   location: () => window.location,
   history: () => window.history
+};
+
+export const dot = {
+  get(obj: any, path: string, defaultValue?: any) {
+    const dotIndex = path.indexOf('.');
+    if (dotIndex === -1) {
+      return path in obj ? obj[path] : defaultValue;
+    }
+
+    const key = path.substr(0, dotIndex);
+    return key in obj ?
+      dot.get(obj[key], path.substr(dotIndex + 1), defaultValue) :
+      defaultValue;
+  }
 };
 
 export function register(_riot: any) {

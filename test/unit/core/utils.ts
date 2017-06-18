@@ -1,5 +1,4 @@
 import * as deepAssign from 'deep-assign';
-import * as dot from 'dot-prop';
 import * as kebabCase from 'lodash.kebabcase';
 import * as log from 'loglevel';
 import * as riot from 'riot';
@@ -11,10 +10,33 @@ import suite from '../_suite';
 suite('utils', ({ expect, spy, stub }) => {
   it('should include repackaged utilty functions', () => {
     expect(utils.deepAssign).to.eq(deepAssign);
-    expect(utils.dot).to.eq(dot);
     expect(utils.kebabCase).to.eq(kebabCase);
     expect(utils.log).to.eq(log);
     expect(utils.riot).to.eq(riot);
+  });
+
+  describe('dot', () => {
+    describe('get()', () => {
+      it('should return nested value', () => {
+        const obj = { a: { bcd: [{}, { 5: { name: [{ '%valu!': 'e' }] } }] } };
+
+        expect(utils.dot.get(obj, 'a.bcd.1.5.name.0.%valu!')).to.eq('e');
+      });
+
+      it('should return default value if no nested value found', () => {
+        const defaultValue = 'mark';
+        const obj = { a: { bcd: [{}, { 5: { name: [{ '%valu!': 'e' }] } }] } };
+
+        expect(utils.dot.get(obj, 'a.bcd.1.5.name.0.%valur!', defaultValue)).to.eq(defaultValue);
+      });
+
+      it('should bail out if path is invalid', () => {
+        const defaultValue = 'mark';
+        const obj = { a: { bcd: [{}, { 5: { name: [{ '%valu!': 'e' }] } }] } };
+
+        expect(utils.dot.get(obj, 'a.bcd.label.ha.3', defaultValue)).to.eq(defaultValue);
+      });
+    });
   });
 
   describe('register()', () => {
