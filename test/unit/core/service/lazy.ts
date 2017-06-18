@@ -38,18 +38,18 @@ suite('LazyService', ({ expect, spy }) => {
       lazyService.register(tag);
 
       expect(lazyService.registered).to.eql([tag]);
-      expect(lazyService.initialized).to.be.true;
       expect(lazyInit).to.be.calledWith(services);
     });
 
     it('should skip initialize', () => {
       const tag = { a: ' b' };
+      const existingTag = { c: 'd' };
       lazyService.lazyInit = () => expect.fail();
-      lazyService.initialized = true;
+      lazyService.registered = [existingTag];
 
       lazyService.register(tag);
 
-      expect(lazyService.registered).to.eql([tag]);
+      expect(lazyService.registered).to.eql([existingTag, tag]);
     });
   });
 });

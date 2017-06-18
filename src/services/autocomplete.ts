@@ -2,13 +2,34 @@ import FluxCapacitor, { Events, Selectors, Store } from '@storefront/flux-capaci
 import { core } from '../core/decorators';
 import LazyService from '../core/service/lazy';
 import StoreFront from '../storefront';
+import Tag from '../tag';
 
 @core
 class AutocompleteService extends LazyService {
 
+  registeredProductTags: Tag[] = [];
+  registeredAutocompleteTags: AutocompleteTag[] = [];
+
   lazyInit() {
     this.app.flux.on(Events.AUTOCOMPLETE_QUERY_UPDATED, this.updateSearchTerms);
+  }
+
+  lazyInitProducts() {
     this.app.flux.on(Events.AUTOCOMPLETE_SUGGESTIONS_UPDATED, this.updateProducts);
+  }
+
+  registerAutocomplete(tag: AutocompleteTag) {
+    this.registeredAutocompleteTags.push(tag);
+  }
+
+  registerProducts(tag: Tag) {
+    if (this.registeredProductTags.push(tag) === 1) {
+      this.lazyInitProducts();
+    }
+  }
+
+  hasActiveSuggestion() {
+    return this.registeredAutocompleteTags.some((tag) => tag.isActive());
   }
 
   updateSearchTerms = (query: string) =>
@@ -19,3 +40,7 @@ class AutocompleteService extends LazyService {
 }
 
 export default AutocompleteService;
+
+export interface AutocompleteTag extends Tag {
+  isActive(): boolean;
+}

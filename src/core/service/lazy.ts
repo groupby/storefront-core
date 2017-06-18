@@ -4,7 +4,6 @@ import StoreFront from '../../storefront';
 
 abstract class LazyService<T = any> extends BaseService<T> {
 
-  initialized: boolean = false;
   registered: any[] = [];
 
   init() {
@@ -14,9 +13,7 @@ abstract class LazyService<T = any> extends BaseService<T> {
   abstract lazyInit(services: SystemServices);
 
   register(tag: any) {
-    this.registered.push(tag);
-    if (!this.initialized) {
-      this.initialized = true;
+    if (this.registered.push(tag) === 1) {
       this.lazyInit(this.app.services);
     }
   }

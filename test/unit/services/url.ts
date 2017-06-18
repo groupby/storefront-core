@@ -1,14 +1,19 @@
 import { Events, Selectors } from '@storefront/flux-capacitor';
 import * as sinon from 'sinon';
+import { BaseService } from '../../../src/core/service';
 import * as UrlBeautifier from '../../../src/core/url-beautifier';
 import { WINDOW } from '../../../src/core/utils';
 import Service, { STOREFRONT_APP_ID } from '../../../src/services/url';
 import suite from '../_suite';
 
-suite('URL service', ({ expect, spy, stub }) => {
+suite('URL Service', ({ expect, spy, stub }) => {
   let service: Service;
 
   beforeEach(() => service = new Service(<any>{}, <any>{}));
+
+  it('should extend BaseService', () => {
+    expect(service).to.be.an.instanceOf(BaseService);
+  });
 
   describe('init()', () => {
     it('should create a new URL Beautifier', () => {
