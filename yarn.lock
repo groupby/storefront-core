@@ -35,12 +35,11 @@
     conventional-changelog "0.0.17"
     github-url-from-git "^1.4.0"
 
-"@storefront/flux-capacitor@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@storefront/flux-capacitor/-/flux-capacitor-1.0.3.tgz#1584220057ffc466881983978470fa0b0b9492fb"
+"@storefront/flux-capacitor@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@storefront/flux-capacitor/-/flux-capacitor-1.0.4.tgz#521c833667da4be1996a6705d22ffaaad97038a0"
   dependencies:
     "@types/redux-logger" "^3.0.0"
-    "@types/uuid" "^3.0.0"
     eventemitter3 "^2.0.3"
     groupby-api "^2.0.1"
     redux "^3.6.0"
@@ -123,10 +122,6 @@
   resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.15.32.tgz#a6e261745eb580b3f7f4079dab520bd680b50755"
   dependencies:
     "@types/jquery" "*"
-
-"@types/uuid@^3.0.0":
-  version "3.3.28"
-  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-3.3.28.tgz#e0ca8f62e667783180b179ed69068586d6fba5cc"
 
 abbrev@1:
   version "1.1.0"
