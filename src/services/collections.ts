@@ -1,5 +1,5 @@
 import FluxCapacitor, { Events, Selectors, Store } from '@storefront/flux-capacitor';
-import { core } from '../core/decorators';
+import { core } from '../core/service';
 import LazyService from '../core/service/lazy';
 import StoreFront from '../storefront';
 

@@ -1,6 +1,5 @@
 import * as utils from './core/utils';
 
-export const CORE = Symbol.for('storfront_core_service');
 export const RIOT = Symbol.for('storefront_riot_instance');
 export const TAGS = Symbol.for('storefront_tags');
 

@@ -1,6 +1,6 @@
 import { Events, Selectors } from '@storefront/flux-capacitor';
 import * as sinon from 'sinon';
-import { BaseService } from '../../../src/core/service';
+import { BaseService, CORE } from '../../../src/core/service';
 import * as UrlBeautifier from '../../../src/core/url-beautifier';
 import { WINDOW } from '../../../src/core/utils';
 import Service, { STOREFRONT_APP_ID } from '../../../src/services/url';
@@ -13,6 +13,10 @@ suite('URL Service', ({ expect, spy, stub }) => {
 
   it('should extend BaseService', () => {
     expect(service).to.be.an.instanceOf(BaseService);
+  });
+
+  it('should be a core service', () => {
+    expect(Service[CORE]).to.be.true;
   });
 
   describe('init()', () => {

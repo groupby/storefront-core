@@ -1,7 +1,9 @@
 import * as fluxPkg from '@storefront/flux-capacitor';
 import * as riot from 'riot';
-import { core, utils, Configuration } from '../../../src/core';
+import Configuration from '../../../src/core/configuration';
+import { core } from '../../../src/core/service';
 import System from '../../../src/core/system';
+import * as utils from '../../../src/core/utils';
 import Globals from '../../../src/globals';
 import Tag from '../../../src/tag';
 import suite from '../_suite';

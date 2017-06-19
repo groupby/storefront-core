@@ -1,8 +1,5 @@
-import { CORE } from '../globals';
 import StoreFront from '../storefront';
 import Tag from '../tag';
-
-export const core = (target) => { target[CORE] = true; };
 
 export function tag(name: string, template: string, css?: string) {
   return (target: any = function() { return this; }) => {

@@ -1,6 +1,5 @@
 import { Events } from '@storefront/flux-capacitor';
-import { core } from '../core/decorators';
-import { BaseService } from '../core/service';
+import { core, BaseService } from '../core/service';
 import * as utils from '../core/utils';
 import StoreFront from '../storefront';
 import Tag from '../tag';

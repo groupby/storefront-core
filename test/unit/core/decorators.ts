@@ -1,22 +1,11 @@
 import * as sinon from 'sinon';
 import * as decorators from '../../../src/core/decorators';
-import { CORE } from '../../../src/globals';
 import StoreFront from '../../../src/storefront';
 import Tag from '../../../src/tag';
 import Attribute from '../../../src/tag/attribute';
 import suite from '../_suite';
 
 suite('decorators', ({ expect, spy, stub }) => {
-
-  describe('@core', () => {
-    it('should mark as core service', () => {
-      const tag = {};
-
-      decorators.core(tag);
-
-      expect(tag[CORE]).to.be.true;
-    });
-  });
 
   describe('@tag', () => {
     it('should set tag description name and template', () => {

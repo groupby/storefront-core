@@ -1,10 +1,11 @@
 import FluxCapacitor from '@storefront/flux-capacitor';
-import { utils, Configuration } from '.';
-import Globals, { CORE } from '../globals';
+import Globals from '../globals';
 import { SystemServices } from '../services';
 import StoreFront from '../storefront';
 import Tag from '../tag';
+import Configuration from './configuration';
 import Service from './service';
+import * as utils from './utils';
 
 export default class System {
 
@@ -61,7 +62,7 @@ export default class System {
 
   static buildServices(app: StoreFront, services: Service.Constructor.Map, config: any) {
     return <SystemServices>Object.keys(services)
-      .filter((key) => services[key][CORE] || config[key] !== false)
+      .filter((key) => Service.isCore(services[key]) || config[key] !== false)
       .reduce((svcs, key) => {
         const serviceConfig = typeof config[key] === 'object' ? config[key] : {};
         return Object.assign(svcs, { [key]: new services[key](app, serviceConfig) });
