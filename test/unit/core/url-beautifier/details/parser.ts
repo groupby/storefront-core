@@ -15,7 +15,7 @@ suite('DetailsUrlParser', ({ expect }) => {
     const expectedDetail = {
       title: 'apples',
       id: '1923',
-      refinements: []
+      variants: []
     };
 
     expect(parser.parse('/apples/1923')).to.eql(expectedDetail);
@@ -25,7 +25,7 @@ suite('DetailsUrlParser', ({ expect }) => {
     const expectedDetail = {
       title: 'red and delicious apples',
       id: '1923',
-      refinements: []
+      variants: []
     };
 
     expect(parser.parse('/red-and-delicious-apples/1923')).to.eql(expectedDetail);
@@ -35,7 +35,7 @@ suite('DetailsUrlParser', ({ expect }) => {
     const expectedDetail = {
       title: 'red+and+delicious+apples',
       id: '1923',
-      refinements: []
+      variants: []
     };
 
     expect(parser.parse('/red%2Band%2Bdelicious%2Bapples/1923')).to.eql(expectedDetail);
@@ -46,7 +46,7 @@ suite('DetailsUrlParser', ({ expect }) => {
     const expectedDetail = {
       title: 'satin shiny party dress',
       id: '293014',
-      refinements: [refinement('colour', 'blue')]
+      variants: [refinement('colour', 'blue')]
     };
 
     expect(parser.parse('/satin-shiny-party-dress/blue/colour/293014')).to.eql(expectedDetail);
@@ -58,31 +58,38 @@ suite('DetailsUrlParser', ({ expect }) => {
     const expectedDetail = {
       title: 'satin shiny party dress',
       id: '293014',
-      refinements: [refinement('brand', 'h&m'), refinement('colour', 'blue'), refinement('colour', 'red')]
+      variants: [refinement('brand', 'h&m'), refinement('colour', 'blue'), refinement('colour', 'red')]
     };
 
     expect(parser.parse(url)).to.eql(expectedDetail);
   });
 
   it('should parse a URL with reference keys', () => {
-    parser.config.refinementMapping = [{ c: 'colour' }, { b: 'brand' }];
+    parser.config.variantMapping = [{ c: 'colour' }, { b: 'brand' }];
     parser.config.useReferenceKeys = true;
     const expectedDetail = {
       title: 'dress',
       id: '293014',
-      refinements: [refinement('brand', 'h&m'), refinement('colour', 'blue'), refinement('colour', 'red')]
+      variants: [refinement('brand', 'h&m'), refinement('colour', 'blue'), refinement('colour', 'red')]
     };
 
     const parsed = parser.parse('/dress/h%26m/blue/red/bcc/293014');
 
     expect(parsed.id).to.eql(expectedDetail.id);
     expect(parsed.title).to.eql(expectedDetail.title);
-    expect(parsed.refinements).to.eql(expectedDetail.refinements);
+    expect(parsed.variants).to.eql(expectedDetail.variants);
   });
 
   describe('error states', () => {
     it('should throw an error if the path has less than two parts', () => {
-      expect(() => parser.parse('/dress')).to.throw('path has fewer than two parts');
+      expect(() => parser.parse('/')).to.throw('path has too few parts');
+    });
+
+    it('should throw an error if the path has too few parts', () => {
+      parser.config.variantMapping = [{c: 'type'}];
+      parser.config.useReferenceKeys = true;
+
+      expect(() => parser.parse('/dress/c/129384')).to.throw('path has too few parts');
     });
 
     it('should throw an error if the path without reference keys has an odd number of parts', () => {
@@ -97,6 +104,7 @@ suite('DetailsUrlParser', ({ expect }) => {
     });
 
     it('should throw an error if token reference is invalid', () => {
+      parser.config.variantMapping = [{ c: 'colour', s: 'idk' }];
       parser.config.useReferenceKeys = true;
 
       expect(() => parser.parse('/apples/green/cs/2931')).to.throw('token reference is invalid');

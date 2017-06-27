@@ -10,7 +10,13 @@ suite('SearchUrlParser', ({ expect }) => {
 
   beforeEach(() => {
     config = {
-      params: { page: 'page', pageSize: 'page_size', refinements: 'refinements' },
+      params: {
+        page: 'page',
+        pageSize: 'page_size',
+        refinements: 'refinements',
+        sort: 'sort',
+        collection: 'collection'
+      },
       queryToken: 'q',
       refinementMapping: [],
       suffix: 'index.html'
@@ -58,10 +64,14 @@ suite('SearchUrlParser', ({ expect }) => {
     config.useReferenceKeys = true;
     config.refinementMapping = [{ c: 'colour' }];
 
-    expect(parser.parse('/green/blue/cc').refinements).to.eql([
-      refinement('colour', 'green'),
-      refinement('colour', 'blue')
-    ]);
+    expect(parser.parse('/green/blue/cc?sort=test:true')).to.eql({
+      query: undefined,
+      refinements: [
+        refinement('colour', 'green'),
+        refinement('colour', 'blue')
+      ],
+      sort: { field: 'test', descending: true }
+    });
   });
 
   it('should extract a value refinement with a slash from URL', () => {
@@ -92,48 +102,56 @@ suite('SearchUrlParser', ({ expect }) => {
     config.useReferenceKeys = true;
     config.refinementMapping = [{ c: 'colour' }];
 
-    expect(parser.parse('/sneakers/green/qc')).to.eql({
+    expect(parser.parse('/sneakers/green/red/qcc')).to.eql({
       query: 'sneakers',
-      refinements: [refinement('colour', 'green')]
+      refinements: [
+        refinement('colour', 'green'),
+        refinement('colour', 'red')
+      ]
     });
   });
 
   it('should extract query and value refinements from URL without reference keys', () => {
-    expect(parser.parse('/shoe/blue/colour/red/colour/adidas/Brand/nike/Brand'))
+    // tslint:disable-next-line max-line-length
+    expect(parser.parse('/shoe/blue/colour/red-green/colour/adidas/Brand/nike/Brand?refinements=brand-thing:nike,price:1..5'))
       .to.eql({
         query: 'shoe',
         refinements: [
           refinement('colour', 'blue'),
-          refinement('colour', 'red'),
+          refinement('colour', 'red green'),
           refinement('Brand', 'adidas'),
-          refinement('Brand', 'nike')
+          refinement('Brand', 'nike'),
+          refinement('brand thing', 'nike'),
+          refinement('price', 1, 5)
         ]
       });
   });
 
   it('should extract value refinements from URL without reference keys', () => {
-    expect(parser.parse('/blue/colour/red/colour/adidas/Brand/nike/Brand').refinements).to.eql([
+    expect(parser.parse('/blue/colour/red/colour/adidas/Brand/nike/Brand/coco-channel/brand-name').refinements).to.eql([
       refinement('colour', 'blue'),
       refinement('colour', 'red'),
       refinement('Brand', 'adidas'),
-      refinement('Brand', 'nike')
+      refinement('Brand', 'nike'),
+      refinement('brand name', 'coco channel')
     ]);
   });
 
   it('should extract unmapped query from URL parameters', () => {
-    expect(parser.parse('/?refinements=height%3A20in~price%3A20..30').refinements).to.eql([
+    expect(parser.parse('/?refinements=height:20in,price:20..30,brand-name:coco-channel').refinements).to.eql([
       refinement('height', '20in'),
-      refinement('price', 20, 30)
+      refinement('price', 20, 30),
+      refinement('brand name', 'coco channel')
     ]);
   });
 
   it('should extract query and range refinements from URL without reference key', () => {
-    const url = '/long-red-dress/evening-wear/category/formal/category?refinements=price:50..200';
+    const url = '/long-red-dress/evening%2Fwear/category%2Bdressy/formal/category?refinements=price:50..200';
 
     expect(parser.parse(url)).to.eql({
       query: 'long red dress',
       refinements: [
-        refinement('category', 'evening wear'),
+        refinement('category+dressy', 'evening/wear'),
         refinement('category', 'formal'),
         refinement('price', 50, 200)
       ]
@@ -159,12 +177,24 @@ suite('SearchUrlParser', ({ expect }) => {
     expect(request.pageSize).to.eq(6);
   });
 
+  it('should extract sort from URL', () => {
+    const request = parser.parse('/?sort=variants.AdjustedPrice:true');
+
+    expect(request.sort).to.eql({ field: 'variants.AdjustedPrice', descending: true });
+  });
+
+  it('should extract collection from URL', () => {
+    const request = parser.parse('/?collection=variants.AdjustedPrice');
+
+    expect(request.collection).to.eql('variants.AdjustedPrice');
+  });
+
   it('should ignore suffix', () => {
     config.useReferenceKeys = true;
     config.refinementMapping = [{ h: 'height' }];
     config.suffix = 'index.html';
 
-    expect(parser.parse('/20in/h/index.html?refinements=price%3A20..30').refinements).to.eql([
+    expect(parser.parse('/20in/h/index.html?refinements=price:20..30').refinements).to.eql([
       refinement('height', '20in'),
       refinement('price', 20, 30)
     ]);
@@ -178,7 +208,7 @@ suite('SearchUrlParser', ({ expect }) => {
     config.queryToken = 'n';
     config.suffix = 'index.html';
 
-    const request = parser.parse('/power-drill/orange/Drills/nsc/index.html?nav=brand%3ADeWalt');
+    const request = parser.parse('/power-drill/orange/Drills/nsc/index.html?nav=brand:DeWalt');
 
     expect(request.query).to.eql('power drill');
     expect(request.refinements).to.have.deep.members(refs);
@@ -207,7 +237,7 @@ suite('SearchUrlParser', ({ expect }) => {
   });
 
   it('should extract mapped and unmapped refinements with query and suffix', () => {
-    const url = '/power-drill/orange/Drills/nsc/index.html?nav=brand%3ADeWalt';
+    const url = '/power-drill/orange/Drills/nsc/index.html?nav=brand:DeWalt';
     config.useReferenceKeys = true;
     config.refinementMapping = [{ s: 'colour' }, { c: 'category' }];
     config.params = { refinements: 'nav' };

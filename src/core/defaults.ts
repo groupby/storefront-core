@@ -1,8 +1,9 @@
+import { DEFAULT_AREA, DEFAULT_COLLECTION, Routes } from '@storefront/flux-capacitor';
 import { Configuration } from '.';
 
 const DEFAULTS: Partial<Configuration> = {
-  collection: 'default',
-  area: 'Production',
+  collection: DEFAULT_COLLECTION,
+  area: DEFAULT_AREA,
 
   structure: {
     id: 'id',
@@ -23,10 +24,13 @@ const DEFAULTS: Partial<Configuration> = {
     url: {
       beautifier: {
         refinementMapping: [],
+        variantMapping: [],
         params: {
           refinements: 'refinements',
           page: 'page',
-          pageSize: 'page_size'
+          pageSize: 'page_size',
+          sort: 'sort',
+          collection: 'collection'
         },
         queryToken: 'q',
         suffix: '',
@@ -34,9 +38,9 @@ const DEFAULTS: Partial<Configuration> = {
         navigations: {}
       },
       routes: {
-        search: '/search',
-        details: '/details',
-        navigation: '/navigation'
+        [Routes.SEARCH]: `/${Routes.SEARCH}`,
+        [Routes.DETAILS]: `/${Routes.DETAILS}`,
+        [Routes.NAVIGATION]: `/${Routes.NAVIGATION}`
       }
     }
   },

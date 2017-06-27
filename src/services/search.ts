@@ -5,8 +5,13 @@ import StoreFront from '../storefront';
 @core
 class SearchService extends BaseService<SearchService.Options> {
 
-  init() {
+  constructor(app: StoreFront, opts: any) {
+    super(app, opts);
     this.app.flux.on(Events.SEARCH_CHANGED, this.fetchProducts);
+  }
+
+  init() {
+    // no-op
   }
 
   fetchProducts = () => {

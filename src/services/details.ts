@@ -5,11 +5,16 @@ import StoreFront from '../storefront';
 @core
 class DetailsService extends BaseService {
 
-  init() {
-    this.app.flux.on(Events.DETAILS_ID_UPDATED, this.fetchDetails);
+  constructor(app: StoreFront, opts: any) {
+    super(app, opts);
+    this.app.flux.on(Events.DETAILS_UPDATED, this.fetchDetails);
   }
 
-  fetchDetails = (id: string) => this.app.flux.details(id);
+  init() {
+    // no-op
+  }
+
+  fetchDetails = (id: string) => this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchProductDetails(id));
 }
 
 export default DetailsService;

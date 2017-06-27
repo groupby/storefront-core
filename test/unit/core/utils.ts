@@ -1,5 +1,4 @@
 import * as deepAssign from 'deep-assign';
-import * as kebabCase from 'lodash.kebabcase';
 import * as log from 'loglevel';
 import * as riot from 'riot';
 import * as sinon from 'sinon';
@@ -10,7 +9,6 @@ import suite from '../_suite';
 suite('utils', ({ expect, spy, stub }) => {
   it('should include repackaged utilty functions', () => {
     expect(utils.deepAssign).to.eq(deepAssign);
-    expect(utils.kebabCase).to.eq(kebabCase);
     expect(utils.log).to.eq(log);
     expect(utils.riot).to.eq(riot);
   });

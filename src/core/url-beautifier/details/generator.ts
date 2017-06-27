@@ -1,46 +1,52 @@
-import { SelectedValueRefinement } from 'groupby-api';
 import UrlBeautifier from '..';
 import { UrlGenerator } from '../handler';
+import * as utils from '../utils';
 
-export class DetailsUrlGenerator extends UrlGenerator<UrlBeautifier.DetailsRequest> {
+export class DetailsUrlGenerator extends UrlGenerator<UrlBeautifier.DetailsUrlState> {
 
-  build = (request: UrlBeautifier.DetailsRequest) => {
+  build = (request: UrlBeautifier.DetailsUrlState) => {
     let path = [];
 
-    if (request.refinements.length !== 0) {
+    if (request.variants.length !== 0) {
       if (this.config.useReferenceKeys) {
-        path = DetailsUrlGenerator.convertRefinements(request.refinements, this.refinementsToKeys);
+        // tslint:disable-next-line max-line-length
+        path = DetailsUrlGenerator.convertRefinements(request.variants, DetailsUrlGenerator.toKeys(this.config.variantMapping));
       } else {
-        request.refinements.forEach(({ value, navigationName }) => path.push(value, navigationName));
+        request.variants.forEach(({ value, field }) => path.push(value, field));
       }
     }
 
-    path.unshift(request.title);
-    path.push(request.id);
+    if (request.title) {
+      path.unshift(request.title);
+    }
 
-    return `/${path.map((part) => encodeURIComponent(part.replace(/\s/g, '-'))).join('/')}`;
+    if (request.id) {
+      path.push(request.id);
+    }
+
+    return `/${path.map((part) => utils.encodeChars(part)).join('/')}`;
   }
 
-  static convertRefinements(refinements: SelectedValueRefinement[], refinementsToKeys: object) {
+  static convertRefinements(variants: UrlBeautifier.ValueRefinement[], variantsToKeys: object) {
     let referenceKeys = '';
 
-    return refinements.sort(DetailsUrlGenerator.refinementsComparator)
-      .reduce((path, { navigationName, value }) => {
+    return variants.sort(DetailsUrlGenerator.variantsComparator)
+      .reduce((path, { field, value }) => {
 
-        if (!(navigationName in refinementsToKeys)) {
-          throw new Error(`no mapping found for navigation '${navigationName}'`);
+        if (!(field in variantsToKeys)) {
+          throw new Error(`no mapping found for navigation '${field}'`);
         }
 
         path.push(value);
-        referenceKeys += refinementsToKeys[navigationName];
+        referenceKeys += variantsToKeys[field];
 
         return path;
       }, [])
       .concat(referenceKeys);
   }
 
-  static refinementsComparator(lhs: SelectedValueRefinement, rhs: SelectedValueRefinement): number {
-    let comparison = lhs.navigationName.localeCompare(rhs.navigationName);
+  static variantsComparator(lhs: UrlBeautifier.ValueRefinement, rhs: UrlBeautifier.ValueRefinement): number {
+    let comparison = lhs.field.localeCompare(rhs.field);
     if (comparison === 0) {
       comparison = lhs.value.localeCompare(rhs.value);
     }

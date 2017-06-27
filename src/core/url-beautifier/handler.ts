@@ -6,17 +6,16 @@ export abstract class UrlHandler {
 
   constructor(protected beautifier: UrlBeautifier) { }
 
-  get keysToRefinements() {
-    return this.config.refinementMapping.reduce((map, mapping) => {
-      const key = Object.keys(mapping)[0];
-      return Object.assign(map, { [key]: mapping[key] });
+  static toKeys(mapping: any[]) {
+    return mapping.reduce((map, singleMapping) => {
+      const key = Object.keys(singleMapping)[0];
+      return Object.assign(map, { [singleMapping[key]]: key });
     }, {});
   }
 
-  get refinementsToKeys() {
-    return this.config.refinementMapping.reduce((map, mapping) => {
-      const key = Object.keys(mapping)[0];
-      return Object.assign(map, { [mapping[key]]: key });
+  static toObject(mapping: any[]) {
+    return mapping.reduce((map, singleMapping) => {
+      return Object.assign(map, singleMapping);
     }, {});
   }
 }

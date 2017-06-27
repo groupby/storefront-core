@@ -7,9 +7,17 @@ import Service, { STOREFRONT_APP_ID } from '../../../src/services/url';
 import suite from '../_suite';
 
 suite('URL Service', ({ expect, spy, stub }) => {
+  const routes = { a: 'b' };
+  const beautifier = { refinementMapping: [], queryToken: 'q' };
   let service: Service;
+  let urlBeautifier;
+  let addEventListener;
 
-  beforeEach(() => service = new Service(<any>{}, <any>{}));
+  beforeEach(() => {
+    addEventListener = stub(WINDOW, 'addEventListener').returns(null);
+    urlBeautifier = stub(UrlBeautifier, 'default');
+    service = new Service(<any>{}, <any>{ routes, beautifier });
+  });
 
   it('should extend BaseService', () => {
     expect(service).to.be.an.instanceOf(BaseService);
@@ -19,34 +27,17 @@ suite('URL Service', ({ expect, spy, stub }) => {
     expect(Service[CORE]).to.be.true;
   });
 
+  it('should create a new URL Beautifier', () => {
+    expect(urlBeautifier).to.be.calledWith(routes, beautifier);
+  });
+
+  it('should add popstate listener', () => {
+    expect(addEventListener).to.be.calledWith('popstate', service.rewind);
+  });
+
   describe('init()', () => {
-    it('should create a new URL Beautifier', () => {
-      const routes = { a: 'b' };
-      const beautifier = { c: 'd' };
-      const urlBeautifier = stub(UrlBeautifier, 'default');
-      stub(WINDOW, 'addEventListener');
-      service.readInitialUrl = () => null;
-      service['opts'] = <any>{ routes, beautifier };
-
-      service.init();
-
-      expect(urlBeautifier).to.be.calledWith(routes, beautifier);
-    });
-
-    it('should add popstate listener', () => {
-      const addEventListener = stub(WINDOW, 'addEventListener');
-      stub(UrlBeautifier, 'default');
-      service.readInitialUrl = () => null;
-
-      service.init();
-
-      expect(addEventListener).to.be.calledWith('popstate', service.rewind);
-    });
-
     it('should call readInitialUrl()', () => {
       const readInitialUrl = service.readInitialUrl = spy();
-      stub(WINDOW, 'addEventListener');
-      stub(UrlBeautifier, 'default');
 
       service.init();
 
@@ -58,31 +49,31 @@ suite('URL Service', ({ expect, spy, stub }) => {
     it('should refresh state from URL', () => {
       const href = 'http://my-url';
       const state = { a: 'b' };
-      const request = { c: 'd' };
+      const obj = { route: 'search', request: { c: 'd' } };
       const newState = { e: 'f' };
       const getState = spy(() => state);
-      const parse = spy(() => request);
+      const parse = spy(() => obj);
       const refreshState = service.refreshState = spy();
-      const mergeSearchState = stub(Service, 'mergeSearchState').returns(newState);
       stub(WINDOW, 'location').returns({ href });
+      stub(Service, 'mergeSearchState').returns(newState);
       service.beautifier = <any>{ parse };
       service['app'] = <any>{ flux: { store: { subscribe: () => null, getState } } };
 
       service.readInitialUrl();
 
       expect(parse).to.be.calledWith(href);
-      expect(mergeSearchState).to.be.calledWith(state, request);
       expect(refreshState).to.be.calledWith(newState);
     });
 
     it('should augment history on state updated', () => {
+      const obj = { route: 'search', request: { c: 'd' } };
       const unsubscribe = spy();
       const subscribe = spy(() => unsubscribe);
       const augmentHistory = service.augmentHistory = spy();
-      stub(Service, 'mergeSearchState');
       stub(WINDOW, 'location').returns({});
+      stub(Service, 'mergeSearchState').returns(null);
       service.refreshState = () => null;
-      service.beautifier = <any>{ parse: () => null };
+      service.beautifier = <any>{ parse: () => obj };
       service['app'] = <any>{ flux: { store: { subscribe, getState: () => null } } };
 
       service.readInitialUrl();
@@ -110,7 +101,7 @@ suite('URL Service', ({ expect, spy, stub }) => {
 
   describe('augmentHistory()', () => {
     it('should replace current window history', () => {
-      const state = { a: 'b' };
+      const data = { a: 'b' };
       const title = 'Search Page';
       const replaceState = spy();
       stub(WINDOW, 'document').returns({ title });
@@ -119,15 +110,15 @@ suite('URL Service', ({ expect, spy, stub }) => {
       service['app'] = <any>{
         flux: {
           actions: { fetchProducts: () => null },
-          store: { getState: () => ({ data: state }), dispatch: () => null },
+          store: { getState: () => ({ data }), dispatch: () => null },
           once: () => null,
         }
       };
 
-      service.augmentHistory();
+      service.augmentHistory('', {});
 
       const url = '/thing1?q=thing2';
-      expect(replaceState).to.be.calledWith({ url, state, app: STOREFRONT_APP_ID }, title, url);
+      expect(replaceState).to.be.calledWith({ url, state: { data }, app: STOREFRONT_APP_ID }, title, url);
     });
 
     it('should update products and wait for after first state change', () => {
@@ -146,10 +137,52 @@ suite('URL Service', ({ expect, spy, stub }) => {
         }
       };
 
-      service.augmentHistory();
+      service.augmentHistory('', {});
 
       expect(once).to.be.calledWith(Events.HISTORY_SAVE, service.listenForHistoryChange);
-      expect(dispatch).to.be.calledWith(fetchProductsAction);
+    });
+
+    it('should request products', () => {
+      const title = 'Search Page';
+      const dispatch = spy();
+      const fetchProducts = stub();
+      stub(WINDOW, 'document').returns({ title });
+      stub(WINDOW, 'location').returns({ pathname: '/thing1', search: '?q=thing2' });
+      stub(WINDOW, 'history').returns({ replaceState: () => null });
+      service['app'] = <any>{
+        flux: {
+          actions: { fetchProducts },
+          store: { getState: () => ({}), dispatch },
+          once: () => null,
+        }
+      };
+
+      service.augmentHistory('search', {});
+
+      expect(fetchProducts).to.be.called;
+      expect(dispatch).to.be.calledWith(fetchProducts());
+    });
+
+    it('should request product details', () => {
+      const title = 'Search Page';
+      const request = { id: 20 };
+      const dispatch = spy();
+      const fetchProductDetails = stub();
+      stub(WINDOW, 'document').returns({ title });
+      stub(WINDOW, 'location').returns({ pathname: '/thing1', search: '?q=thing2' });
+      stub(WINDOW, 'history').returns({ replaceState: () => null });
+      service['app'] = <any>{
+        flux: {
+          actions: { fetchProductDetails },
+          store: { getState: () => ({}), dispatch },
+          once: () => null,
+        }
+      };
+
+      service.augmentHistory('details', request);
+
+      expect(fetchProductDetails).to.be.calledWith(request.id);
+      expect(dispatch).to.be.calledWith(fetchProductDetails());
     });
   });
 
@@ -167,22 +200,37 @@ suite('URL Service', ({ expect, spy, stub }) => {
   describe('updateHistory()', () => {
     it('should create urls search state from state', () => {
       const page = 48;
+      const pageSize = 5;
       const url = '/some/url';
       const query = 'air jordans';
-      const refinements = ['a', 'b'];
+      const route = 'search';
+      const refinements = [{ navigationName: 'a', value: 'b'}, { navigationName: 'price', low: 0, high: 10 }];
+      const convertedRefinements = [{ field: 'a', value: 'b' }, { field: 'price', low: 0, high: 10 }];
+      const sort = ['c', 'd'];
+      const collection = 'All';
       const pushState = spy();
       const build = spy(() => url);
-      const state = { page: { current: page } };
+      const data = { page: { current: page } };
       stub(WINDOW, 'history').returns({ pushState });
       stub(Selectors, 'query').returns(query);
-      stub(Selectors, 'pageSize').returns(5);
+      stub(Selectors, 'pageSize').returns(pageSize);
       stub(Selectors, 'selectedRefinements').returns(refinements);
+      stub(Selectors, 'sort').returns(sort);
+      stub(Selectors, 'collection').returns(collection);
       service.beautifier = <any>{ build };
+      service['app'].flux = <any>{ emit: () => null };
 
-      service.updateHistory(<any>{ data: state });
+      service.updateHistory(<any>{ state: { data }, route });
 
-      expect(build).to.be.calledWith('search', { query, page, pageSize: 5, refinements });
-      expect(pushState).to.be.calledWith({ url, state, app: STOREFRONT_APP_ID });
+      expect(build).to.be.calledWith(route, {
+        query,
+        page,
+        pageSize,
+        refinements: convertedRefinements,
+        sort,
+        collection
+      });
+      expect(pushState).to.be.calledWith({ url, state: { data }, app: STOREFRONT_APP_ID }, '', url);
     });
   });
 
@@ -226,48 +274,87 @@ suite('URL Service', ({ expect, spy, stub }) => {
 
   describe('static', () => {
     describe('mergeSearchState()', () => {
-      const state: any = {
-        data: {
-          a: 'b',
-          query: { c: 'd' },
-          page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50] } },
-          navigations: { i: 'j' }
-        }
-      };
-      const request: any = {
-        page: 14,
-        pageSize: 20,
-        query: 'grape ape',
-        refinements: [
-          { type: 'Value', navigationName: 'brand', value: 'nike' },
-          { type: 'Value', navigationName: 'colour', value: 'orange' },
-          { type: 'Range', navigationName: 'price', low: 20, high: 40 },
-        ],
-      };
-
-      const newState = Service.mergeSearchState(state, request);
-
-      expect(newState).to.eql({
-        a: 'b',
-        query: {
-          c: 'd',
-          original: 'grape ape'
-        },
-        page: {
-          e: 'f',
-          current: 14,
-          sizes: { g: 'h', items: [10, 20, 50], selected: 1 }
-        },
-        navigations: {
-          i: 'j',
-          allIds: ['brand', 'colour', 'price'],
-          byId: {
-            brand: { field: 'brand', label: 'brand', range: false, refinements: [{ value: 'nike' }], selected: [0] },
-            // tslint:disable-next-line max-line-length
-            colour: { field: 'colour', label: 'colour', range: false, refinements: [{ value: 'orange' }], selected: [0] },
-            price: { field: 'price', label: 'price', range: true, refinements: [{ low: 20, high: 40 }], selected: [0] },
+      it ('should merge state properly when given new request', () => {
+        const state: any = {
+          data: {
+            a: 'b',
+            query: { c: 'd' },
+            page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 } },
+            navigations: { i: 'j' },
+            sorts: {
+              items: [{ field: 'price' }, { field: 'price', descending: true }],
+              selected: 0
+            },
+            collections: { selected: 0 }
           }
-        }
+        };
+        const request: any = {
+          page: 14,
+          pageSize: 20,
+          query: 'grape ape',
+          refinements: [
+            { type: 'Value', field: 'brand', value: 'nike' },
+            { type: 'Value', field: 'colour', value: 'orange' },
+            { type: 'Range', field: 'price', low: 20, high: 40 },
+          ],
+          sort: { field: 'price', descending: true }
+        };
+        const searchId = 12;
+
+        const newState = Service.mergeSearchState(state, request);
+
+        expect(newState).to.eql({
+          data: {
+            a: 'b',
+            query: {
+              c: 'd',
+              original: 'grape ape'
+            },
+            page: {
+              e: 'f',
+              current: 14,
+              sizes: { g: 'h', items: [10, 20, 50], selected: 1 }
+            },
+            navigations: {
+              i: 'j',
+              allIds: ['brand', 'colour', 'price'],
+              byId: {
+                // tslint:disable-next-line max-line-length
+                brand: { field: 'brand', label: 'brand', range: false, refinements: [{ value: 'nike' }], selected: [0] },
+                // tslint:disable-next-line max-line-length
+                colour: { field: 'colour', label: 'colour', range: false, refinements: [{ value: 'orange' }], selected: [0] },
+                price: { field: 'price', label: 'price', range: true, refinements: [{ low: 20, high: 40 }], selected: [0] },
+              }
+            },
+            sorts: { items: [{ field: 'price' }, { field: 'price', descending: true }], selected: 1},
+            collections: { selected: 0 }
+          }
+        });
+      });
+
+      it('should merge state properly when not given new request', () => {
+        const searchId = 13;
+        const state: any = {
+          session: {
+            searchId
+          },
+          data: {
+            a: 'b',
+            query: { c: 'd', original: 'whatever' },
+            page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 }, current: 10 },
+            navigations: { i: 'j', allIds: ['brand', 'format'], byId: { brand: {}, format: {}} },
+            sorts: {
+              items: [{ field: 'price' }, { field: 'price', descending: true }],
+              selected: 0
+            },
+            collections: { selected: 0 }
+          }
+        };
+        const request: any = { refinements: [] };
+
+        const newState = Service.mergeSearchState(state, request);
+
+        expect(newState).to.eql(state);
       });
     });
   });

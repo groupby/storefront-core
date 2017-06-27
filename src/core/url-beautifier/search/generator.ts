@@ -1,49 +1,91 @@
-import { Store } from '@storefront/flux-capacitor';
-import { Request, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
+import { Adapters, Selectors, Store } from '@storefront/flux-capacitor';
 import UrlBeautifier from '..';
 import { UrlGenerator } from '../handler';
+import * as utils from '../utils';
 
-export default class SearchUrlGenerator extends UrlGenerator<UrlBeautifier.SearchRequest> {
+export default class SearchUrlGenerator extends UrlGenerator<UrlBeautifier.SearchUrlState> {
 
-  build = (request: UrlBeautifier.SearchRequest) => {
+  build = (state: UrlBeautifier.SearchUrlState) => {
     const path = [];
     const query = {};
+    const initialState = Adapters.Configuration.initialState(this.beautifier.appConfig).data;
 
     // layman's clone
-    request = { ...request, refinements: [...request.refinements] };
+    state = { ...state, refinements: [...state.refinements] };
 
-    if (request.query) {
-      path.push(request.query);
+    if (state.query) {
+      path.push(utils.encodeChars(state.query));
     }
 
     if (this.config.useReferenceKeys) {
-      path.push(...this.convertReferencedRefinements(request));
+      path.push(...this.convertReferencedRefinements(state).map(utils.encodeChars));
     } else {
-      path.push(...SearchUrlGenerator.convertPathRefinements(request));
+      path.push(...SearchUrlGenerator.convertPathRefinements(state.refinements).map(utils.encodeChars));
     }
 
-    if (request.refinements.length !== 0) {
-      query[this.config.params.refinements] = SearchUrlGenerator.convertTrailingRefinements(request);
+    if (this.config.params.refinements && state.refinements.length !== 0) {
+      query[this.config.params.refinements] = utils.encodeArray(SearchUrlGenerator.sortRefinements(state));
     }
 
-    if ('pageSize' in request) {
-      query[this.config.params.pageSize] = request.pageSize;
+    if ('pageSize' in state) {
+      const initialSizes = initialState.page.sizes;
+      const initialPageSize = initialSizes.items[initialSizes.selected];
+      const pageSize = state.pageSize;
+      if (initialPageSize !== pageSize) {
+        query[this.config.params.pageSize] = pageSize;
+      }
     }
-    if ('page' in request) {
-      query[this.config.params.page] = request.page;
+    if ('page' in state) {
+      const page = state.page;
+      if (initialState.page.first !== state.page) {
+        query[this.config.params.page] = page;
+      }
+    }
+    if ('sort' in state) {
+      const initialSorts = initialState.sorts;
+      const initialSort = initialSorts.items[initialSorts.selected];
+      const sort = state.sort;
+      if (initialSort.field !== sort.field || initialSort.descending !== sort.descending) {
+        query[this.config.params.sort] = utils.encodeArray([SearchUrlGenerator.convertSort(sort)]);
+      }
+    }
+    if ('collection' in state) {
+      const initialCollection = initialState.collections.selected;
+      const collection = state.collection;
+      if (initialCollection !== collection) {
+        query[this.config.params.collection] = utils.encodeChars(state.collection);
+      }
     }
 
     return this.buildUrl(path, query);
   }
 
-  convertReferencedRefinements(request: UrlBeautifier.SearchRequest) {
+  buildUrl(path: string[], query: object) {
+    let url = `/${path.join('/')}`;
+    if (this.config.suffix) {
+      url += `/${this.config.suffix.replace(/^\/+/, '')}`;
+    }
+
+    const queryPart = Object.keys(query)
+      .sort()
+      .map((key) => `${key}=${query[key]}`)
+      .join('&');
+
+    if (queryPart) {
+      url += `?${queryPart}`;
+    }
+
+    return url;
+  }
+
+  convertReferencedRefinements(state: UrlBeautifier.SearchUrlState) {
     const path = [];
     const countMap = {};
-    const { map, keys } = SearchUrlGenerator.generateRefinementMap(request.refinements, this.config.refinementMapping);
+    const { map, keys } = SearchUrlGenerator.generateRefinementMap(state.refinements, this.config.refinementMapping);
 
     // add refinements
     keys.forEach((key) => {
-      const refinements = <SelectedRefinement[]>map[key];
+      const refinements = <UrlBeautifier.Refinement[]>map[key];
       countMap[key] = refinements.length;
       refinements.map(SearchUrlGenerator.convertToSelectedValueRefinement)
         .sort(SearchUrlGenerator.refinementsComparator)
@@ -51,10 +93,10 @@ export default class SearchUrlGenerator extends UrlGenerator<UrlBeautifier.Searc
     });
 
     // add reference key
-    if (keys.length !== 0 || request.query) {
+    if (keys.length !== 0 || state.query) {
       let referenceKey = '';
 
-      if (request.query) {
+      if (state.query) {
         referenceKey += this.config.queryToken;
       }
       keys.forEach((key) => referenceKey += key.repeat(countMap[key]));
@@ -65,80 +107,71 @@ export default class SearchUrlGenerator extends UrlGenerator<UrlBeautifier.Searc
     return path;
   }
 
-  buildUrl(path: string[], query: object) {
-    let url = `/${path.map((part) => encodeURIComponent(part)).join('/')}`;
-
-    if (this.config.suffix) {
-      url += `/${this.config.suffix.replace(/^\/+/, '')}`;
-    }
-
-    const queryPart = Object.keys(query)
-      .sort()
-      .map((key) => `${key}=${encodeURIComponent(query[key])}`)
-      .join('&');
-
-    if (queryPart) {
-      url += '?' + queryPart;
-    }
-
-    return url.replace(/\s|%20/g, '-');
+  static convertSort(sort: Store.Sort): [string, boolean[]] {
+    const { field, descending = !!sort.descending } = sort;
+    return [field, [descending]];
   }
 
-  static convertPathRefinements({ refinements }: UrlBeautifier.SearchRequest) {
+  static convertPathRefinements(refinements: UrlBeautifier.Refinement[]) {
     const path = [];
     const valueRefinements = [];
 
     for (let i = refinements.length - 1; i >= 0; --i) {
-      if (refinements[i].type === 'Value') {
+      if ('value' in refinements[i]) {
         valueRefinements.push(...refinements.splice(i, 1));
       }
     }
 
-    valueRefinements.map(SearchUrlGenerator.convertToSelectedValueRefinement)
-      .sort(SearchUrlGenerator.refinementsComparator)
+    valueRefinements.sort(SearchUrlGenerator.refinementsComparator)
       .forEach((selectedValueRefinement) =>
-        path.push(selectedValueRefinement.value, selectedValueRefinement.navigationName));
+        path.push(selectedValueRefinement.value, selectedValueRefinement.field));
 
     return path;
   }
 
-  static convertTrailingRefinements({ refinements }: UrlBeautifier.SearchRequest) {
-    return refinements.sort((lhs, rhs) => lhs.navigationName.localeCompare(rhs.navigationName))
-      .map(SearchUrlGenerator.stringifyRefinement)
-      .join('~');
+  static sortRefinements({ refinements }: UrlBeautifier.SearchUrlState) {
+    return refinements.sort(SearchUrlGenerator.refinementsComparator)
+      .reduce((refs, refinement, index) => {
+        if ('value' in refinement) {
+          // tslint:disable-next-line max-line-length
+          refs.push([utils.encodeChars(refinement.field), [utils.encodeChars(refinement['value'])]]);
+        } else {
+          // tslint:disable-next-line max-line-length
+          refs.push([utils.encodeChars(refinement.field), [refinement['low'], refinement['high']]]);
+        }
+        return refs;
+      }, []);
   }
 
-  static convertToSelectedValueRefinement(refinement: SelectedRefinement): SelectedValueRefinement {
-    if (refinement.type === 'Value') {
-      return <SelectedValueRefinement>refinement;
+  static convertToSelectedValueRefinement(refinement: UrlBeautifier.Refinement): UrlBeautifier.ValueRefinement {
+    if ('value' in refinement) {
+      return <UrlBeautifier.ValueRefinement>refinement;
     } else {
       throw new Error('cannot map range refinements');
     }
   }
 
-  static refinementsComparator(lhs: SelectedValueRefinement, rhs: SelectedValueRefinement) {
-    let comparison = lhs.navigationName.localeCompare(rhs.navigationName);
+  static refinementsComparator(lhs: UrlBeautifier.Refinement, rhs: UrlBeautifier.Refinement) {
+    let comparison = lhs.field.localeCompare(rhs.field);
     if (comparison === 0) {
-      comparison = lhs.value.localeCompare(rhs.value);
+      if ('value' in lhs) {
+        comparison = lhs['value'].localeCompare(rhs['value']);
+      } else {
+        comparison = lhs['low'] - rhs['low'];
+        if (comparison === 0) {
+          comparison = lhs['high'] - rhs['high'];
+        }
+      }
     }
     return comparison;
   }
 
-  static stringifyRefinement(refinement: SelectedRefinement): string {
-    const name = refinement.navigationName;
-    if (refinement.type === 'Value') {
-      return `${name}:${(<SelectedValueRefinement>refinement).value}`;
-    } else {
-      return `${name}:${(<SelectedRangeRefinement>refinement).low}..${(<SelectedRangeRefinement>refinement).high}`;
-    }
-  }
-
-  static generateRefinementMap(refinements: SelectedRefinement[], refinementMapping: any[]) {
+  static generateRefinementMap(refinements: UrlBeautifier.Refinement[], refinementMapping: any[]) {
     const refinementMap = {};
     const refinementKeys = [];
     for (let mapping of refinementMapping) {
       const key = Object.keys(mapping)[0];
-      const matchingRefinements = refinements.filter((refinement) => refinement.navigationName === mapping[key]);
+      const matchingRefinements = refinements.filter(({ field }) => field === mapping[key]);
       if (matchingRefinements.length !== 0) {
         refinementKeys.push(key);
         refinementMap[key] = matchingRefinements;

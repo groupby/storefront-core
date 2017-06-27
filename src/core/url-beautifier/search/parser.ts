@@ -1,23 +1,23 @@
-import { Request, SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
-import * as queryString from 'query-string';
-import * as URI from 'urijs';
+import { Store } from '@storefront/flux-capacitor';
+import * as URLparse from 'url-parse';
 import UrlBeautifier from '..';
 import { UrlParser } from '../handler';
+import * as utils from '../utils';
 
-export default class SearchUrlParser extends UrlParser<UrlBeautifier.SearchRequest> {
+export default class SearchUrlParser extends UrlParser<UrlBeautifier.SearchUrlState> {
 
   suffixPattern: RegExp = RegExp(`${this.config.suffix}$`);
 
-  parse = (url: string): UrlBeautifier.SearchRequest => {
-    const uri = URI.parse(url);
-    const path = uri.path.replace(this.suffixPattern, '')
+  parse = (url: string): UrlBeautifier.SearchUrlState => {
+    const uri = URLparse(url, true);
+    const path = uri.pathname.replace(this.suffixPattern, '')
       .split('/').filter((val) => val);
 
     const query = this.config.useReferenceKeys
       ? this.parsePathWithReferenceKeys(path)
       : SearchUrlParser.parsePathWithoutReferenceKeys(path);
 
-    const queryVariables = queryString.parse(uri.query);
+    const queryVariables = uri.query;
 
     const refinements = queryVariables[this.config.params.refinements];
     if (refinements) {
@@ -34,10 +34,20 @@ export default class SearchUrlParser extends UrlParser<UrlBeautifier.SearchReque
       query.page = page;
     }
 
-    return <UrlBeautifier.SearchRequest>query;
+    const sort = queryVariables[this.config.params.sort];
+    if (sort) {
+      query.sort = SearchUrlParser.extractSort(sort);
+    }
+
+    const collection = queryVariables[this.config.params.collection];
+    if (collection) {
+      query.collection = collection;
+    }
+
+    return <UrlBeautifier.SearchUrlState>query;
   }
 
-  parsePathWithReferenceKeys(path: string[]): Partial<UrlBeautifier.SearchRequest> {
+  parsePathWithReferenceKeys(path: string[]): Partial<UrlBeautifier.SearchUrlState> {
     const keys = (path.pop() || '').split('');
     const refinements = [];
     let query;
@@ -56,12 +66,15 @@ export default class SearchUrlParser extends UrlParser<UrlBeautifier.SearchReque
     // remove prefixed paths
     path.splice(0, path.length - keys.length);
 
+    // set query
+    if (keys[0] === this.config.queryToken) {
+      query = utils.decodeChars(path[0]);
+      keys.shift();
+      path.shift();
+    }
+
     for (let i = 0; i < keys.length; i++) {
-      if (keys[i] === this.config.queryToken) {
-        query = SearchUrlParser.decode(path[i]);
-      } else {
-        refinements.push(...SearchUrlParser.extractRefinements(path[i], map[keys[i]]));
-      }
+      refinements.push(SearchUrlParser.extractValueRefinements(map[keys[i]], path[i]));
     }
 
     return { query, refinements };
@@ -71,44 +84,45 @@ export default class SearchUrlParser extends UrlParser<UrlBeautifier.SearchReque
     return this.config.refinementMapping.reduce((map, mapping) => Object.assign(map, mapping), {});
   }
 
-  static parsePathWithoutReferenceKeys(path: string[]): Partial<UrlBeautifier.SearchRequest> {
+  static parsePathWithoutReferenceKeys(path: string[]): Partial<UrlBeautifier.SearchUrlState> {
     const refinements = [];
     let query;
 
     if (path.length % 2 === 1) {
-      query = SearchUrlParser.decode(path.shift());
+      query = utils.decodeChars(path.shift());
     }
 
     while (path.length) {
-      const value = SearchUrlParser.decode(path.shift());
-      const navigationName = path.shift();
-      refinements.push({ navigationName, type: 'Value', value });
+      const value = utils.decodeChars(path.shift());
+      const field = path.shift();
+      refinements.push(SearchUrlParser.extractValueRefinements(field, value));
     }
 
     return { query, refinements };
   }
 
-  static extractUnmapped(refinementString: string): SelectedRefinement[] {
-    return refinementString.split('~')
-      .map(SearchUrlParser.decode)
-      .map((refinement) => {
-        const [navigationName, value] = refinement.split(':');
-        if (value.indexOf('..') >= 0) {
-          const [low, high] = value.split('..');
-          return <SelectedRangeRefinement>{ navigationName, low: Number(low), high: Number(high), type: 'Range' };
-        } else {
-          return <SelectedValueRefinement>{ navigationName, value, type: 'Value' };
-        }
+  static extractUnmapped(refinementString: string): UrlBeautifier.Refinement[] {
+    return utils.decodeArray(refinementString)
+      .map(([field, value]) => {
+          if (typeof value === 'string') {
+            return SearchUrlParser.extractValueRefinements(field, value);
+          } else {
+            return SearchUrlParser.extractRangeRefinements(field, value[0], value[1]);
+          }
       });
   }
 
-  static extractRefinements(refinementString: string, navigationName: string) {
-    const refinementStrings = refinementString.split('~');
-
-    return refinementStrings.map((value) => ({ navigationName, type: 'Value', value: SearchUrlParser.decode(value) }));
+  static extractValueRefinements(field: string, value: string) {
+    return { field: utils.decodeChars(field), value: utils.decodeChars(value) };
   }
 
-  static decode(value: string): string {
-    return decodeURIComponent(value.replace(/-/g, ' '));
+  static extractRangeRefinements(field: string, low: number, high: number) {
+    return { field: utils.decodeChars(field), low, high };
+  }
+
+  static extractSort(sortString: string) {
+    const [[field, descending]] = utils.decodeArray(sortString);
+
+    return { field, descending: JSON.parse(descending) };
   }
 }

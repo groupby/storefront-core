@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { SelectedRangeRefinement, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
 import * as suite from 'mocha-suite';
 import * as sinon from 'sinon';
+import UrlBeautifier from '../../src/core/url-beautifier';
 
 export interface Utils {
   expect: Chai.ExpectStatic;
@@ -22,12 +22,12 @@ export default suite<Utils, any>((tests) => {
   });
 });
 
-export function refinement(field: string, value: any): SelectedValueRefinement;
-export function refinement(field: string, low: number, high: number): SelectedRangeRefinement;
-export function refinement(navigationName: string, valueOrLow: any, high?: number): SelectedRefinement {
+export function refinement(field: string, value: any): UrlBeautifier.ValueRefinement;
+export function refinement(field: string, low: number, high: number): UrlBeautifier.RangeRefinement;
+export function refinement(field: string, valueOrLow: any, high?: number): UrlBeautifier.Refinement {
   if (high) {
-    return { navigationName, low: valueOrLow, high, type: 'Range' };
+    return { field, low: valueOrLow, high };
   } else {
-    return { navigationName, value: valueOrLow, type: 'Value' };
+    return { field, value: valueOrLow };
   }
 }

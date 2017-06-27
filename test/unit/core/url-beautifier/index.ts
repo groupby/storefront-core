@@ -17,7 +17,7 @@ suite('URL beautifier', ({ expect, spy, stub }) => {
     beautifiers = <any>{};
     config = { refinementMapping: [], queryToken: 'q' };
     stub(BeautifierFactory, 'create').returns(beautifiers);
-    beautifier = new UrlBeautifier(ROUTES, config);
+    beautifier = new UrlBeautifier(ROUTES, config, <any>{});
   });
 
   describe('build()', () => {
@@ -95,31 +95,31 @@ suite('URL beautifier', ({ expect, spy, stub }) => {
     it('should not allow refinement mapping with non-character tokens', () => {
       config = { useReferenceKeys: true, refinementMapping: [{ br: 'brand' }] };
 
-      expect(() => new UrlBeautifier(<any>{}, config)).to.throw("token 'br' must be a single character");
+      expect(() => new UrlBeautifier(<any>{}, config, <any>{})).to.throw("token 'br' must be a single character");
     });
 
     it('should not allow refinement mapping with vowel tokens', () => {
       config = { useReferenceKeys: true, refinementMapping: [{ u: 'brand' }] };
 
-      expect(() => new UrlBeautifier(<any>{}, config)).to.throw("token 'u' must not be a vowel");
+      expect(() => new UrlBeautifier(<any>{}, config, <any>{})).to.throw("token 'u' must not be a vowel");
     });
 
     it('should not allow duplicate refinement tokens', () => {
       config = { useReferenceKeys: true, refinementMapping: [{ c: 'brand' }, { c: 'price' }] };
 
-      expect(() => new UrlBeautifier(<any>{}, config)).to.throw("token 'c' must be unique");
+      expect(() => new UrlBeautifier(<any>{}, config, <any>{})).to.throw("token 'c' must be unique");
     });
 
     it('should not allow non-character query token', () => {
       config = { queryToken: 'qu', refinementMapping: [] };
 
-      expect(() => new UrlBeautifier(<any>{}, config)).to.throw("token 'qu' must be a single character");
+      expect(() => new UrlBeautifier(<any>{}, config, <any>{})).to.throw("token 'qu' must be a single character");
     });
 
     it('should not allow vowel query token', () => {
       config = { queryToken: 'e', refinementMapping: [] };
 
-      expect(() => new UrlBeautifier(<any>{}, config)).to.throw("token 'e' must not be a vowel");
+      expect(() => new UrlBeautifier(<any>{}, config, <any>{})).to.throw("token 'e' must not be a vowel");
     });
 
     it('should not allow duplicates between query and refinement tokens', () => {
@@ -128,7 +128,7 @@ suite('URL beautifier', ({ expect, spy, stub }) => {
         refinementMapping: [{ k: 'brand' }]
       };
 
-      expect(() => new UrlBeautifier(<any>{}, config)).to.throw("token 'k' must be unique");
+      expect(() => new UrlBeautifier(<any>{}, config, <any>{})).to.throw("token 'k' must be unique");
     });
   });
 });

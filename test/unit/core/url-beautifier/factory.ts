@@ -1,3 +1,4 @@
+import { Adapters } from '@storefront/flux-capacitor';
 import UrlBeautifier from '../../../../src/core/url-beautifier';
 import * as DetailsGenerator from '../../../../src/core/url-beautifier/details/generator';
 import * as DetailsParser from '../../../../src/core/url-beautifier/details/parser';
@@ -59,7 +60,7 @@ suite('BeautifierFactory', ({ expect, stub }) => {
       const request = {
         title: 'dress',
         id: '293014',
-        refinements: [
+        variants: [
           refinement('brand', 'h&m'),
           refinement('colour', 'blue'),
           refinement('colour', 'red')
@@ -74,14 +75,14 @@ suite('BeautifierFactory', ({ expect, stub }) => {
       });
 
       it('should convert from detail object to a URL and back with reference keys', () => {
-        config.refinementMapping = [{ c: 'colour' }, { b: 'brand' }];
+        config.variantMapping = [{ c: 'colour' }, { b: 'brand' }];
 
         expect(parser.parse(generator.build(request))).to.eql(request);
       });
 
       it('should convert from URL to a detail and back with reference keys', () => {
         const url = '/dress/h%26m/blue/red/bcc/293014';
-        config.refinementMapping = [{ c: 'colour' }, { b: 'brand' }];
+        config.variantMapping = [{ c: 'colour' }, { b: 'brand' }];
 
         expect(generator.build(parser.parse(url))).to.eq(url);
       });
@@ -111,6 +112,7 @@ suite('BeautifierFactory', ({ expect, stub }) => {
       beforeEach(() => {
         generator = new SearchGenerator.default(URL_BEAUTIFIER);
         parser = new SearchParser.default(URL_BEAUTIFIER);
+        stub(Adapters.Configuration, 'initialState').returns({ data: {}});
       });
 
       it('should convert from query object to a URL and back with reference keys', () => {

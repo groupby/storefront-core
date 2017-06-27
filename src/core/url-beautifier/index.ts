@@ -1,14 +1,15 @@
 import { Store } from '@storefront/flux-capacitor';
-import { Request, SelectedRefinement, SelectedValueRefinement } from 'groupby-api';
-import * as URI from 'urijs';
+import * as URLparse from 'url-parse';
 import UrlService from '../../services/url';
+import Configuration from '../configuration';
 import BeautifierFactory from './factory';
 
 class UrlBeautifier {
 
   beautifiers: UrlBeautifier.Beautifiers = BeautifierFactory.create(this);
 
-  constructor(public routes: UrlService.Routes, public config: UrlBeautifier.Configuration) {
+  // tslint:disable-next-line max-line-length
+  constructor(public routes: UrlService.Routes, public config: UrlBeautifier.Configuration, public appConfig: Configuration) {
     this.beautifiers = BeautifierFactory.create(this);
 
     const keys = [];
@@ -20,12 +21,13 @@ class UrlBeautifier {
     UrlBeautifier.validateToken(this.config.queryToken, keys);
   }
 
-  parse<T>(url: string): T {
-    const uri = URI.parse(url);
-    const activeRoute = Object.keys(this.routes).find((route) => uri.path.startsWith(this.routes[route]));
+  parse<T>(url: string): { route: string, request: T } {
+    const uri = URLparse(url);
+    const activeRoute = Object.keys(this.routes).find((route) => uri.pathname.startsWith(this.routes[route]));
 
     if (activeRoute) {
-      return this.beautifiers[activeRoute].parse(UrlBeautifier.extractAppRoute(uri, this.routes[activeRoute]));
+      // tslint:disable-next-line max-line-length
+      return { route: activeRoute, request: this.beautifiers[activeRoute].parse(UrlBeautifier.extractAppRoute(uri, this.routes[activeRoute]))};
     } else {
       throw new Error('invalid route');
     }
@@ -49,19 +51,21 @@ class UrlBeautifier {
     }
   }
 
-  static extractAppRoute({ query, path }: { query: string, path: string }, route: string) {
-    return new URI({ path: path.substr(route.length), query }).toString();
+  static extractAppRoute({ query, pathname }: { query: string, pathname: string }, route: string) {
+    return [pathname.substr(route.length), query].join('');
   }
 }
 
 namespace UrlBeautifier {
   export interface Configuration {
     refinementMapping?: any[];
+    variantMapping?: any[];
     params?: {
       page?: string;
       pageSize?: string;
       refinements?: string;
       sort?: string;
+      collection?: string;
     };
     queryToken?: string;
     suffix?: string;
@@ -74,17 +78,34 @@ namespace UrlBeautifier {
     path: string;
   }
 
-  export interface DetailsRequest {
-    id: string;
-    title: string;
-    refinements: SelectedValueRefinement[];
-  }
-
-  export interface SearchRequest {
+  export interface SearchUrlState {
     query?: string;
     page: number;
     pageSize: number;
-    refinements: SelectedRefinement[];
+    refinements: Refinement[];
+    sort: Store.Sort;
+    collection: string;
+  }
+
+  export interface DetailsUrlState {
+    id: string;
+    title: string;
+    variants: ValueRefinement[];
+  }
+
+  export type Refinement = ValueRefinement | RangeRefinement;
+
+  export interface ValueRefinement extends BaseRefinement {
+    value: string;
+  }
+
+  export interface RangeRefinement extends BaseRefinement {
+    low: number;
+    high: number;
+  }
+
+  export interface BaseRefinement {
+    field: string;
   }
 
   export interface Parser<T> {
@@ -98,9 +119,9 @@ namespace UrlBeautifier {
   export type Beautifier<T, R = T> = Parser<T> & Generator<R>;
 
   export interface Beautifiers {
-    search: Beautifier<SearchRequest>;
+    search: Beautifier<SearchUrlState>;
     navigation: Beautifier<Request, string>;
-    details: Beautifier<DetailsRequest>;
+    details: Beautifier<DetailsUrlState>;
     [key: string]: Beautifier<any>;
   }
 }

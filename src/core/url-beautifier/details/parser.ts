@@ -1,37 +1,39 @@
-import * as URI from 'urijs';
+import * as URLparse from 'url-parse';
 import UrlBeautifier from '..';
 import { UrlParser } from '../handler';
+import * as utils from '../utils';
 
-export class DetailsUrlParser extends UrlParser<UrlBeautifier.DetailsRequest> {
+export class DetailsUrlParser extends UrlParser<UrlBeautifier.DetailsUrlState> {
 
   parse = (url: string) => {
-    const uri = URI.parse(url);
-    const path = uri.path.split('/')
+    const uri = URLparse(url, true);
+    const path = uri.pathname.split('/')
       .filter((val) => val)
-      .map((val) => decodeURIComponent(val).replace(/-/g, ' '));
+      .map((val) => utils.decodeChars(val));
 
     if (path.length < 2) {
-      throw new Error('path has fewer than two parts');
+      throw new Error('path has too few parts');
     }
 
     const title = path.shift();
     const id = path.pop();
-    let refinements = [];
+    let variants = [];
 
     if (path.length !== 0) {
       if (!this.config.useReferenceKeys) {
-        refinements = DetailsUrlParser.extractPathRefinements(path);
+        variants = DetailsUrlParser.extractPathRefinements(path);
       } else {
-        refinements = DetailsUrlParser.extractReferencesRefinements(path, this.keysToRefinements);
+        // tslint:disable-next-line max-line-length
+        variants = DetailsUrlParser.extractReferencesRefinements(path, DetailsUrlParser.toObject(this.config.variantMapping));
       }
     }
 
-    return { id, refinements, title };
+    return { id, variants, title };
   }
 
-  static extractReferencesRefinements(path: string[], keysToRefinements: { [key: string]: string }) {
+  static extractReferencesRefinements(path: string[], keysToVariants: { [key: string]: string }) {
     if (path.length < 2) {
-      throw new Error('path has wrong number of parts');
+      throw new Error('path has too few parts');
     }
 
     const referenceKeys = path.pop().split('');
@@ -42,8 +44,7 @@ export class DetailsUrlParser extends UrlParser<UrlBeautifier.DetailsRequest> {
 
     return path.map((value) => ({
       value,
-      navigationName: keysToRefinements[referenceKeys.shift()],
-      type: 'Value'
+      field: keysToVariants[referenceKeys.shift()]
     }));
   }
 
@@ -52,14 +53,14 @@ export class DetailsUrlParser extends UrlParser<UrlBeautifier.DetailsRequest> {
       throw new Error('path has an odd number of parts');
     }
 
-    const refinements = [];
+    const variants = [];
     while (path.length) {
       const value = path.shift();
-      const navigationName = path.shift();
-      refinements.push({ navigationName, value, type: 'Value' });
+      const field = path.shift();
+      variants.push({ field, value });
     }
 
-    return refinements;
+    return variants;
   }
 }
 

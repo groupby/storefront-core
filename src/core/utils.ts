@@ -1,12 +1,11 @@
 import FluxCapacitor, { Store } from '@storefront/flux-capacitor';
 import * as deepAssign from 'deep-assign';
 // import * as dot from 'dot-prop';
-import * as kebabCase from 'lodash.kebabcase';
 import * as log from 'loglevel';
 import * as riot from 'riot';
 import Tag, { TAG_DESC, TAG_META } from '../tag';
 
-export { deepAssign, kebabCase, log, riot };
+export { deepAssign, log, riot };
 
 export const WINDOW = {
   addEventListener: (event, cb) => window.addEventListener(event, cb),
