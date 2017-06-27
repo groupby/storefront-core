@@ -1,5 +1,5 @@
-import Attribute from '../../../src/tag/attribute';
-import suite from '../_suite';
+import Attribute from '../../../../src/core/tag/attribute';
+import suite from '../../_suite';
 
 suite('Attribute', ({ expect }) => {
   describe('implyType()', () => {

@@ -1,9 +1,11 @@
-import * as utils from '../../../src/core/utils';
-import Tag, { TAG_DESC, TAG_META } from '../../../src/tag';
-import Alias from '../../../src/tag/alias';
-import * as aliasing from '../../../src/tag/alias';
-import Lifecycle from '../../../src/tag/lifecycle';
-import suite from '../_suite';
+import * as sinon from 'sinon';
+import Tag, { TAG_DESC, TAG_META } from '../../../../src/core/tag';
+import Alias from '../../../../src/core/tag/alias';
+import * as aliasing from '../../../../src/core/tag/alias';
+import Lifecycle from '../../../../src/core/tag/lifecycle';
+import TagUtils from '../../../../src/core/tag/utils';
+import * as utils from '../../../../src/core/utils';
+import suite from '../../_suite';
 
 suite('Tag', ({ expect, spy, stub }) => {
 
@@ -96,6 +98,28 @@ suite('Tag', ({ expect, spy, stub }) => {
     });
   });
 
+  describe('create()', () => {
+    it('should call riot.tag()', () => {
+      const tag = spy();
+      const clazz = () => null;
+      const metadata = { c: 'd' };
+      const bindController = stub(TagUtils, 'bindController');
+      const readClassDecorators = stub(TagUtils, 'tagDescriptors').returns(['a', 'b']);
+      const getDescription = stub(Tag, 'getDescription').returns({ metadata });
+
+      Tag.create({ tag })(clazz);
+
+      expect(readClassDecorators).to.be.calledWith(clazz);
+      expect(tag).to.be.calledWith('a', 'b', sinon.match((cb) => {
+        const instance = new cb();
+
+        expect(instance[TAG_META]).to.eql(metadata);
+        expect(getDescription).to.be.calledWith(clazz);
+        return expect(bindController).to.be.calledWith(sinon.match.any, clazz);
+      }));
+    });
+  });
+
   describe('mixin()', () => {
     it('should add properties from app', () => {
       const services = { a: 'b' };
@@ -109,55 +133,10 @@ suite('Tag', ({ expect, spy, stub }) => {
 
     it('should create initialization method', () => {
       const tag = {};
-      const initializer = stub(Tag, 'initializer');
+      const initializer = stub(TagUtils, 'initializer');
       const mixin = Tag.mixin(<any>{});
 
       expect(initializer).to.be.calledWith(Tag);
-    });
-  });
-
-  describe('register()', () => {
-    it('should create an initializer', () => {
-      const trigger = spy();
-      const clazz = () => null;
-      const tag: any = { a: 'b', trigger };
-      const initSpy = spy();
-      const init = function() { initSpy(this); };
-      const initializer = stub(Tag, 'initializer').returns(init);
-
-      Tag.register(tag, clazz);
-
-      expect(initializer).to.be.calledWith(clazz);
-      expect(initSpy).to.be.calledWith(tag);
-      expect(trigger).to.be.calledWith(Lifecycle.Phase.INITIALIZE);
-    });
-
-    it('should call init() method if provided', () => {
-      const init = spy();
-      const clazz = () => null;
-      const tag: any = { a: 'b', trigger: () => null, init };
-      const initializer = stub(Tag, 'initializer').returns(() => null);
-
-      Tag.register(tag, clazz);
-
-      expect(init).to.be.called;
-    });
-  });
-
-  describe('getDefaults()', () => {
-    it('should extract defaults', () => {
-      const defaults = { a: 'b' };
-      const tag: any = { c: 'd' };
-      const getMeta = stub(Tag, 'getMeta').returns({ defaults });
-
-      expect(Tag.getDefaults(tag)).to.eq(defaults);
-      expect(getMeta).to.be.calledWith(tag);
-    });
-
-    it('should have default value', () => {
-      stub(Tag, 'getMeta').returns({});
-
-      expect(Tag.getDefaults(<any>{})).to.eql({});
     });
   });
 
@@ -187,23 +166,8 @@ suite('Tag', ({ expect, spy, stub }) => {
 
       const description = Tag.getDescription(clazz);
 
-      expect(description).to.eql({});
+      expect(description).to.eql({ metadata: {} });
       expect(clazz[TAG_DESC]).to.eq(description);
-    });
-  });
-
-  describe('buildProps()', () => {
-    it('should stack configuration', () => {
-      const stylish = true;
-      const defaults = { a: 'b', c: 'd', e: 'f' };
-      const opts = { e: 'f2', __proto__: { c: 'd1', e: 'f1' } };
-      const tag: any = { opts, config: { options: { stylish } } };
-      const getDefaults = stub(Tag, 'getDefaults').returns(defaults);
-
-      const props = Tag.buildProps(tag);
-
-      expect(getDefaults).to.be.calledWith(tag);
-      expect(props).to.eql({ stylish, a: 'b', c: 'd1', e: 'f2' });
     });
   });
 });

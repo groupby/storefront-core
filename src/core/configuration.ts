@@ -56,7 +56,25 @@ namespace Configuration {
     /**
      * check final configuration for validity
      */
-    export function validate(config: Configuration) { }
+    export function validate(config: Configuration) {
+      if (!(config.customerId && config.customerId.trim())) {
+        throw new Error('must provide a customer ID');
+      }
+      if (!config.structure) {
+        throw new Error('must provide a record structure');
+      }
+
+      const struct = { ...config.structure, ...(config.structure._variant || {}).structure };
+      if (!(struct.id && struct.id.trim())) {
+        throw new Error('structure.id must be the path to the id field');
+      }
+      if (!(struct.title && struct.title.trim())) {
+        throw new Error('structure.title must be the path to the title field');
+      }
+      if (!(struct.price && struct.price.trim())) {
+        throw new Error('structure.price must be the path to the price field');
+      }
+    }
   }
 }
 

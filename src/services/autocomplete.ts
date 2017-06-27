@@ -1,8 +1,8 @@
 import FluxCapacitor, { Events, Selectors, Store } from '@storefront/flux-capacitor';
 import { core } from '../core/service';
 import LazyService from '../core/service/lazy';
+import Tag from '../core/tag';
 import StoreFront from '../storefront';
-import Tag from '../tag';
 
 @core
 class AutocompleteService extends LazyService {

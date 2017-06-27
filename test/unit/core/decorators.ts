@@ -1,8 +1,8 @@
 import * as sinon from 'sinon';
-import * as decorators from '../../../src/core/decorators';
+import Tag from '../../../src/core/tag';
+import Attribute from '../../../src/core/tag/attribute';
+import * as decorators from '../../../src/core/tag/decorators';
 import StoreFront from '../../../src/storefront';
-import Tag from '../../../src/tag';
-import Attribute from '../../../src/tag/attribute';
 import suite from '../_suite';
 
 suite('decorators', ({ expect, spy, stub }) => {
@@ -11,23 +11,23 @@ suite('decorators', ({ expect, spy, stub }) => {
     it('should set tag description name and template', () => {
       const name = 'some-tag';
       const template = '<div></div>';
-      const description: any = {};
+      const description: any = { metadata: {} };
       const tagDef = { a: 'b' };
       const getDescription = stub(Tag, 'getDescription').returns(description);
-      StoreFront.register = () => null;
+      stub(StoreFront, 'register');
 
       decorators.tag(name, template)(tagDef);
 
-      expect(description.name).to.eq(name);
+      expect(description.metadata.name).to.eq(name);
       expect(description.view).to.eq(template);
       expect(getDescription).to.be.calledWith(tagDef);
     });
 
     it('should set tag description css', () => {
       const style = 'label { background-color: red; }';
-      const description: any = {};
+      const description: any = { metadata: {} };
       stub(Tag, 'getDescription').returns(description);
-      StoreFront.register = () => null;
+      stub(StoreFront, 'register');
 
       decorators.tag('', '', style)({});
 
@@ -39,7 +39,7 @@ suite('decorators', ({ expect, spy, stub }) => {
       const tagDef = { a: 'b' };
       const internalRegister = spy();
       const register = stub(StoreFront, 'register').callsFake((cb) => cb(internalRegister));
-      stub(Tag, 'getDescription').returns({});
+      stub(Tag, 'getDescription').returns({ metadata: {} });
 
       decorators.tag(name, '')(tagDef);
 
@@ -51,7 +51,7 @@ suite('decorators', ({ expect, spy, stub }) => {
       const name = 'some-tag';
       const internalRegister = spy();
       stub(StoreFront, 'register').callsFake((cb) => cb(internalRegister));
-      stub(Tag, 'getDescription').returns({});
+      stub(Tag, 'getDescription').returns({ metadata: {} });
 
       decorators.tag(name, '')();
 
@@ -100,15 +100,29 @@ suite('decorators', ({ expect, spy, stub }) => {
 
   describe('@alias', () => {
     it('should add named alias for tag state', () => {
-      const description: any = {};
+      const metadata: any = {};
       const aliasName = 'myAlias';
       const tag = { a: 'b' };
-      const getDescription = stub(Tag, 'getDescription').returns(description);
+      const getDescription = stub(Tag, 'getDescription').returns({ metadata });
 
       decorators.alias(aliasName)(tag);
 
       expect(getDescription).to.be.calledWith(tag);
-      expect(description.alias).to.eq(aliasName);
+      expect(metadata.alias).to.eq(aliasName);
+    });
+  });
+
+  describe('@origin', () => {
+    it('should add origin name to tag', () => {
+      const metadata: any = {};
+      const origin = 'moreRefinements';
+      const tag = { a: 'b' };
+      const getDescription = stub(Tag, 'getDescription').returns({ metadata });
+
+      decorators.origin(origin)(tag);
+
+      expect(getDescription).to.be.calledWith(tag);
+      expect(metadata.origin).to.eq(origin);
     });
   });
 });

@@ -1,6 +1,6 @@
 import { Store } from '@storefront/flux-capacitor';
 import { Structure } from './types';
-import { dot } from './utils';
+import { clone, dot } from './utils';
 
 export const DEFAULT_VARIANT_FIELD = 'variants';
 export const DEFAULT_TRANSFORM = (data) => data;
@@ -17,14 +17,13 @@ namespace ProductTransformer {
 
   export function transform(product: Store.Product, structure: Structure) {
     const { _transform: userTransform = DEFAULT_TRANSFORM, _variant: variantInfo, ...baseStructure } = structure;
-    // TODO: should be more careful about exposing data to the user here (maybe deep-clone?)
-    const transformedProduct = userTransform({ ...product }) || product;
-    const effectiveStructure = exports.extendStructure(product, transformedProduct, baseStructure);
-    const data = exports.remap(transformedProduct, effectiveStructure);
+    const transformedProduct = userTransform(clone(product, false)) || product;
+    const effectiveStructure = Utils.extendStructure(product, transformedProduct, baseStructure);
+    const data = Utils.remap(transformedProduct, effectiveStructure);
 
     if (variantInfo) {
       // tslint:disable-next-line max-line-length
-      const variants = exports.unpackVariants(variantInfo, transformedProduct, data, baseStructure, userTransform)
+      const variants = Utils.unpackVariants(variantInfo, transformedProduct, data, baseStructure, userTransform)
         .map((variant) => ({ ...data, ...variant }));
 
       return { data: variants[0], variants };
@@ -36,33 +35,37 @@ namespace ProductTransformer {
 
 export default ProductTransformer;
 
-// tslint:disable-next-line max-line-length
-export function unpackVariants(variantInfo: Partial<Structure.Variant>, product: any, remappedProduct: any, baseStructure: Structure.Base, defaultTransform: (data: any) => any) {
-  const { field = DEFAULT_VARIANT_FIELD, structure = {} } = variantInfo;
-  const variants = dot.get(product, field);
+namespace Utils {
+  // tslint:disable-next-line max-line-length
+  export function unpackVariants(variantInfo: Partial<Structure.Variant>, product: any, remappedProduct: any, baseStructure: Structure.Base, defaultTransform: (data: any) => any) {
+    const { field = DEFAULT_VARIANT_FIELD, structure = {} } = variantInfo;
+    const variants = dot.get(product, field);
 
-  if (variants) {
-    const { _transform: transform = <any>defaultTransform, ...variantStructure } = { ...baseStructure, ...structure };
+    if (variants) {
+      const { _transform: transform = <any>defaultTransform, ...variantStructure } = { ...baseStructure, ...structure };
 
-    return variants
-      .map((variant, index) => transform({ ...variant }, index, product) || variant)
-      .map((transformed, index) => {
-        const effectiveStructure = exports.extendStructure(variants[index], transformed, variantStructure);
-        return exports.remap(transformed, effectiveStructure, remappedProduct);
-      });
-  } else {
-    return [{}];
+      return variants
+        .map((variant, index) => transform({ ...variant }, index, product) || variant)
+        .map((transformed, index) => {
+          const effectiveStructure = Utils.extendStructure(variants[index], transformed, variantStructure);
+          return Utils.remap(transformed, effectiveStructure, remappedProduct);
+        });
+    } else {
+      return [{}];
+    }
+  }
+
+  export function extendStructure(originalData: any, transformedData: any, structure: Structure.Base) {
+    const newKeys = Object.keys(transformedData).filter((key) => !(key in originalData));
+    return newKeys.reduce((struct, key) => Object.assign(struct, { [key]: key }), { ...structure });
+  }
+
+  export function remap(product: Store.Product, structure: Partial<Structure>, defaults: any = {}) {
+    return Object.keys(structure)
+      .reduce((data, key) => Object.assign(data, {
+        [key]: dot.get(product, structure[key], defaults[structure[key]])
+      }), {});
   }
 }
 
-export function extendStructure(originalData: any, transformedData: any, structure: Structure.Base) {
-  const newKeys = Object.keys(transformedData).filter((key) => !(key in originalData));
-  return newKeys.reduce((struct, key) => Object.assign(struct, { [key]: key }), { ...structure });
-}
-
-export function remap(product: Store.Product, structure: Partial<Structure>, defaults: any = {}) {
-  return Object.keys(structure)
-    .reduce((data, key) => Object.assign(data, {
-      [key]: dot.get(product, structure[key], defaults[structure[key]])
-    }), {});
-}
+export { Utils as TransformUtils };

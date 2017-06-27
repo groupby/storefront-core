@@ -1,9 +1,5 @@
-import ProductTransformer, {
-  extendStructure,
-  remap,
-  DEFAULT_TRANSFORM
-} from '../../../src/core/product-transformer';
-import * as transformation from '../../../src/core/product-transformer';
+import ProductTransformer, { DEFAULT_TRANSFORM, TransformUtils } from '../../../src/core/product-transformer';
+import * as utils from '../../../src/core/utils';
 import suite from '../_suite';
 
 suite('Product Transformation', ({ expect, spy, stub }) => {
@@ -27,8 +23,8 @@ suite('Product Transformation', ({ expect, spy, stub }) => {
         const structure: any = { c: 'd' };
         const product: any = { e: 'f' };
         const transformedProduct: any = { g: 'h' };
-        const extendStructure = stub(transformation, 'extendStructure').returns(effectiveStructure);
-        const remap = stub(transformation, 'remap').returns(transformedProduct);
+        const extendStructure = stub(TransformUtils, 'extendStructure').returns(effectiveStructure);
+        const remap = stub(TransformUtils, 'remap').returns(transformedProduct);
 
         const result = ProductTransformer.transform(product, structure);
 
@@ -41,19 +37,22 @@ suite('Product Transformation', ({ expect, spy, stub }) => {
         const transformedProduct = { e: 'f' };
         const userTransform = spy(() => transformedProduct);
         const product: any = { c: 'd' };
-        const extendStructure = stub(transformation, 'extendStructure');
-        stub(transformation, 'remap');
+        const cloned = { g: 'h' };
+        const extendStructure = stub(TransformUtils, 'extendStructure');
+        const clone = stub(utils, 'clone').returns(cloned);
+        stub(TransformUtils, 'remap');
 
         ProductTransformer.transform(product, <any>{ a: 'b', _transform: userTransform });
 
-        expect(userTransform).to.be.calledWith(product);
+        expect(clone).to.be.calledWith(product);
+        expect(userTransform).to.be.calledWith(cloned);
         expect(extendStructure).to.be.calledWith(product, transformedProduct, { a: 'b' });
       });
 
       it('should use product if user transform returns falsy', () => {
         const product: any = { c: 'd' };
-        const extendStructure = stub(transformation, 'extendStructure');
-        stub(transformation, 'remap');
+        const extendStructure = stub(TransformUtils, 'extendStructure');
+        stub(TransformUtils, 'remap');
 
         ProductTransformer.transform(product, <any>{ a: 'b', _transform: () => null });
 
@@ -67,9 +66,9 @@ suite('Product Transformation', ({ expect, spy, stub }) => {
         const product: any = { e: 'f' };
         const remapped: any = { g: 'h' };
         const variants = [{ k: 'l' }, { m: 'n' }];
-        const extendStructure = stub(transformation, 'extendStructure').returns(effectiveStructure);
-        const unpackVariants = stub(transformation, 'unpackVariants').returns(variants);
-        stub(transformation, 'remap').returns(remapped);
+        const extendStructure = stub(TransformUtils, 'extendStructure').returns(effectiveStructure);
+        const unpackVariants = stub(TransformUtils, 'unpackVariants').returns(variants);
+        stub(TransformUtils, 'remap').returns(remapped);
 
         const result = ProductTransformer.transform(product, structure);
 
@@ -87,9 +86,9 @@ suite('Product Transformation', ({ expect, spy, stub }) => {
         const structure: any = { c: 'd', _variant: variantInfo, _transform: userTransform };
         const product: any = { e: 'f' };
         const remapped: any = { g: 'h' };
-        const unpackVariants = stub(transformation, 'unpackVariants').returns([{ k: 'l' }, { m: 'n' }]);
-        stub(transformation, 'extendStructure').returns(effectiveStructure);
-        stub(transformation, 'remap').returns(remapped);
+        const unpackVariants = stub(TransformUtils, 'unpackVariants').returns([{ k: 'l' }, { m: 'n' }]);
+        stub(TransformUtils, 'extendStructure').returns(effectiveStructure);
+        stub(TransformUtils, 'remap').returns(remapped);
 
         ProductTransformer.transform(product, structure);
 
@@ -99,27 +98,29 @@ suite('Product Transformation', ({ expect, spy, stub }) => {
     });
   });
 
-  describe('extendStructure()', () => {
-    it('should add new keys from transformedProduct to the structure', () => {
-      const original = { a: 'b', e: 'f' };
-      const transformed = { a: 'i', c: 'd', e: 'j', g: 'h' };
-      const structure: any = { k: 'l', m: 'n' };
+  describe('TransformUtils', () => {
+    describe('extendStructure()', () => {
+      it('should add new keys from transformedProduct to the structure', () => {
+        const original = { a: 'b', e: 'f' };
+        const transformed = { a: 'i', c: 'd', e: 'j', g: 'h' };
+        const structure: any = { k: 'l', m: 'n' };
 
-      const extended = extendStructure(original, transformed, structure);
+        const extended = TransformUtils.extendStructure(original, transformed, structure);
 
-      expect(extended).to.eql({ k: 'l', m: 'n', c: 'c', g: 'g' });
+        expect(extended).to.eql({ k: 'l', m: 'n', c: 'c', g: 'g' });
+      });
     });
-  });
 
-  describe('remap()', () => {
-    it('should remap paths from product based on structure', () => {
-      const data: any = { a: 'b', c: 'd', e: 'j' };
-      const defaults = { c: 'e', f: 'g', h: 'i' };
-      const structure = { k: 'a', l: 'c', m: 'f' };
+    describe('remap()', () => {
+      it('should remap paths from product based on structure', () => {
+        const data: any = { a: 'b', c: 'd', e: 'j' };
+        const defaults = { c: 'e', f: 'g', h: 'i' };
+        const structure: any = { k: 'a', l: 'c', m: 'f' };
 
-      const remapped = remap(data, structure, defaults);
+        const remapped = TransformUtils.remap(data, structure, defaults);
 
-      expect(remapped).to.eql({ k: 'b', l: 'd', m: 'g' });
+        expect(remapped).to.eql({ k: 'b', l: 'd', m: 'g' });
+      });
     });
   });
 });

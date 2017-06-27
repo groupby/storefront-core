@@ -1,6 +1,7 @@
 import { Events } from '@storefront/flux-capacitor';
 import Tag from '.';
 import Attribute from './attribute';
+import TagUtils from './utils';
 
 namespace Lifecycle {
   export namespace Phase {
@@ -59,13 +60,34 @@ namespace Lifecycle {
       });
   }
 
+  export function addMetadata(tag: Tag) {
+    const metadata = Tag.getMeta(tag);
+    Object.assign(
+      metadata,
+      {
+        origin: tag.parent && Tag.getMeta(<any>tag.parent).origin,
+        ...metadata,
+        defaults: tag.props,
+        attributes: Object.keys(tag.props)
+          .map((name) => Attribute.implyType({ default: tag.props[name], name }))
+      }
+    );
+  }
+
+  export function primeTagActions(tag: Tag) {
+    const { name, origin } = Tag.getMeta(tag);
+    const primed = tag.flux.__rawActions(() => ({ tag: { name, origin, id: tag._riot_id } }));
+    tag.actions = <any>Object.keys(primed)
+      .reduce((actions, key) => {
+        actions[key] = (...args) => tag.flux.store.dispatch(primed[key](...args));
+        return actions;
+      }, {});
+  }
+
   export function onInitialize(this: Tag) {
     Lifecycle.addSugar(this);
-
-    const meta = Tag.getMeta(this);
-    meta.defaults = this.props;
-    meta.attributes = Object.keys(this.props)
-      .map((name) => Attribute.implyType({ default: this.props[name], name }));
+    Lifecycle.addMetadata(this);
+    Lifecycle.primeTagActions(this);
 
     Lifecycle.onRecalculateProps.call(this);
 
@@ -77,7 +99,7 @@ namespace Lifecycle {
   }
 
   export function onRecalculateProps(this: Tag) {
-    this.props = Tag.buildProps(this);
+    this.props = TagUtils.buildProps(this);
   }
 }
 

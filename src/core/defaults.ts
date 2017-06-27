@@ -1,5 +1,5 @@
 import { DEFAULT_AREA, DEFAULT_COLLECTION, Routes } from '@storefront/flux-capacitor';
-import { Configuration } from '.';
+import Configuration from './configuration';
 
 const DEFAULTS: Partial<Configuration> = {
   collection: DEFAULT_COLLECTION,
@@ -42,6 +42,9 @@ const DEFAULTS: Partial<Configuration> = {
         [Routes.DETAILS]: `/${Routes.DETAILS}`,
         [Routes.NAVIGATION]: `/${Routes.NAVIGATION}`
       }
+    },
+    tracker: {
+      warnings: true
     }
   },
 

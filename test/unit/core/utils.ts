@@ -1,9 +1,10 @@
 import * as deepAssign from 'deep-assign';
+import * as GbTracker from 'gb-tracker-client';
 import * as log from 'loglevel';
 import * as riot from 'riot';
 import * as sinon from 'sinon';
+import Tag, { TAG_DESC, TAG_META } from '../../../src/core/tag';
 import * as utils from '../../../src/core/utils';
-import Tag, { TAG_DESC, TAG_META } from '../../../src/tag';
 import suite from '../_suite';
 
 suite('utils', ({ expect, spy, stub }) => {
@@ -11,6 +12,7 @@ suite('utils', ({ expect, spy, stub }) => {
     expect(utils.deepAssign).to.eq(deepAssign);
     expect(utils.log).to.eq(log);
     expect(utils.riot).to.eq(riot);
+    expect(utils.GbTracker).to.eq(GbTracker);
   });
 
   describe('dot', () => {
@@ -37,59 +39,13 @@ suite('utils', ({ expect, spy, stub }) => {
     });
   });
 
-  describe('register()', () => {
-    it('should call riot.tag()', () => {
-      const tag = spy();
-      const clazz = () => null;
-      const meta = { c: 'd' };
-      const register = stub(Tag, 'register');
-      const readClassDecorators = stub(utils, 'readClassDecorators').returns(['a', 'b']);
-      const readClassMeta = stub(utils, 'readClassMeta').returns(meta);
-
-      utils.register({ tag })(clazz);
-
-      expect(readClassDecorators).to.be.calledWith(clazz);
-      expect(tag).to.be.calledWith('a', 'b', sinon.match((cb) => {
-        const instance = new cb();
-
-        expect(instance[TAG_META]).to.eq(meta);
-        expect(readClassMeta).to.be.calledWith(clazz);
-        return expect(register).to.be.calledWith(sinon.match.any, clazz);
-      }));
-    });
-  });
-
-  describe('readClassMeta()', () => {
-    it('should return tag metadata', () => {
-      const name = 'my-tag';
-      const alias = 'myTag';
-      const defaults = { a: 'b' };
-      const attributes = ['c', 'd'];
-      const clazz: any = { [TAG_DESC]: { alias, name, defaults, attributes, e: 'f' } };
-
-      expect(utils.readClassMeta(clazz)).to.eql({ alias, name, defaults, attributes });
-    });
-  });
-
-  describe('readClassDecorators()', () => {
-    it('should return name, view and css', () => {
-      const name = 'my-tag';
-      const view = '<div></div>';
-      const css = 'background-color: red;';
-      const clazz: any = { [TAG_DESC]: { name, view, css } };
-
-      expect(utils.readClassDecorators(clazz)).to.eql([name, view, css]);
-    });
-  });
-
   describe('mapToSearchActions()', () => {
     it('should turn links into flux actions', () => {
       const search = spy();
-      const links: any[] = [{ value: 'a' }, { value: 'b' }];
+      const values: any[] = ['a', 'b'];
 
-      const mapped = utils.mapToSearchActions(links, <any>{ search });
+      const mapped = utils.mapToSearchActions(values, <any>{ search });
 
-      expect(mapped).to.have.length(2);
       expect(mapped[0]).to.have.keys('value', 'onClick');
       expect(mapped[1]).to.have.keys('value', 'onClick');
 

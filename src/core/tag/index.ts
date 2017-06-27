@@ -1,11 +1,12 @@
-import FluxCapacitor, { Actions, ActionCreator, Events, Store } from '@storefront/flux-capacitor';
-import { utils, Configuration } from '../core';
-import { SystemServices } from '../services';
-import StoreFront from '../storefront';
+import FluxCapacitor, { Actions, Events, Store } from '@storefront/flux-capacitor';
+import { SystemServices } from '../../services';
+import StoreFront from '../../storefront';
+import Configuration from '../configuration';
+import { log, riot } from '../utils';
 import Alias from './alias';
 import Attribute from './attribute';
 import Lifecycle from './lifecycle';
-import Phase = Lifecycle.Phase;
+import TagUtils from './utils';
 
 export const TAG_META = Symbol.for('tag_metadata');
 export const TAG_DESC = Symbol.for('tag_description');
@@ -27,7 +28,7 @@ class Tag<P extends Tag.Props = any, S extends object = any> {
     this.update({ state: { ...<any>this.state, ...<any>state } });
   }
 
-  dispatch(action: Tag.FluxAction) {
+  dispatch(action: Actions.Action<string, any>) {
     this.flux.store.dispatch(<any>action);
   }
 
@@ -45,89 +46,62 @@ class Tag<P extends Tag.Props = any, S extends object = any> {
 }
 
 // tslint:disable-next-line max-line-length
-interface Tag<P extends Tag.Props, S extends object> extends utils.riot.TagInterface, Tag.Lifecycle, Tag.Mixin {
+interface Tag<P extends Tag.Props, S extends object> extends riot.TagInterface, Tag.Lifecycle, Tag.Mixin {
   _riot_id: number;
   root: HTMLElement;
   isMounted: boolean;
+  actions: Tag.PrimedActions;
   init(): void;
 }
 namespace Tag {
-  /**
-   * tag initializer creator
-   */
-  export function initializer(clazz: any) {
-    return function init(this: utils.riot.TagInterface & { __proto__: any }) {
 
-      utils.inherit(this, clazz);
-
-      const proto = this.__proto__;
-      this.__proto__ = clazz.prototype; // fool the class constructor check
-      clazz.call(this);
-      this.__proto__ = proto;
-    };
+  export function create(_riot: any) {
+    return (clazz: Function) => _riot.tag(...TagUtils.tagDescriptors(clazz), function init() {
+      this[TAG_META] = { ...Tag.getDescription(clazz).metadata };
+      TagUtils.bindController(this, clazz);
+    });
   }
 
   /**
    * create a tag mixin
    */
-  export function mixin({ flux, config, services, log }: StoreFront): Mixin {
+  export function mixin({ flux, config, services, log }: StoreFront): Tag.Mixin {
     return {
       flux,
       config,
       services,
       log,
 
-      init: Tag.initializer(Tag)
+      init: TagUtils.initializer(Tag)
     };
   }
 
-  export function register(tag: Tag, clazz: Function) {
-    Tag.initializer(clazz).call(tag);
-
-    tag.trigger(Lifecycle.Phase.INITIALIZE);
-
-    if (typeof tag.init === 'function') {
-      tag.init();
-    }
-  }
-
   /**
-   * extract default state from tag
+   * extract tag metadata
    */
-  export function getDefaults(tag: Tag) {
-    return Tag.getMeta(tag).defaults || {};
-  }
-
   export function getMeta(tag: Tag): Metadata {
     return tag[TAG_META] || {};
   }
 
   export function getDescription(target: any): Description {
-    return target[TAG_DESC] = target[TAG_DESC] || {};
+    return target[TAG_DESC] = target[TAG_DESC] || { metadata: {} };
   }
 
-  export function buildProps(tag: Tag) {
-    return {
-      stylish: tag.config.options.stylish,
-      ...Tag.getDefaults(tag),
-      ...tag.opts.__proto__,
-      ...tag.opts
-    };
-  }
+  export type PrimedActions = {
+    [P in keyof typeof FluxCapacitor.prototype.actions]: (...args: any[]) => void;
+  };
 
   export interface Description {
-    name: string;
     view: string;
     css?: string;
-    alias?: string;
-    attributes?: Attribute[];
-    defaults?: object;
+    metadata: Metadata;
   }
 
   export interface Metadata {
     name: string;
     defaults: object;
     alias?: string;
+    origin?: string;
     attributes?: Attribute[];
   }
 
@@ -155,13 +129,9 @@ namespace Tag {
     config: Configuration;
     flux: FluxCapacitor;
     services: SystemServices;
-    log: typeof utils.log;
-    init: (this: utils.riot.TagInterface) => void;
+    log: typeof log;
+    init: (this: riot.TagInterface) => void;
   }
-
-  export type FluxAction = Actions.Base
-    | ((dispatch: (action: Actions.Base) => any, getStore: () => Store.State) => (any | void))
-    | Promise<Actions.Base>;
 }
 
 export default Tag;

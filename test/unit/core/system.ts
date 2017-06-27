@@ -3,9 +3,9 @@ import * as riot from 'riot';
 import Configuration from '../../../src/core/configuration';
 import { core } from '../../../src/core/service';
 import System from '../../../src/core/system';
+import Tag from '../../../src/core/tag';
 import * as utils from '../../../src/core/utils';
 import Globals from '../../../src/globals';
-import Tag from '../../../src/tag';
 import suite from '../_suite';
 
 suite('System', ({ expect, spy, stub }) => {
@@ -85,9 +85,11 @@ suite('System', ({ expect, spy, stub }) => {
       const service = { c: 'd' };
       const mockService = spy(() => service);
       const system = new System(app);
+      stub(Configuration.Transformer, 'transform').returns({ services: { mockService } });
+      stub(fluxPkg, 'default');
       class MockService { }
 
-      system.bootstrap({}, <any>{ services: { mockService } });
+      system.bootstrap({}, <any>{});
 
       expect(app.services.mockService).to.eq(service);
       expect(mockService).to.be.calledWith(app, {});
@@ -97,8 +99,10 @@ suite('System', ({ expect, spy, stub }) => {
       const bootstrap = spy();
       const app: any = {};
       const system = new System(app);
+      stub(Configuration.Transformer, 'transform').returns({ bootstrap });
+      stub(fluxPkg, 'default');
 
-      system.bootstrap({}, <any>{ bootstrap });
+      system.bootstrap({}, <any>{});
 
       expect(bootstrap.calledWith(app)).to.be.true;
     });

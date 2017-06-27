@@ -1,9 +1,10 @@
 import { Events } from '@storefront/flux-capacitor';
 import { core, BaseService } from '../core/service';
+import Tag from '../core/tag';
+import Lifecycle from '../core/tag/lifecycle';
 import * as utils from '../core/utils';
 import StoreFront from '../storefront';
-import Tag from '../tag';
-import Lifecycle from '../tag/lifecycle';
+import { TRACKER_EVENT } from './tracker';
 import Phase = Lifecycle.Phase;
 
 export const LIFECYCLE_COLOURS = {
@@ -32,7 +33,7 @@ class LoggingService extends BaseService<LoggingService.Options> {
 
   init() {
     const debugAll = this.opts.debug && typeof this.opts.debug !== 'object';
-    const debug: LoggingService.Debug = this.opts.debug || {};
+    const debug = <LoggingService.Debug>(this.opts.debug || {});
 
     this.app.log = utils.log;
 
@@ -44,6 +45,9 @@ class LoggingService extends BaseService<LoggingService.Options> {
     }
     if (debugAll || debug.aliasing) {
       this.app.flux.on(Events.TAG_ALIASING, this.logAliasing);
+    }
+    if (debugAll || debug.tracker) {
+      this.app.flux.on(TRACKER_EVENT, this.logTrackerEvent);
     }
   }
 
@@ -60,6 +64,12 @@ class LoggingService extends BaseService<LoggingService.Options> {
     '',
     'color: black; font-weight: bold; text-decoration: underline',
     tag
+  )
+
+  logTrackerEvent = ({ type, event }: { type: string, event: object }) => this.app.log.debug(
+    `[tracker]: %c${type}`,
+    'color: #75babe; font-weight: bold',
+    event
   )
 
   // tslint:disable-next-line max-line-length
@@ -81,6 +91,7 @@ namespace LoggingService {
     aliasing?: boolean;
     observer?: boolean;
     flux?: boolean;
+    tracker?: boolean;
   }
 }
 

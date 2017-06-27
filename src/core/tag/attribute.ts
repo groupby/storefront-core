@@ -1,4 +1,4 @@
-import { utils } from '../core';
+import * as utils from '../utils';
 
 interface Attribute {
   name: string;

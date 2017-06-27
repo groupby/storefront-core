@@ -1,5 +1,5 @@
-import Alias from '../../../src/tag/alias';
-import suite from '../_suite';
+import Alias from '../../../../src/core/tag/alias';
+import suite from '../../_suite';
 
 suite('Tag Alias', () => {
 

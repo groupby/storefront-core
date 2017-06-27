@@ -1,6 +1,6 @@
 import { Events } from '@storefront/flux-capacitor';
 import Tag, { ALIAS_DESCRIPTION } from '.';
-import * as utils from '../core/utils';
+import * as utils from '../../core/utils';
 import Lifecycle from './lifecycle';
 import Phase = Lifecycle.Phase;
 
@@ -17,7 +17,6 @@ class Alias {
   parent: Alias.Description = this.hasParent && Alias.getDescription(this.tag.parent);
   oldParentAliases: object = this.parent.map;
   oldState: object;
-  oldProps: object;
 
   get parentAliases() {
     const { map: parentAliases, internal: privateAliases } = this.parent;

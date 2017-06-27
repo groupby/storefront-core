@@ -1,11 +1,11 @@
-import StoreFront from '../storefront';
+import StoreFront from '../../storefront';
 import Tag from '../tag';
 
 export function tag(name: string, template: string, css?: string) {
   return (target: any = function() { return this; }) => {
     const description = Tag.getDescription(target);
 
-    description.name = name;
+    description.metadata.name = name;
     description.view = template;
 
     if (css) {
@@ -28,6 +28,12 @@ export function css(style: string) {
 
 export function alias(name: string) {
   return (target: any) => {
-    Object.assign(Tag.getDescription(target), { alias: name });
+    Object.assign(Tag.getDescription(target).metadata, { alias: name });
+  };
+}
+
+export function origin(name: string) {
+  return (target: any) => {
+    Object.assign(Tag.getDescription(target).metadata, { origin: name });
   };
 }

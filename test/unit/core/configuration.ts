@@ -1,5 +1,6 @@
-import { utils, Configuration } from '../../../src/core';
+import Configuration from '../../../src/core/configuration';
 import DEFAULTS from '../../../src/core/defaults';
+import * as utils from '../../../src/core/utils';
 import suite from '../_suite';
 
 const Transformer = Configuration.Transformer;
@@ -64,8 +65,51 @@ suite('Configuration', ({ expect, stub }) => {
     });
 
     describe('validate()', () => {
-      it('should not throw an error', () => {
-        expect(() => Transformer.validate(<any>{})).to.not.throw();
+      const CONFIG: any = { customerId: 'a' };
+
+      it('should check for customerId', () => {
+        const error = 'must provide a customer ID';
+
+        expect(() => Transformer.validate(<any>{})).to.throw(error);
+        expect(() => Transformer.validate(<any>{ customerId: null })).to.throw(error);
+        expect(() => Transformer.validate(<any>{ customerId: undefined })).to.throw(error);
+        expect(() => Transformer.validate(<any>{ customerId: '' })).to.throw(error);
+      });
+
+      it('should check for structure', () => {
+        const error = 'must provide a record structure';
+
+        expect(() => Transformer.validate(CONFIG)).to.throw(error);
+        expect(() => Transformer.validate({ ...CONFIG, structure: null })).to.throw(error);
+        expect(() => Transformer.validate({ ...CONFIG, structure: undefined })).to.throw(error);
+      });
+
+      it('should check for structure.id', () => {
+        const error = 'structure.id must be the path to the id field';
+
+        expect(() => Transformer.validate({ ...CONFIG, structure: {} })).to.throw(error);
+        expect(() => Transformer.validate({ ...CONFIG, structure: { id: null } })).to.throw(error);
+        expect(() => Transformer.validate({ ...CONFIG, structure: { id: undefined } })).to.throw(error);
+        expect(() => Transformer.validate({ ...CONFIG, structure: { id: '' } })).to.throw(error);
+      });
+
+      it('should check for structure.title', () => {
+        const error = 'structure.title must be the path to the title field';
+
+        expect(() => Transformer.validate({ ...CONFIG, structure: { id: 'b' } })).to.throw(error);
+        expect(() => Transformer.validate({ ...CONFIG, structure: { id: 'b', title: null } })).to.throw(error);
+        expect(() => Transformer.validate({ ...CONFIG, structure: { id: 'b', title: undefined } })).to.throw(error);
+        expect(() => Transformer.validate({ ...CONFIG, structure: { id: 'b', title: '' } })).to.throw(error);
+      });
+
+      it('should check for structure.price', () => {
+        const error = 'structure.price must be the path to the price field';
+        const struct = { id: 'b', title: 'c' };
+
+        expect(() => Transformer.validate({ ...CONFIG, structure: struct })).to.throw(error);
+        expect(() => Transformer.validate({ ...CONFIG, structure: { ...struct, price: null } })).to.throw(error);
+        expect(() => Transformer.validate({ ...CONFIG, structure: { ...struct, price: undefined } })).to.throw(error);
+        expect(() => Transformer.validate({ ...CONFIG, structure: { ...struct, price: '' } })).to.throw(error);
       });
     });
   });
