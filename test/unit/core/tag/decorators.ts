@@ -1,9 +1,9 @@
 import * as sinon from 'sinon';
-import Tag from '../../../src/core/tag';
-import Attribute from '../../../src/core/tag/attribute';
-import * as decorators from '../../../src/core/tag/decorators';
-import StoreFront from '../../../src/storefront';
-import suite from '../_suite';
+import Tag from '../../../../src/core/tag';
+import Attribute from '../../../../src/core/tag/attribute';
+import * as decorators from '../../../../src/core/tag/decorators';
+import StoreFront from '../../../../src/storefront';
+import suite from '../../_suite';
 
 suite('decorators', ({ expect, spy, stub }) => {
 
@@ -123,6 +123,19 @@ suite('decorators', ({ expect, spy, stub }) => {
 
       expect(getDescription).to.be.calledWith(tag);
       expect(metadata.origin).to.eq(origin);
+    });
+  });
+
+  describe('@configurable', () => {
+    it('should set configurable on tag', () => {
+      const metadata: any = {};
+      const tag = { a: 'b' };
+      const getDescription = stub(Tag, 'getDescription').returns({ metadata });
+
+      decorators.configurable(tag);
+
+      expect(getDescription).to.be.calledWith(tag);
+      expect(metadata.configurable).to.be.true;
     });
   });
 });

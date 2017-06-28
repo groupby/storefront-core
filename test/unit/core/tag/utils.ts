@@ -35,6 +35,26 @@ suite('TagUtils', ({ expect, spy, stub }) => {
     });
   });
 
+  describe('globalConfiguration()', () => {
+    it('should extract configuration for tag if configurable', () => {
+      const config = { a: 'b' };
+      const tag: any = { config: { tags: { myTag: config } } };
+      const getMeta = stub(Tag, 'getMeta').returns({ configurable: true, name: 'gb-my-tag' });
+
+      const globalConfig = utils.globalConfiguration(tag);
+
+      expect(getMeta).to.be.calledWith(tag);
+      expect(globalConfig).to.eq(config);
+    });
+
+    it('should not extract configuration for tag if not configurable', () => {
+      const tag: any = {};
+      stub(Tag, 'getMeta').returns({ configurable: false, name: 'gb-my-tag' });
+
+      expect(utils.globalConfiguration(tag)).to.eql({});
+    });
+  });
+
   describe.skip('buildProps()', () => {
     it('should disable stylish if disabling all style', () => {
       const style = false;

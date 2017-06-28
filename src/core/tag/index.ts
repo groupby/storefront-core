@@ -102,6 +102,7 @@ namespace Tag {
     defaults: object;
     alias?: string;
     origin?: string;
+    configurable?: boolean;
     attributes?: Attribute[];
   }
 

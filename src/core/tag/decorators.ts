@@ -37,3 +37,7 @@ export function origin(name: string) {
     Object.assign(Tag.getDescription(target).metadata, { origin: name });
   };
 }
+
+export function configurable(target: any) {
+  Object.assign(Tag.getDescription(target).metadata, { configurable: true });
+}

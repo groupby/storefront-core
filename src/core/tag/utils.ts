@@ -1,3 +1,4 @@
+import { camelCase } from 'lodash';
 import Tag, { TAG_DESC, TAG_META } from '.';
 import StoreFront from '../../storefront';
 import Lifecycle from './lifecycle';
@@ -34,10 +35,16 @@ namespace TagUtils {
     return [name, view, css];
   }
 
+  export function globalConfiguration(tag: Tag) {
+    const metadata = Tag.getMeta(tag);
+    return metadata.configurable ? tag.config.tags[camelCase(metadata.name.replace(/^gb-/, ''))] : {};
+  }
+
   export function buildProps(tag: Tag) {
     return {
       stylish: tag.config.options.stylish,
       ...Tag.getMeta(tag).defaults,
+      ...TagUtils.globalConfiguration(tag),
       ...tag.opts.__proto__,
       ...tag.opts
     };
