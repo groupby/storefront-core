@@ -2,7 +2,7 @@ import { Events, Selectors } from '@storefront/flux-capacitor';
 import * as sinon from 'sinon';
 import { BaseService, CORE } from '../../../src/core/service';
 import * as UrlBeautifier from '../../../src/core/url-beautifier';
-import { WINDOW } from '../../../src/core/utils';
+import * as utils from '../../../src/core/utils';
 import Service, { STOREFRONT_APP_ID } from '../../../src/services/url';
 import suite from '../_suite';
 
@@ -12,9 +12,12 @@ suite('URL Service', ({ expect, spy, stub }) => {
   let service: Service;
   let urlBeautifier;
   let addEventListener;
+  let win;
 
   beforeEach(() => {
-    addEventListener = stub(WINDOW, 'addEventListener').returns(null);
+    addEventListener = spy();
+    win = { addEventListener };
+    stub(utils, 'WINDOW').returns(win);
     urlBeautifier = stub(UrlBeautifier, 'default');
     service = new Service(<any>{}, <any>{ routes, beautifier });
   });
@@ -54,8 +57,8 @@ suite('URL Service', ({ expect, spy, stub }) => {
       const getState = spy(() => state);
       const parse = spy(() => obj);
       const refreshState = service.refreshState = spy();
-      stub(WINDOW, 'location').returns({ href });
       stub(Service, 'mergeSearchState').returns(newState);
+      win.location = { href };
       service.beautifier = <any>{ parse };
       service['app'] = <any>{ flux: { store: { subscribe: () => null, getState } } };
 
@@ -70,8 +73,8 @@ suite('URL Service', ({ expect, spy, stub }) => {
       const unsubscribe = spy();
       const subscribe = spy(() => unsubscribe);
       const augmentHistory = service.augmentHistory = spy();
-      stub(WINDOW, 'location').returns({});
       stub(Service, 'mergeSearchState').returns(null);
+      win.location = {};
       service.refreshState = () => null;
       service.beautifier = <any>{ parse: () => obj };
       service['app'] = <any>{ flux: { store: { subscribe, getState: () => null } } };
@@ -89,7 +92,8 @@ suite('URL Service', ({ expect, spy, stub }) => {
     it('should listen for any future change on failure', () => {
       const warn = spy();
       const listenForHistoryChange = service.listenForHistoryChange = spy();
-      stub(WINDOW, 'location').throws();
+      win.location = { href: 'idk' };
+      service.beautifier = <any>{ parse: () => { throw 'Error'; } };
       service['app'] = <any>{ log: { warn } };
 
       service.readInitialUrl();
@@ -104,9 +108,9 @@ suite('URL Service', ({ expect, spy, stub }) => {
       const data = { a: 'b' };
       const title = 'Search Page';
       const replaceState = spy();
-      stub(WINDOW, 'document').returns({ title });
-      stub(WINDOW, 'location').returns({ pathname: '/thing1', search: '?q=thing2' });
-      stub(WINDOW, 'history').returns({ replaceState });
+      win.document = { title };
+      win.location =  { pathname: '/thing1', search: '?q=thing2' };
+      win.history = { replaceState };
       service['app'] = <any>{
         flux: {
           actions: { fetchProducts: () => null },
@@ -126,9 +130,9 @@ suite('URL Service', ({ expect, spy, stub }) => {
       const once = spy();
       const dispatch = spy();
       const fetchProductsAction = { a: 'b' };
-      stub(WINDOW, 'document').returns({ title });
-      stub(WINDOW, 'location').returns({ pathname: '/thing1', search: '?q=thing2' });
-      stub(WINDOW, 'history').returns({ replaceState: () => null });
+      win.document = { title };
+      win.location = { pathname: '/thing1', search: '?q=thing2' };
+      win.history = { replaceState: () => null };
       service['app'] = <any>{
         flux: {
           actions: { fetchProducts: () => fetchProductsAction },
@@ -146,9 +150,9 @@ suite('URL Service', ({ expect, spy, stub }) => {
       const title = 'Search Page';
       const dispatch = spy();
       const fetchProducts = stub();
-      stub(WINDOW, 'document').returns({ title });
-      stub(WINDOW, 'location').returns({ pathname: '/thing1', search: '?q=thing2' });
-      stub(WINDOW, 'history').returns({ replaceState: () => null });
+      win.document = { title };
+      win.location = { pathname: '/thing1', search: '?q=thing2' };
+      win.history = { replaceState: () => null };
       service['app'] = <any>{
         flux: {
           actions: { fetchProducts },
@@ -168,9 +172,9 @@ suite('URL Service', ({ expect, spy, stub }) => {
       const request = { id: 20 };
       const dispatch = spy();
       const fetchProductDetails = stub();
-      stub(WINDOW, 'document').returns({ title });
-      stub(WINDOW, 'location').returns({ pathname: '/thing1', search: '?q=thing2' });
-      stub(WINDOW, 'history').returns({ replaceState: () => null });
+      win.document = { title };
+      win.location = { pathname: '/thing1', search: '?q=thing2' };
+      win.history = { replaceState: () => null };
       service['app'] = <any>{
         flux: {
           actions: { fetchProductDetails },
@@ -211,7 +215,7 @@ suite('URL Service', ({ expect, spy, stub }) => {
       const pushState = spy();
       const build = spy(() => url);
       const data = { page: { current: page } };
-      stub(WINDOW, 'history').returns({ pushState });
+      win.history = { pushState };
       stub(Selectors, 'query').returns(query);
       stub(Selectors, 'pageSize').returns(pageSize);
       stub(Selectors, 'selectedRefinements').returns(refinements);

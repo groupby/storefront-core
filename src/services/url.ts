@@ -18,7 +18,7 @@ class UrlService extends BaseService<UrlService.Options> {
 
   constructor(app: StoreFront, opts: any) {
     super(app, opts);
-    WINDOW.addEventListener('popstate', this.rewind);
+    WINDOW().addEventListener('popstate', this.rewind);
   }
 
   init() {
@@ -27,7 +27,7 @@ class UrlService extends BaseService<UrlService.Options> {
 
   readInitialUrl() {
     try {
-      const { route, request } = this.beautifier.parse<UrlBeautifier.SearchUrlState>(WINDOW.location().href);
+      const { route, request } = this.beautifier.parse<UrlBeautifier.SearchUrlState>(WINDOW().location.href);
 
       if (route === Routes.SEARCH) {
         const newState = UrlService.mergeSearchState(this.app.flux.store.getState(), request);
@@ -47,11 +47,11 @@ class UrlService extends BaseService<UrlService.Options> {
   }
 
   augmentHistory(route: string, request: any) {
-    const location = WINDOW.location();
+    const location = WINDOW().location;
     const state = this.app.flux.store.getState();
     const url = location.pathname + location.search;
 
-    WINDOW.history().replaceState({ url, state, app: STOREFRONT_APP_ID }, WINDOW.document().title, url);
+    WINDOW().history.replaceState({ url, state, app: STOREFRONT_APP_ID }, WINDOW().document.title, url);
     this.app.flux.once(Events.HISTORY_SAVE, this.listenForHistoryChange);
     switch (route) {
       case Routes.SEARCH:
@@ -69,7 +69,7 @@ class UrlService extends BaseService<UrlService.Options> {
 
   updateHistory = ({ state, route }: { state: Store.State, route: string }) => {
     const url = this.beautifier.build(route, this.urlState[route](state));
-    WINDOW.history().pushState({ url, state, app: STOREFRONT_APP_ID }, '', url);
+    WINDOW().history.pushState({ url, state, app: STOREFRONT_APP_ID }, '', url);
     this.app.flux.emit(Events.URL_UPDATED, url);
   }
 

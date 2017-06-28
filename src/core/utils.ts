@@ -7,13 +7,7 @@ import * as riot from 'riot';
 
 export { clone, deepAssign, log, riot, GbTracker };
 
-export const WINDOW = {
-  addEventListener: (event, cb) => window.addEventListener(event, cb),
-  Image: () => new Image(),
-  document: () => window.document,
-  location: () => window.location,
-  history: () => window.history
-};
+export const WINDOW = () => window;
 
 export const dot = {
   get(obj: any, path: string, defaultValue?: any) {

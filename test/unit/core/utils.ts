@@ -67,12 +67,15 @@ suite('utils', ({ expect, spy, stub }) => {
     });
   });
 
-  // TODO: add these as integration tests
-  describe.skip('WINDOW', () => {
-    describe('Image()', () => {
-      it('should return a new image', () => {
-        expect(utils.WINDOW.Image()).to.be.an.instanceOf(Image);
-      });
+  describe('WINDOW()', () => {
+    const win = {};
+    let oldWindow = global['window'];
+
+    beforeEach(() => global['window'] = win);
+    afterEach(() => global['window'] = oldWindow);
+
+    it('should return global window object', () => {
+      expect(utils.WINDOW()).to.eq(win);
     });
   });
 });
