@@ -10,6 +10,9 @@ jobs:
       - restore_cache:
           key: storefront-core-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
+          name: Dependencies
+          command: yarn global add greenkeeper-lockfile@1
+      - run:
           name: Install
           command: yarn
       - save_cache:
@@ -17,8 +20,14 @@ jobs:
           paths:
             - ~/node_modules
       - run:
+          name: Update Lockfile
+          command: greenkeeper-lockfile-update
+      - run:
           name: Test
           command: yarn start ci
       - run:
           name: Release
           command: yarn start release || true
+      - run:
+          name: Upload Lockfile
+          command: greenkeeper-lockfile-upload
