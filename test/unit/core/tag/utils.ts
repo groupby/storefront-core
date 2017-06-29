@@ -55,39 +55,39 @@ suite('TagUtils', ({ expect, spy, stub }) => {
     });
   });
 
-  describe.skip('buildProps()', () => {
+  describe('buildProps()', () => {
     it('should disable stylish if disabling all style', () => {
-      const style = false;
-      const tag: any = { opts: {}, config: { options: {} }, parent: { props: { style, stylish: true } } };
+      const ui = false;
+      const tag: any = { opts: {}, config: { options: {} }, parent: { props: { ui, stylish: true } } };
       const getMeta = stub(Tag, 'getMeta').returns({ defaults: {} });
       stub(utils, 'globalConfiguration');
 
       const props = utils.buildProps(tag);
 
       expect(getMeta).to.be.calledWith(tag);
-      expect(props).to.eql({ style, stylish: false });
+      expect(props).to.eql({ ui, stylish: false });
     });
 
     it('should inherit from parent tag', () => {
-      const style = true;
+      const ui = true;
       const stylish = false;
-      const tag: any = { opts: {}, config: { options: {} }, parent: { props: { style, stylish } } };
+      const tag: any = { opts: {}, config: { options: {} }, parent: { props: { ui, stylish } } };
       const getMeta = stub(Tag, 'getMeta').returns({ defaults: {} });
       stub(utils, 'globalConfiguration');
 
       const props = utils.buildProps(tag);
 
       expect(getMeta).to.be.calledWith(tag);
-      expect(props).to.eql({ style, stylish });
+      expect(props).to.eql({ ui, stylish });
     });
 
     it('should stack configuration', () => {
-      const style = true;
+      const ui = true;
       const stylish = false;
       const defaults = { a: 'b', c: 'd', e: 'f', g: 'h' };
       const globals = { c: 'd1', e: 'f1', g: 'h1' };
       const opts = { g: 'h3', __proto__: { e: 'f2', g: 'h2' } };
-      const tag: any = { opts, config: { options: { style, stylish } } };
+      const tag: any = { opts, config: { options: { ui, stylish } } };
       const getMeta = stub(Tag, 'getMeta').returns({ defaults });
       const globalConfiguration = stub(utils, 'globalConfiguration').returns(globals);
 
@@ -95,7 +95,7 @@ suite('TagUtils', ({ expect, spy, stub }) => {
 
       expect(getMeta).to.be.calledWith(tag);
       expect(globalConfiguration).to.be.calledWith(tag);
-      expect(props).to.eql({ style, stylish, a: 'b', c: 'd1', e: 'f2', g: 'h3' });
+      expect(props).to.eql({ ui, stylish, a: 'b', c: 'd1', e: 'f2', g: 'h3' });
     });
   });
 

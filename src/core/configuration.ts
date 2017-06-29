@@ -16,6 +16,7 @@ interface Configuration extends FluxCapacitor.Configuration {
   bootstrap?: (app: StoreFront) => void;
 
   options?: {
+    ui?: boolean;
     stylish?: boolean;
     initialSearch?: boolean;
     simpleAttach?: boolean;

@@ -49,6 +49,7 @@ const DEFAULTS: Partial<Configuration> = {
   },
 
   options: {
+    ui: true,
     stylish: false,
     initialSearch: false,
     simpleAttach: true,

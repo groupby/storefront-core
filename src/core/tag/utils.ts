@@ -41,8 +41,14 @@ namespace TagUtils {
   }
 
   export function buildProps(tag: Tag) {
+    const {
+      ui: inheritedStyle = tag.config.options.ui,
+      stylish: inheritedStylish = tag.config.options.stylish,
+    } = tag.parent ? (<any>tag.parent).props : {};
+
     return {
-      stylish: tag.config.options.stylish,
+      ui: inheritedStyle,
+      stylish: inheritedStyle && inheritedStylish,
       ...Tag.getMeta(tag).defaults,
       ...TagUtils.globalConfiguration(tag),
       ...tag.opts.__proto__,

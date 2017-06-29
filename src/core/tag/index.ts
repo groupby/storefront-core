@@ -107,6 +107,7 @@ namespace Tag {
   }
 
   export interface Props {
+    ui?: boolean;
     stylish?: boolean;
   }
 

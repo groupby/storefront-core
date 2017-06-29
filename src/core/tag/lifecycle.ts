@@ -3,6 +3,9 @@ import Tag from '.';
 import Attribute from './attribute';
 import TagUtils from './utils';
 
+export const STYLISH_CLASS = 'gb-stylish';
+export const UI_CLASS = 'gb-ui';
+
 namespace Lifecycle {
   export namespace Phase {
     export const INITIALIZE = 'initialize';
@@ -95,7 +98,12 @@ namespace Lifecycle {
   }
 
   export function onBeforeMount(this: Tag) {
-    this.root.classList[this.props.stylish ? 'add' : 'remove']('gb-stylish');
+    if (this.props.stylish) {
+      this.root.classList.add(STYLISH_CLASS);
+    }
+    if (this.props.ui) {
+      this.root.classList.add(UI_CLASS);
+    }
   }
 
   export function onRecalculateProps(this: Tag) {
