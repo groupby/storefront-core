@@ -203,6 +203,27 @@ suite('URL Service', ({ expect, spy, stub }) => {
     });
   });
 
+  describe('replaceHistory()', () => {
+    it('should replace the current state in history', () => {
+      const url = 'http://example.com';
+      const title = 'my page';
+      const state = { a: 'b' };
+      const replaceState = spy();
+      const getState = spy(() => state);
+      service['app'] = <any>{ flux: { store: { getState } } };
+      win.history = { replaceState };
+      win.document = { title };
+
+      service.replaceHistory(url);
+
+      expect(replaceState).to.be.calledWith({
+        url,
+        state,
+        app: STOREFRONT_APP_ID,
+      }, title, url);
+    });
+  });
+
   describe('updateHistory()', () => {
     it('should create urls search state from state', () => {
       const page = 48;
