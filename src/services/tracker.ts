@@ -31,7 +31,11 @@ class TrackerService extends BaseService<TrackerService.Options> {
 
   sendEvent(method: keyof GbTracker, event: any) {
     this.app.flux.emit(TRACKER_EVENT, { type: method, event });
-    (<any>this.client[method])(event);
+    try {
+      (<any>this.client[method])(event);
+    } catch (e) {
+      this.app.log.error('unable to send beaconing data', e);
+    }
   }
 
   sendSearchEvent = (id: string) => {
@@ -39,7 +43,7 @@ class TrackerService extends BaseService<TrackerService.Options> {
     this.sendEvent('sendAutoSearchEvent', {
       search: {
         id,
-        origin: { [origin.origin || 'search']: true },
+        origin: { [(origin || <any>{}).origin || 'search']: true },
       },
       metadata: this.getMetadata(origin)
     });
@@ -53,7 +57,7 @@ class TrackerService extends BaseService<TrackerService.Options> {
   sendOrderEvent = (event: GbTracker.OrderEvent) =>
     this.sendEvent('sendOrderEvent', this.addMetadata(event))
   sendViewProductEvent = (record: any) => {
-    const { id: productId, title, price } = this.transform(record.allMeta);
+    const { data: { id: productId, title, price } } = this.transform(record.allMeta);
     this.sendEvent('sendViewProductEvent', this.addMetadata({
       product: {
         productId,
@@ -67,7 +71,7 @@ class TrackerService extends BaseService<TrackerService.Options> {
   addMetadata(event: any) {
     return {
       ...event,
-      metadata: [...event.metadata, ...this.getMetadata()]
+      metadata: [...(event.metadata || []), ...this.getMetadata()]
     };
   }
 

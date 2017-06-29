@@ -39,11 +39,11 @@ export default class StoreFront {
   }
 
   mount(...args: any[]) {
-    (<any>this.riot.mount)(...args);
+    return (<any>this.riot.mount)(...args);
   }
 
   static mount(...args: any[]) {
-    return <any>StoreFront._instance.mount(...args);
+    return StoreFront._instance.mount(...args);
   }
 
   static register(registerTag: (register: (clazz: any, name: string) => void) => void) {

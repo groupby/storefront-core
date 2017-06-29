@@ -109,30 +109,30 @@ suite('URL Service', ({ expect, spy, stub }) => {
       const title = 'Search Page';
       const replaceState = spy();
       win.document = { title };
-      win.location =  { pathname: '/thing1', search: '?q=thing2' };
       win.history = { replaceState };
+      const replaceHistory = service.replaceHistory = spy();
+      win.location = { pathname: '/thing1', search: '?q=thing2' };
       service['app'] = <any>{
         flux: {
           actions: { fetchProducts: () => null },
-          store: { getState: () => ({ data }), dispatch: () => null },
+          store: { dispatch: () => null },
           once: () => null,
         }
       };
 
       service.augmentHistory('', {});
 
-      const url = '/thing1?q=thing2';
-      expect(replaceState).to.be.calledWith({ url, state: { data }, app: STOREFRONT_APP_ID }, title, url);
+      expect(replaceHistory).to.be.calledOnce
+        .and.calledWith('/thing1?q=thing2');
     });
 
     it('should update products and wait for after first state change', () => {
-      const title = 'Search Page';
       const once = spy();
       const dispatch = spy();
       const fetchProductsAction = { a: 'b' };
-      win.document = { title };
+      const replaceHistory = service.replaceHistory = spy();
+      const listenForHistoryChange = service.listenForHistoryChange = spy();
       win.location = { pathname: '/thing1', search: '?q=thing2' };
-      win.history = { replaceState: () => null };
       service['app'] = <any>{
         flux: {
           actions: { fetchProducts: () => fetchProductsAction },
@@ -143,16 +143,20 @@ suite('URL Service', ({ expect, spy, stub }) => {
 
       service.augmentHistory('', {});
 
-      expect(once).to.be.calledWith(Events.HISTORY_SAVE, service.listenForHistoryChange);
+      expect(once).to.be.calledWith(Events.HISTORY_SAVE, sinon.match((cb) => {
+        cb();
+
+        expect(replaceHistory).to.be.calledTwice
+          .and.calledWith('/thing1?q=thing2');
+        return expect(listenForHistoryChange).to.be.called;
+      }));
     });
 
     it('should request products', () => {
-      const title = 'Search Page';
       const dispatch = spy();
       const fetchProducts = stub();
-      win.document = { title };
+      service.replaceHistory = spy();
       win.location = { pathname: '/thing1', search: '?q=thing2' };
-      win.history = { replaceState: () => null };
       service['app'] = <any>{
         flux: {
           actions: { fetchProducts },
@@ -168,13 +172,11 @@ suite('URL Service', ({ expect, spy, stub }) => {
     });
 
     it('should request product details', () => {
-      const title = 'Search Page';
       const request = { id: 20 };
       const dispatch = spy();
       const fetchProductDetails = stub();
-      win.document = { title };
+      service.replaceHistory = spy();
       win.location = { pathname: '/thing1', search: '?q=thing2' };
-      win.history = { replaceState: () => null };
       service['app'] = <any>{
         flux: {
           actions: { fetchProductDetails },
@@ -208,7 +210,7 @@ suite('URL Service', ({ expect, spy, stub }) => {
       const url = '/some/url';
       const query = 'air jordans';
       const route = 'search';
-      const refinements = [{ navigationName: 'a', value: 'b'}, { navigationName: 'price', low: 0, high: 10 }];
+      const refinements = [{ navigationName: 'a', value: 'b' }, { navigationName: 'price', low: 0, high: 10 }];
       const convertedRefinements = [{ field: 'a', value: 'b' }, { field: 'price', low: 0, high: 10 }];
       const sort = ['c', 'd'];
       const collection = 'All';
@@ -240,12 +242,17 @@ suite('URL Service', ({ expect, spy, stub }) => {
 
   describe('rewind()', () => {
     it('should refresh state from history', () => {
+      const url = 'http://example.com';
       const state = { a: 'b' };
+      const emit = spy();
       const refreshState = service.refreshState = spy();
+      win.location = { href: url };
+      service['app'].flux = <any>{ emit };
 
       service.rewind(<any>{ state: { state, app: STOREFRONT_APP_ID } });
 
       expect(refreshState).to.be.calledWith(state);
+      expect(emit).to.be.calledWith(Events.URL_UPDATED, url);
     });
 
     it('should not refresh state from history if no stored state', () => {
@@ -278,7 +285,7 @@ suite('URL Service', ({ expect, spy, stub }) => {
 
   describe('static', () => {
     describe('mergeSearchState()', () => {
-      it ('should merge state properly when given new request', () => {
+      it('should merge state properly when given new request', () => {
         const state: any = {
           data: {
             a: 'b',
@@ -330,7 +337,7 @@ suite('URL Service', ({ expect, spy, stub }) => {
                 price: { field: 'price', label: 'price', range: true, refinements: [{ low: 20, high: 40 }], selected: [0] },
               }
             },
-            sorts: { items: [{ field: 'price' }, { field: 'price', descending: true }], selected: 1},
+            sorts: { items: [{ field: 'price' }, { field: 'price', descending: true }], selected: 1 },
             collections: { selected: 0 }
           }
         });
@@ -346,7 +353,7 @@ suite('URL Service', ({ expect, spy, stub }) => {
             a: 'b',
             query: { c: 'd', original: 'whatever' },
             page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 }, current: 10 },
-            navigations: { i: 'j', allIds: ['brand', 'format'], byId: { brand: {}, format: {}} },
+            navigations: { i: 'j', allIds: ['brand', 'format'], byId: { brand: {}, format: {} } },
             sorts: {
               items: [{ field: 'price' }, { field: 'price', descending: true }],
               selected: 0

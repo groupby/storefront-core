@@ -47,12 +47,14 @@ class UrlService extends BaseService<UrlService.Options> {
   }
 
   augmentHistory(route: string, request: any) {
-    const location = WINDOW().location;
-    const state = this.app.flux.store.getState();
-    const url = location.pathname + location.search;
+    const { pathname, search } = WINDOW().location;
+    const url = pathname + search;
 
-    WINDOW().history.replaceState({ url, state, app: STOREFRONT_APP_ID }, WINDOW().document.title, url);
-    this.app.flux.once(Events.HISTORY_SAVE, this.listenForHistoryChange);
+    this.replaceHistory(url);
+    this.app.flux.once(Events.HISTORY_SAVE, () => {
+      this.replaceHistory(url);
+      this.listenForHistoryChange();
+    });
     switch (route) {
       case Routes.SEARCH:
         this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchProducts());
@@ -73,10 +75,19 @@ class UrlService extends BaseService<UrlService.Options> {
     this.app.flux.emit(Events.URL_UPDATED, url);
   }
 
+  replaceHistory(url: string) {
+    WINDOW().history.replaceState({
+      url,
+      state: this.app.flux.store.getState(),
+      app: STOREFRONT_APP_ID
+    }, WINDOW().document.title, url);
+  }
+
   rewind = (event: PopStateEvent) => {
     const eventState = event.state;
     if (eventState && event.state.app === STOREFRONT_APP_ID) {
       this.refreshState(eventState.state);
+      this.app.flux.emit(Events.URL_UPDATED, WINDOW().location.href);
     }
   }
 
