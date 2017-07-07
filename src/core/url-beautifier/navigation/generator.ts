@@ -1,4 +1,3 @@
-import { Request } from 'groupby-api';
 import UrlBeautifier from '..';
 import { UrlGenerator } from '../handler';
 import * as utils from '../utils';

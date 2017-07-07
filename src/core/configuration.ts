@@ -1,5 +1,4 @@
 import FluxCapacitor from '@storefront/flux-capacitor';
-import { Request } from 'groupby-api';
 import { ServiceConfiguration } from '../services';
 import StoreFront from '../storefront';
 import DEFAULTS from './defaults';

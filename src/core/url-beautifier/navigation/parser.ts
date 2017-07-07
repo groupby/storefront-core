@@ -1,10 +1,9 @@
-import { Request } from 'groupby-api';
 import * as URLparse from 'url-parse';
 import UrlBeautifier from '..';
 import { UrlParser } from '../handler';
 import * as utils from '../utils';
 
-export default class NavigationUrlParser extends UrlParser<Request> {
+export default class NavigationUrlParser extends UrlParser<object> {
 
   parse = (url: string) => {
     const uri = URLparse(url);
