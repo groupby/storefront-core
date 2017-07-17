@@ -16,6 +16,7 @@ export default class System {
    */
   bootstrap(services: Service.Constructor.Map, config: Configuration) {
     config = this.app.config = Configuration.Transformer.transform(config);
+    this.app.riot = config.options.riot || Globals.getRiot()
     this.app.flux = new FluxCapacitor(config);
 
     const servicesConfig = config.services || {};

@@ -13,7 +13,7 @@ export default class StoreFront {
   static _instance: StoreFront;
   // static version: string = VERSION;
 
-  riot: typeof riot = this.config.options.riot || Globals.getRiot();
+  riot: typeof riot;
   register: (...args: any[]) => void = Tag.create(this.riot);
 
   log: typeof log;

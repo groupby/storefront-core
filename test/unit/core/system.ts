@@ -8,6 +8,8 @@ import * as utils from '../../../src/core/utils';
 import Globals from '../../../src/globals';
 import suite from '../_suite';
 
+const CONFIG: any = { y: 'z' };
+
 suite('System', ({ expect, spy, stub }) => {
   describe('constructor()', () => {
     it('should set app', () => {
@@ -21,27 +23,51 @@ suite('System', ({ expect, spy, stub }) => {
   describe('bootstrap()', () => {
     it('should transform config', () => {
       const app: any = { a: 'b' };
-      const config: any = { c: 'd' };
-      const finalConfig = { e: 'f' };
+      const finalConfig = { options: {} };
       const system = new System(app);
       const transform = stub(Configuration.Transformer, 'transform').returns(finalConfig);
       stub(fluxPkg, 'default');
 
-      system.bootstrap({}, config);
+      system.bootstrap({}, CONFIG);
 
       expect(app.config).to.eq(finalConfig);
-      expect(transform).to.be.calledWith(config);
+      expect(transform).to.be.calledWith(CONFIG);
+    });
+
+    it('should set riot instance', () => {
+      const app: any = { a: 'b' };
+      const riot = { e: 'f' };
+      const system = new System(app);
+      stub(Configuration.Transformer, 'transform').returns({ options: { riot } });
+      stub(fluxPkg, 'default');
+
+      system.bootstrap({}, CONFIG);
+
+      expect(app.riot).to.eq(riot);
+    });
+
+    it('should fallback to default riot instance', () => {
+      const app: any = { a: 'b' };
+      const riot = { e: 'f' };
+      const system = new System(app);
+      const transform = stub(Configuration.Transformer, 'transform').returns({ options: {} });
+      stub(Globals, 'getRiot').returns(riot);
+      stub(fluxPkg, 'default');
+
+      system.bootstrap({}, CONFIG);
+
+      expect(app.riot).to.eq(riot);
     });
 
     it('should initialize FluxCapacitor', () => {
       const app: any = { a: 'b' };
-      const config: any = { c: 'd' };
+      const config: any = { options: {} };
       const instance: any = { e: 'f' };
       const system = new System(app);
       const fluxCapacitor = stub(fluxPkg, 'default').returns(instance);
       stub(Configuration.Transformer, 'transform').returns(config);
 
-      system.bootstrap({}, <any>{});
+      system.bootstrap({}, CONFIG);
 
       expect(app.flux).to.eq(instance);
       expect(fluxCapacitor).to.be.calledWith(config);
@@ -54,10 +80,10 @@ suite('System', ({ expect, spy, stub }) => {
       const system = new System(app);
       const extractUserServices = stub(System, 'extractUserServices');
       const buildServices = stub(System, 'buildServices').returns(builtServices);
-      stub(Configuration.Transformer, 'transform').returns({});
+      stub(Configuration.Transformer, 'transform').returns({ options: {} });
       stub(fluxPkg, 'default');
 
-      system.bootstrap(services, <any>{});
+      system.bootstrap(services, CONFIG);
 
       expect(app.services).to.eq(builtServices);
       expect(extractUserServices).to.be.calledWith({});
@@ -71,10 +97,10 @@ suite('System', ({ expect, spy, stub }) => {
       const system = new System(app);
       const extractUserServices = stub(System, 'extractUserServices').returns(servicesConfig);
       const buildServices = stub(System, 'buildServices');
-      stub(Configuration.Transformer, 'transform').returns({ services: servicesConfig });
+      stub(Configuration.Transformer, 'transform').returns({ services: servicesConfig, options: {} });
       stub(fluxPkg, 'default');
 
-      system.bootstrap(services, <any>{});
+      system.bootstrap(services, CONFIG);
 
       expect(extractUserServices).to.be.calledWith(servicesConfig);
       expect(buildServices).to.be.calledWith(app, { a: 'b', c: 'd1', e: 'f' }, servicesConfig);
@@ -85,11 +111,11 @@ suite('System', ({ expect, spy, stub }) => {
       const service = { c: 'd' };
       const mockService = spy(() => service);
       const system = new System(app);
-      stub(Configuration.Transformer, 'transform').returns({ services: { mockService } });
+      stub(Configuration.Transformer, 'transform').returns({ services: { mockService }, options: {} });
       stub(fluxPkg, 'default');
       class MockService { }
 
-      system.bootstrap({}, <any>{});
+      system.bootstrap({}, CONFIG);
 
       expect(app.services.mockService).to.eq(service);
       expect(mockService).to.be.calledWith(app, {});
@@ -99,10 +125,10 @@ suite('System', ({ expect, spy, stub }) => {
       const bootstrap = spy();
       const app: any = {};
       const system = new System(app);
-      stub(Configuration.Transformer, 'transform').returns({ bootstrap });
+      stub(Configuration.Transformer, 'transform').returns({ bootstrap, options: {} });
       stub(fluxPkg, 'default');
 
-      system.bootstrap({}, <any>{});
+      system.bootstrap({}, CONFIG);
 
       expect(bootstrap.calledWith(app)).to.be.true;
     });
