@@ -12,20 +12,40 @@ export default class System {
   constructor(public app: StoreFront) { }
 
   /**
-   * allow client to modify system before services are initialized
+   * start services, fire up the flux-capacitor, initialize riot
    */
   bootstrap(services: Service.Constructor.Map, config: Configuration) {
-    config = this.app.config = Configuration.Transformer.transform(config);
-    this.app.riot = config.options.riot || Globals.getRiot()
-    this.app.flux = new FluxCapacitor(config);
-
-    const servicesConfig = config.services || {};
-    const allServices = { ...services, ...System.extractUserServices(servicesConfig) };
-    this.app.services = System.buildServices(this.app, allServices, servicesConfig);
+    config = this.initConfig(config);
+    this.initRiot();
+    this.initFlux();
+    this.createServices(services);
 
     if (typeof config.bootstrap === 'function') {
       config.bootstrap(this.app);
     }
+
+    this.initServices();
+    this.initMixin();
+    this.registerTags();
+  }
+
+  initConfig(config: Configuration) {
+    return this.app.config = Configuration.Transformer.transform(config);
+  }
+
+  initRiot() {
+    const riot = this.app.riot = this.app.config.options.riot || Globals.getRiot();
+    this.app.register = Tag.create(riot);
+  }
+
+  initFlux() {
+    this.app.flux = new FluxCapacitor(this.app.config);
+  }
+
+  createServices(services: Service.Constructor.Map) {
+    const servicesConfig = this.app.config.services || {};
+    const allServices = { ...services, ...System.extractUserServices(servicesConfig) };
+    this.app.services = System.buildServices(this.app, allServices, servicesConfig);
   }
 
   /**

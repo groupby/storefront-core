@@ -1,7 +1,6 @@
 import FluxCapacitor from '@storefront/flux-capacitor';
 import Configuration from './core/configuration';
 import System from './core/system';
-import Tag from './core/tag';
 import { log, riot } from './core/utils';
 import Globals from './globals';
 import { SystemServices } from './services';
@@ -14,8 +13,7 @@ export default class StoreFront {
   // static version: string = VERSION;
 
   riot: typeof riot;
-  register: (...args: any[]) => void = Tag.create(this.riot);
-
+  register: (...args: any[]) => void;
   log: typeof log;
   flux: FluxCapacitor;
   services: SystemServices;
@@ -28,11 +26,7 @@ export default class StoreFront {
     StoreFront._instance = this;
 
     const system = new System(this);
-
     system.bootstrap(services, config);
-    system.initServices();
-    system.initMixin();
-    system.registerTags();
 
     // this.log.info(`StoreFront v${VERSION} loaded! 🏬`);
     this.flux.store.dispatch(this.flux.actions.startApp());

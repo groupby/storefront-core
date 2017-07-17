@@ -55,18 +55,6 @@ suite('StoreFront', ({ expect, spy, stub }) => {
 
       expect(bootstrap).to.be.calledWith(services, { options: {} });
     });
-
-    it('should intialize services', () => {
-      new StoreFront(CONFIG); // tslint:disable-line:no-unused-new
-
-      expect(initServices).to.be.called;
-    });
-
-    it('should intialize base riot mixin', () => {
-      new StoreFront(CONFIG); // tslint:disable-line:no-unused-new
-
-      expect(initMixin).to.be.called;
-    });
   });
 
   describe('mount()', () => {

@@ -21,104 +21,26 @@ suite('System', ({ expect, spy, stub }) => {
   });
 
   describe('bootstrap()', () => {
-    it('should transform config', () => {
-      const app: any = { a: 'b' };
-      const finalConfig = { options: {} };
-      const system = new System(app);
-      const transform = stub(Configuration.Transformer, 'transform').returns(finalConfig);
-      stub(fluxPkg, 'default');
-
-      system.bootstrap({}, CONFIG);
-
-      expect(app.config).to.eq(finalConfig);
-      expect(transform).to.be.calledWith(CONFIG);
-    });
-
-    it('should set riot instance', () => {
-      const app: any = { a: 'b' };
-      const riot = { e: 'f' };
-      const system = new System(app);
-      stub(Configuration.Transformer, 'transform').returns({ options: { riot } });
-      stub(fluxPkg, 'default');
-
-      system.bootstrap({}, CONFIG);
-
-      expect(app.riot).to.eq(riot);
-    });
-
-    it('should fallback to default riot instance', () => {
-      const app: any = { a: 'b' };
-      const riot = { e: 'f' };
-      const system = new System(app);
-      const transform = stub(Configuration.Transformer, 'transform').returns({ options: {} });
-      stub(Globals, 'getRiot').returns(riot);
-      stub(fluxPkg, 'default');
-
-      system.bootstrap({}, CONFIG);
-
-      expect(app.riot).to.eq(riot);
-    });
-
-    it('should initialize FluxCapacitor', () => {
-      const app: any = { a: 'b' };
-      const config: any = { options: {} };
-      const instance: any = { e: 'f' };
-      const system = new System(app);
-      const fluxCapacitor = stub(fluxPkg, 'default').returns(instance);
-      stub(Configuration.Transformer, 'transform').returns(config);
-
-      system.bootstrap({}, CONFIG);
-
-      expect(app.flux).to.eq(instance);
-      expect(fluxCapacitor).to.be.calledWith(config);
-    });
-
-    it('should build services', () => {
-      const app: any = { a: 'b' };
-      const services: any = { c: 'd' };
-      const builtServices = { e: 'f' };
-      const system = new System(app);
-      const extractUserServices = stub(System, 'extractUserServices');
-      const buildServices = stub(System, 'buildServices').returns(builtServices);
-      stub(Configuration.Transformer, 'transform').returns({ options: {} });
-      stub(fluxPkg, 'default');
+    it('should call all bootstrap functions', () => {
+      const services: any = { a: 'b' };
+      const system = new System(<any>{});
+      const initConfig = system.initConfig = spy(() => ({ options: {} }));
+      const initRiot = system.initRiot = spy();
+      const initFlux = system.initFlux = spy();
+      const createServices = system.createServices = spy();
+      const initServices = system.initServices = spy();
+      const initMixin = system.initMixin = spy();
+      const registerTags = system.registerTags = spy();
 
       system.bootstrap(services, CONFIG);
 
-      expect(app.services).to.eq(builtServices);
-      expect(extractUserServices).to.be.calledWith({});
-      expect(buildServices).to.be.calledWith(app, services, {});
-    });
-
-    it('should allow overriding services', () => {
-      const app: any = { b: 'bd' };
-      const services: any = { a: 'b', c: 'd' };
-      const servicesConfig = { c: 'd1', e: 'f' };
-      const system = new System(app);
-      const extractUserServices = stub(System, 'extractUserServices').returns(servicesConfig);
-      const buildServices = stub(System, 'buildServices');
-      stub(Configuration.Transformer, 'transform').returns({ services: servicesConfig, options: {} });
-      stub(fluxPkg, 'default');
-
-      system.bootstrap(services, CONFIG);
-
-      expect(extractUserServices).to.be.calledWith(servicesConfig);
-      expect(buildServices).to.be.calledWith(app, { a: 'b', c: 'd1', e: 'f' }, servicesConfig);
-    });
-
-    it('should allow user-defined services', () => {
-      const app: any = { a: 'b' };
-      const service = { c: 'd' };
-      const mockService = spy(() => service);
-      const system = new System(app);
-      stub(Configuration.Transformer, 'transform').returns({ services: { mockService }, options: {} });
-      stub(fluxPkg, 'default');
-      class MockService { }
-
-      system.bootstrap({}, CONFIG);
-
-      expect(app.services.mockService).to.eq(service);
-      expect(mockService).to.be.calledWith(app, {});
+      expect(initConfig).to.be.calledWith(CONFIG);
+      expect(initRiot).to.be.called;
+      expect(initFlux).to.be.called;
+      expect(createServices).to.be.calledWith(services);
+      expect(initServices).to.be.called;
+      expect(initMixin).to.be.called;
+      expect(registerTags).to.be.called;
     });
 
     it('should call user bootstrap function if provided', () => {
@@ -131,6 +53,104 @@ suite('System', ({ expect, spy, stub }) => {
       system.bootstrap({}, CONFIG);
 
       expect(bootstrap.calledWith(app)).to.be.true;
+    });
+  });
+
+  describe('initConfig()', () => {
+    it('should return and set transformed config', () => {
+      const app: any = {};
+      const finalConfig = { options: {} };
+      const system = new System(app);
+      const transform = stub(Configuration.Transformer, 'transform').returns(finalConfig);
+
+      const config = system.initConfig(CONFIG);
+
+      expect(config).to.eq(finalConfig);
+      expect(app.config).to.eq(finalConfig);
+      expect(transform).to.be.calledWith(CONFIG);
+    });
+  });
+
+  describe('initRiot()', () => {
+    const riot = { a: 'b' };
+
+    it('should set riot instance', () => {
+      const app: any = { config: { options: { riot } } };
+      const system = new System(app);
+
+      system.initRiot();
+
+      expect(app.riot).to.eq(riot);
+    });
+
+    it('should fallback to default riot instance', () => {
+      const app: any = { config: { options: {} } };
+      const system = new System(app);
+      stub(Globals, 'getRiot').returns(riot);
+
+      system.initRiot();
+
+      expect(app.riot).to.eq(riot);
+    });
+  });
+
+  describe('initFlux()', () => {
+    it('should initialize FluxCapacitor', () => {
+      const config = { options: {} };
+      const app: any = { a: 'b', config };
+      const instance: any = { e: 'f' };
+      const system = new System(app);
+      const fluxCapacitor = stub(fluxPkg, 'default').returns(instance);
+
+      system.initFlux();
+
+      expect(app.flux).to.eq(instance);
+      expect(fluxCapacitor).to.be.calledWith(config);
+    });
+  });
+
+  describe('createServices()', () => {
+
+    it('should create services', () => {
+      const app: any = { config: CONFIG };
+      const services: any = { c: 'd' };
+      const builtServices = { e: 'f' };
+      const system = new System(app);
+      const extractUserServices = stub(System, 'extractUserServices');
+      const buildServices = stub(System, 'buildServices').returns(builtServices);
+      stub(fluxPkg, 'default');
+
+      system.createServices(services);
+
+      expect(app.services).to.eq(builtServices);
+      expect(extractUserServices).to.be.calledWith({});
+      expect(buildServices).to.be.calledWith(app, services, {});
+    });
+
+    it('should allow overriding services', () => {
+      const services: any = { a: 'b', c: 'd' };
+      const servicesConfig = { c: 'd1', e: 'f' };
+      const app: any = { config: { services: servicesConfig, options: {} } };
+      const system = new System(app);
+      const extractUserServices = stub(System, 'extractUserServices').returns(servicesConfig);
+      const buildServices = stub(System, 'buildServices');
+
+      system.createServices(services);
+
+      expect(extractUserServices).to.be.calledWith(servicesConfig);
+      expect(buildServices).to.be.calledWith(app, { a: 'b', c: 'd1', e: 'f' }, servicesConfig);
+    });
+
+    it('should allow user-defined services', () => {
+      const mockService = spy(() => service);
+      const app: any = { config: { services: { mockService }, options: {} } };
+      const service = { c: 'd' };
+      const system = new System(app);
+
+      system.createServices({});
+
+      expect(app.services.mockService).to.eq(service);
+      expect(mockService).to.be.calledWith(app, {});
     });
   });
 
