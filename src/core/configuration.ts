@@ -1,11 +1,11 @@
-import FluxCapacitor from '@storefront/flux-capacitor';
+import { Configuration as FluxConfiguration } from '@storefront/flux-capacitor';
 import { ServiceConfiguration } from '../services';
 import StoreFront from '../storefront';
 import DEFAULTS from './defaults';
 import { Structure } from './types';
 import * as utils from './utils';
 
-interface Configuration extends FluxCapacitor.Configuration {
+interface Configuration extends FluxConfiguration {
   structure?: Structure;
 
   tags?: { [key: string]: any };

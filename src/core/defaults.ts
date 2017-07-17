@@ -13,8 +13,20 @@ const DEFAULTS: Partial<Configuration> = {
 
   tags: {},
 
-  search: {},
-  autocomplete: {},
+  search: {
+    defaults: {},
+    overrides: {},
+  },
+  autocomplete: {
+    defaults: {
+      suggestions: {},
+      products: {}
+    },
+    overrides: {
+      suggestions: {},
+      products: {}
+    },
+  },
   network: {},
 
   services: {
