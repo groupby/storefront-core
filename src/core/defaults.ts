@@ -18,6 +18,10 @@ const DEFAULTS: Partial<Configuration> = {
     overrides: {},
   },
   autocomplete: {
+    productCount: 4,
+    navigationCount: 5,
+    suggestionCount: 5,
+
     defaults: {
       suggestions: {},
       products: {}
