@@ -15,7 +15,8 @@ class CollectionsService extends LazyService {
   fetchCollectionCounts = () => {
     const state = this.app.flux.store.getState();
     const selected = Selectors.collection(state);
-    state.data.collections.allIds.filter((collection) => collection !== selected)
+    Selectors.collections(state).allIds
+      .filter((collection) => collection !== selected)
       .forEach((collection) => this.app.flux.countRecords(collection));
   }
 }

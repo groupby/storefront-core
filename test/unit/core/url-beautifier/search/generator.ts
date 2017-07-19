@@ -9,19 +9,21 @@ suite('SearchUrlGenerator', ({ expect, stub }) => {
   let config: any;
   let generator: SearchUrlGenerator;
   let data = {
-    page: {
-      sizes: {
-        items: [12, 13, 14],
+    present: {
+      page: {
+        sizes: {
+          items: [12, 13, 14],
+          selected: 0
+        },
+        first: 1
+      },
+      sorts: {
+        items: [{ field: 'price', descending: true }, { field: 'price' }],
         selected: 0
       },
-      first: 1
-    },
-    sorts: {
-      items: [ { field: 'price', descending: true }, { field: 'price' }],
-      selected: 0
-    },
-    collections: {
-      selected: 'All'
+      collections: {
+        selected: 'All'
+      }
     }
   };
 
@@ -149,14 +151,14 @@ suite('SearchUrlGenerator', ({ expect, stub }) => {
     config.params = { sort: 'sort' };
 
     expect(generator.build(<any>{ ...REQUEST, sort: { field: 'price' } }))
-    .to.eq('/?sort=price:false');
+      .to.eq('/?sort=price:false');
   });
 
   it('should convert collection to a query parameter', () => {
     config.params = { collection: 'collection' };
 
     expect(generator.build(<any>{ ...REQUEST, collection: 'All Stuff' }))
-    .to.eq('/?collection=All-Stuff');
+      .to.eq('/?collection=All-Stuff');
   });
 
   it('should convert pageSize to a query parameter', () => {
@@ -176,7 +178,7 @@ suite('SearchUrlGenerator', ({ expect, stub }) => {
     config.params = { pageSize: 'page_size', page: 'page' };
 
     expect(generator.build(<any>{ ...REQUEST, pageSize: 30, page: 2 }))
-    .to.eq('/?page=2&page_size=30');
+      .to.eq('/?page=2&page_size=30');
   });
 
   it('should convert query with skip, page size and unmapped refinements to a URL without reference keys', () => {
@@ -189,7 +191,7 @@ suite('SearchUrlGenerator', ({ expect, stub }) => {
     config.params = { pageSize: 'page_size', page: 'page', refinements: 'refinements' };
 
     expect(generator.build(request))
-    .to.eq('/red-apples/dark-purple/colour?page=4&page_size=19&refinements=price:100..220');
+      .to.eq('/red-apples/dark-purple/colour?page=4&page_size=19&refinements=price:100..220');
   });
 
   it('should convert query with unmapped refinements to a URL with reference keys', () => {
@@ -218,7 +220,7 @@ suite('SearchUrlGenerator', ({ expect, stub }) => {
       collection: 'All',
       page: 1,
       pageSize: 12,
-      sort: data.sorts.items[data.sorts.selected],
+      sort: data.present.sorts.items[data.present.sorts.selected],
       refinements: [
         refinement('category', 'evening wear'),
         refinement('category', 'formal'),
@@ -250,7 +252,7 @@ suite('SearchUrlGenerator', ({ expect, stub }) => {
       config.refinementMapping = [{ c: 'colour' }, { b: 'brand' }, { h: 'category' }];
 
       expect(generator.build(<any>{ refinements }))
-      .to.eq(generator.build(<any>{ refinements: otherRefinements }));
+        .to.eq(generator.build(<any>{ refinements: otherRefinements }));
     });
 
     it('should create canonical URLs with multiple refinements on same field', () => {
@@ -258,12 +260,12 @@ suite('SearchUrlGenerator', ({ expect, stub }) => {
       config.refinementMapping = [{ b: 'brand' }];
 
       expect(generator.build(<any>{ refinements: [refinement('brand', 'Henson'), refinement('brand', 'De Walt')] }))
-      .to.have.eq('/De-Walt/Henson/bb');
+        .to.have.eq('/De-Walt/Henson/bb');
     });
 
     it('should create canonical query parameters', () => {
       expect(generator.build(<any>{ refinements: [ref1, ref2, ref3] }))
-      .to.eq(generator.build(<any>{ refinements: [ref3, ref1, ref2] }));
+        .to.eq(generator.build(<any>{ refinements: [ref3, ref1, ref2] }));
     });
 
     it('should combine mapped and unmapped refinements with query and suffix', () => {

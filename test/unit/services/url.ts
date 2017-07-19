@@ -237,10 +237,11 @@ suite('URL Service', ({ expect, spy, stub }) => {
       const collection = 'All';
       const pushState = spy();
       const build = spy(() => url);
-      const data = { page: { current: page } };
+      const data = { e: 'f' };
       win.history = { pushState };
       stub(Selectors, 'query').returns(query);
       stub(Selectors, 'pageSize').returns(pageSize);
+      stub(Selectors, 'page').returns(page);
       stub(Selectors, 'selectedRefinements').returns(refinements);
       stub(Selectors, 'sort').returns(sort);
       stub(Selectors, 'collection').returns(collection);
@@ -309,15 +310,17 @@ suite('URL Service', ({ expect, spy, stub }) => {
       it('should merge state properly when given new request', () => {
         const state: any = {
           data: {
-            a: 'b',
-            query: { c: 'd' },
-            page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 } },
-            navigations: { i: 'j' },
-            sorts: {
-              items: [{ field: 'price' }, { field: 'price', descending: true }],
-              selected: 0
-            },
-            collections: { selected: 0 }
+            present: {
+              a: 'b',
+              query: { c: 'd' },
+              page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 } },
+              navigations: { i: 'j' },
+              sorts: {
+                items: [{ field: 'price' }, { field: 'price', descending: true }],
+                selected: 0
+              },
+              collections: { selected: 0 }
+            }
           }
         };
         const request: any = {
@@ -337,29 +340,31 @@ suite('URL Service', ({ expect, spy, stub }) => {
 
         expect(newState).to.eql({
           data: {
-            a: 'b',
-            query: {
-              c: 'd',
-              original: 'grape ape'
-            },
-            page: {
-              e: 'f',
-              current: 14,
-              sizes: { g: 'h', items: [10, 20, 50], selected: 1 }
-            },
-            navigations: {
-              i: 'j',
-              allIds: ['brand', 'colour', 'price'],
-              byId: {
-                // tslint:disable-next-line max-line-length
-                brand: { field: 'brand', label: 'brand', range: false, refinements: [{ value: 'nike' }], selected: [0] },
-                // tslint:disable-next-line max-line-length
-                colour: { field: 'colour', label: 'colour', range: false, refinements: [{ value: 'orange' }], selected: [0] },
-                price: { field: 'price', label: 'price', range: true, refinements: [{ low: 20, high: 40 }], selected: [0] },
-              }
-            },
-            sorts: { items: [{ field: 'price' }, { field: 'price', descending: true }], selected: 1 },
-            collections: { selected: 0 }
+            present: {
+              a: 'b',
+              query: {
+                c: 'd',
+                original: 'grape ape'
+              },
+              page: {
+                e: 'f',
+                current: 14,
+                sizes: { g: 'h', items: [10, 20, 50], selected: 1 }
+              },
+              navigations: {
+                i: 'j',
+                allIds: ['brand', 'colour', 'price'],
+                byId: {
+                  // tslint:disable-next-line max-line-length
+                  brand: { field: 'brand', label: 'brand', range: false, refinements: [{ value: 'nike' }], selected: [0] },
+                  // tslint:disable-next-line max-line-length
+                  colour: { field: 'colour', label: 'colour', range: false, refinements: [{ value: 'orange' }], selected: [0] },
+                  price: { field: 'price', label: 'price', range: true, refinements: [{ low: 20, high: 40 }], selected: [0] },
+                }
+              },
+              sorts: { items: [{ field: 'price' }, { field: 'price', descending: true }], selected: 1 },
+              collections: { selected: 0 }
+            }
           }
         });
       });
@@ -371,15 +376,17 @@ suite('URL Service', ({ expect, spy, stub }) => {
             searchId
           },
           data: {
-            a: 'b',
-            query: { c: 'd', original: 'whatever' },
-            page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 }, current: 10 },
-            navigations: { i: 'j', allIds: ['brand', 'format'], byId: { brand: {}, format: {} } },
-            sorts: {
-              items: [{ field: 'price' }, { field: 'price', descending: true }],
-              selected: 0
-            },
-            collections: { selected: 0 }
+            present: {
+              a: 'b',
+              query: { c: 'd', original: 'whatever' },
+              page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 }, current: 10 },
+              navigations: { i: 'j', allIds: ['brand', 'format'], byId: { brand: {}, format: {} } },
+              sorts: {
+                items: [{ field: 'price' }, { field: 'price', descending: true }],
+                selected: 0
+              },
+              collections: { selected: 0 }
+            }
           }
         };
         const request: any = { refinements: [] };

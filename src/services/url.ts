@@ -98,7 +98,7 @@ class UrlService extends BaseService<UrlService.Options> {
   static searchUrlState(state: Store.State): UrlBeautifier.SearchUrlState {
     return {
       query: Selectors.query(state),
-      page: state.data.page.current,
+      page: Selectors.page(state),
       pageSize: Selectors.pageSize(state),
       refinements: Selectors.selectedRefinements(state).map((refinement) => {
         if ('value' in refinement) {
@@ -126,9 +126,9 @@ class UrlService extends BaseService<UrlService.Options> {
   }
 
   static mergeSearchState(state: Store.State, request: UrlBeautifier.SearchUrlState) {
-    const dataState = state.data;
-    const pageSizeIndex = dataState.page.sizes.items.indexOf(request.pageSize);
-    const currentSortIndex = dataState.sorts.items.findIndex((sort) => {
+    const presentState = state.data.present;
+    const pageSizeIndex = Selectors.pageSizes(state).items.indexOf(request.pageSize);
+    const currentSortIndex = Selectors.sorts(state).items.findIndex((sort) => {
       if (request.sort && sort.field === request.sort.field) {
         return !!sort['descending'] === request.sort.descending;
       }
@@ -163,31 +163,34 @@ class UrlService extends BaseService<UrlService.Options> {
     return {
       ...state,
       data: {
-        ...dataState,
-        query: {
-          ...dataState.query,
-          original: request.query || dataState.query.original
-        },
-        page: {
-          ...dataState.page,
-          current: request.page || dataState.page.current,
-          sizes: {
-            ...dataState.page.sizes,
-            selected: pageSizeIndex === -1 ? dataState.page.sizes.selected : pageSizeIndex
+        ...state.data,
+        present: {
+          ...presentState,
+          query: {
+            ...presentState.query,
+            original: request.query || Selectors.query(state)
+          },
+          page: {
+            ...presentState.page,
+            current: request.page || Selectors.page(state),
+            sizes: {
+              ...Selectors.pageSizes(state),
+              selected: pageSizeIndex === -1 ? Selectors.pageSizeIndex(state) : pageSizeIndex
+            }
+          },
+          collections: {
+            ...Selectors.collections(state),
+            selected: request.collection || Selectors.collection(state)
+          },
+          sorts: {
+            ...Selectors.sorts(state),
+            selected: currentSortIndex === -1 ? Selectors.sortIndex(state) : currentSortIndex
+          },
+          navigations: {
+            ...presentState.navigations,
+            allIds: navigationsAllIds.length > 0 ? navigationsAllIds : presentState.navigations.allIds,
+            byId: Object.keys(navigationsByIds).length > 0 ? navigationsByIds : presentState.navigations.byId
           }
-        },
-        collections: {
-          ...dataState.collections,
-          selected: request.collection || dataState.collections.selected
-        },
-        sorts: {
-          ...dataState.sorts,
-          selected: currentSortIndex === -1 ? dataState.sorts.selected : currentSortIndex
-        },
-        navigations: {
-          ...dataState.navigations,
-          allIds: navigationsAllIds.length > 0 ? navigationsAllIds : dataState.navigations.allIds,
-          byId: Object.keys(navigationsByIds).length > 0 ? navigationsByIds : dataState.navigations.byId
         }
       }
     };

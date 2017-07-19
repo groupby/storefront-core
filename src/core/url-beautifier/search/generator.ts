@@ -8,7 +8,7 @@ export default class SearchUrlGenerator extends UrlGenerator<UrlBeautifier.Searc
   build = (state: UrlBeautifier.SearchUrlState) => {
     const path = [];
     const query = {};
-    const initialState = Adapters.Configuration.initialState(this.beautifier.appConfig).data;
+    const initialState: Store.State = <any>Adapters.Configuration.initialState(this.beautifier.appConfig);
 
     // layman's clone
     state = { ...state, refinements: [...state.refinements] };
@@ -28,7 +28,7 @@ export default class SearchUrlGenerator extends UrlGenerator<UrlBeautifier.Searc
     }
 
     if ('pageSize' in state) {
-      const initialSizes = initialState.page.sizes;
+      const initialSizes = Selectors.pageSizes(initialState);
       const initialPageSize = initialSizes.items[initialSizes.selected];
       const pageSize = state.pageSize;
       if (initialPageSize !== pageSize) {
@@ -37,12 +37,12 @@ export default class SearchUrlGenerator extends UrlGenerator<UrlBeautifier.Searc
     }
     if ('page' in state) {
       const page = state.page;
-      if (initialState.page.first !== state.page) {
+      if (initialState.data.present.page.first !== state.page) {
         query[this.config.params.page] = page;
       }
     }
     if ('sort' in state) {
-      const initialSorts = initialState.sorts;
+      const initialSorts = Selectors.sorts(initialState);
       const initialSort = initialSorts.items[initialSorts.selected];
       const sort = state.sort;
       if (initialSort.field !== sort.field || initialSort.descending !== sort.descending) {
@@ -50,7 +50,7 @@ export default class SearchUrlGenerator extends UrlGenerator<UrlBeautifier.Searc
       }
     }
     if ('collection' in state) {
-      const initialCollection = initialState.collections.selected;
+      const initialCollection = Selectors.collection(initialState);
       const collection = state.collection;
       if (initialCollection !== collection) {
         query[this.config.params.collection] = utils.encodeChars(state.collection);
