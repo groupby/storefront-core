@@ -1,4 +1,4 @@
-import { camelCase } from 'lodash';
+import * as camelCase from 'lodash.camelcase';
 import Tag, { TAG_DESC, TAG_META } from '.';
 import StoreFront from '../../storefront';
 import Lifecycle from './lifecycle';
