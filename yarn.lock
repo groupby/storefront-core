@@ -39,9 +39,9 @@
     conventional-changelog "0.0.17"
     github-url-from-git "^1.4.0"
 
-"@storefront/flux-capacitor@1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@storefront/flux-capacitor/-/flux-capacitor-1.5.1.tgz#8f4983ddcedb91302b06a5206b3ccca7e28e56cb"
+"@storefront/flux-capacitor@1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@storefront/flux-capacitor/-/flux-capacitor-1.5.2.tgz#1c016b0f63f0c822066c80d03af8e788080998fe"
   dependencies:
     "@manaflair/redux-batch" "^0.1.0"
     "@types/redux-logger" "^3.0.0"
@@ -53,7 +53,7 @@
     redux-saga "^0.15.4"
     redux-undo "^0.6.1"
     redux-validator "^0.2.1"
-    sayt "^0.1.7"
+    sayt "^0.1.8"
     uuid "^3.1.0"
 
 "@types/axios@^0.9.35":
@@ -76,6 +76,10 @@
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/@types/deep-equal/-/deep-equal-0.0.30.tgz#c14df825c9201a1804980e7ebc3ef30e137bb64c"
 
+"@types/es6-shim@^0.31.33":
+  version "0.31.34"
+  resolved "https://registry.yarnpkg.com/@types/es6-shim/-/es6-shim-0.31.34.tgz#6ef768f9899d2f5aca2c19d19a96f637f2a16430"
+
 "@types/js-cookie@^2.0.28":
   version "2.0.28"
   resolved "https://registry.yarnpkg.com/@types/js-cookie/-/js-cookie-2.0.28.tgz#d6a9136d699257970fc74d899cd7b12a608d14da"
@@ -91,6 +95,10 @@
 "@types/mocha@^2.2.40", "@types/mocha@^2.2.41":
   version "2.2.41"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-2.2.41.tgz#e27cf0817153eb9f2713b2d3f6c68f1e1c3ca608"
+
+"@types/node@^7.0.14":
+  version "7.0.39"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.39.tgz#8aced4196387038113f6f9aa4014ab4c51edab3c"
 
 "@types/node@^8.0.0":
   version "8.0.4"
@@ -1159,9 +1167,9 @@ es6-object-assign@^1.0.3:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/es6-object-assign/-/es6-object-assign-1.1.0.tgz#c2c3582656247c39ea107cb1e6652b6f9f24523c"
 
-es6-promise@^3.1.2:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-3.3.1.tgz#a08cdde84ccdbf34d027a1451bc91d4bcd28a613"
+es6-promise@^4.1.0:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-4.1.1.tgz#8811e90915d9a0dba36274f0b242dbda78f9c92a"
 
 es6-set@~0.1.5:
   version "0.1.5"
@@ -3412,12 +3420,14 @@ samsam@1.x, samsam@^1.1.3:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/samsam/-/samsam-1.2.1.tgz#edd39093a3184370cb859243b2bdf255e7d8ea67"
 
-sayt@^0.1.7:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/sayt/-/sayt-0.1.7.tgz#bab2ef8a59e00164c629031b0cc4f54bd91cd27c"
+sayt@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/sayt/-/sayt-0.1.8.tgz#7a8705a195f73157d8b4c1d1e7e2e0eb49eee148"
   dependencies:
+    "@types/es6-shim" "^0.31.33"
+    "@types/node" "^7.0.14"
     es6-object-assign "^1.0.3"
-    es6-promise "^3.1.2"
+    es6-promise "^4.1.0"
     filter-object "^2.1.0"
     jsonp "^0.2.0"
     qs "^6.2.0"
@@ -4037,11 +4047,7 @@ typescript-compiler@^1.4.1-2:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/typescript-compiler/-/typescript-compiler-1.4.1.tgz#3639a276d7f3bc97ddbe121fd933713d475a9aa8"
 
-typescript@^2.3.3:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.4.1.tgz#c3ccb16ddaa0b2314de031e7e6fee89e5ba346bc"
-
-typescript@^2.4.2:
+typescript@^2.3.3, typescript@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.4.2.tgz#f8395f85d459276067c988aa41837a8f82870844"
 
