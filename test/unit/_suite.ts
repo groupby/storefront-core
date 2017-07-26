@@ -9,18 +9,21 @@ export interface Utils {
   stub: sinon.SinonStubStatic;
 }
 
-export default suite<Utils, any>((tests) => {
-  let sandbox: sinon.SinonSandbox;
+export const extendable = <T extends Utils>(extendUtils: (utils: Utils) => T) =>
+  suite<T, any>((tests) => {
+    let sandbox: sinon.SinonSandbox;
 
-  beforeEach(() => sandbox = sinon.sandbox.create());
-  afterEach(() => sandbox.restore());
+    beforeEach(() => sandbox = sinon.sandbox.create());
+    afterEach(() => sandbox.restore());
 
-  tests({
-    expect,
-    spy: (...args) => (<any>sandbox.spy)(...args),
-    stub: (...args) => (<any>sandbox.stub)(...args)
+    tests(extendUtils({
+      expect,
+      spy: (...args) => (<any>sandbox.spy)(...args),
+      stub: (...args) => (<any>sandbox.stub)(...args),
+    }));
   });
-});
+
+export default extendable((_) => _);
 
 export function refinement(field: string, value: any): UrlBeautifier.ValueRefinement;
 export function refinement(field: string, low: number, high: number): UrlBeautifier.RangeRefinement;

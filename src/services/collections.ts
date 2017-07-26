@@ -10,7 +10,7 @@ class CollectionsService extends LazyService {
     this.app.flux.on(Events.RECALL_CHANGED, this.waitForResults);
   }
 
-  waitForResults = () => this.app.flux.once(Events.FETCH_SEARCH_DONE, this.fetchCollectionCounts);
+  waitForResults = () => this.app.flux.once(Events.PRODUCTS_UPDATED, this.fetchCollectionCounts);
 
   fetchCollectionCounts = () => {
     const state = this.app.flux.store.getState();

@@ -4,6 +4,7 @@ import autocomplete from './autocomplete';
 import collections from './collections';
 import details from './details';
 import logging from './logging';
+import recommendations from './recommendations';
 import search from './search';
 import tracker from './tracker';
 import url from './url';
@@ -16,6 +17,7 @@ const SERVICES: Service.Constructor.Map = {
   collections,
   details,
   tracker,
+  recommendations,
 };
 
 export default SERVICES;
@@ -29,6 +31,7 @@ export interface ServiceConfiguration {
   details?: Service.Options<any>;
   url?: Service.Options<any>;
   tracker?: Service.Options<tracker.Options>;
+  recommendations?: Service.Options<any>;
 }
 
 export interface CoreServices {
@@ -39,6 +42,7 @@ export interface CoreServices {
   details: details;
   url: url;
   tracker: tracker;
+  recommendations: recommendations;
 }
 
 export type SystemServices = CoreServices & Service.Map;

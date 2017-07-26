@@ -3,6 +3,7 @@ import autocomplete from '../../../src/services/autocomplete';
 import collections from '../../../src/services/collections';
 import details from '../../../src/services/details';
 import logging from '../../../src/services/logging';
+import recommendations from '../../../src/services/recommendations';
 import search from '../../../src/services/search';
 import tracker from '../../../src/services/tracker';
 import url from '../../../src/services/url';
@@ -17,6 +18,7 @@ suite('Services', ({ expect }) => {
         collections,
         details,
         logging,
+        recommendations,
         search,
         tracker,
         url

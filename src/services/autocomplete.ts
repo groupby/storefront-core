@@ -2,6 +2,7 @@ import FluxCapacitor, { Events, Selectors, Store } from '@storefront/flux-capaci
 import { core } from '../core/service';
 import LazyService from '../core/service/lazy';
 import Tag from '../core/tag';
+import { WINDOW } from '../core/utils';
 import StoreFront from '../storefront';
 
 @core
@@ -12,6 +13,9 @@ class AutocompleteService extends LazyService {
 
   lazyInit() {
     this.app.flux.on(Events.AUTOCOMPLETE_QUERY_UPDATED, this.updateSearchTerms);
+    if (this.app.config.autocomplete.recommendations.location) {
+      this.app.flux.once(Events.AUTOCOMPLETE_QUERY_UPDATED, this.requestLocation);
+    }
   }
 
   lazyInitProducts() {
@@ -32,11 +36,18 @@ class AutocompleteService extends LazyService {
     return this.registeredAutocompleteTags.some((tag) => tag.isActive());
   }
 
-  updateSearchTerms = (query: string) =>
-    this.app.flux.saytSuggestions(query)
+  updateSearchTerms = (query: string) => this.app.flux.saytSuggestions(query);
 
-  updateProducts = ({ suggestions: [suggestion] }: Store.Autocomplete) =>
-    this.app.flux.saytProducts(suggestion)
+  updateProducts = ({ suggestions }: Store.Autocomplete) => {
+    if (suggestions && suggestions.length !== 0) {
+      this.app.flux.saytProducts(suggestions[0].value);
+    }
+  }
+
+  requestLocation = () => WINDOW().navigator.geolocation.getCurrentPosition((position) => {
+    const { latitude, longitude } = position.coords;
+    this.app.flux.store.dispatch(this.app.flux.actions.updateLocation({ latitude, longitude }));
+  }, (e) => this.app.log.error('unable to get location', e))
 }
 
 export default AutocompleteService;

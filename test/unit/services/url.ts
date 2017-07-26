@@ -4,9 +4,9 @@ import { BaseService, CORE } from '../../../src/core/service';
 import * as UrlBeautifier from '../../../src/core/url-beautifier';
 import * as utils from '../../../src/core/utils';
 import Service, { STOREFRONT_APP_ID } from '../../../src/services/url';
-import suite from '../_suite';
+import suite from './_suite';
 
-suite('URL Service', ({ expect, spy, stub }) => {
+suite('URL Service', ({ expect, spy, stub, itShouldBeCore }) => {
   const routes = { a: 'b' };
   const beautifier = { refinementMapping: [], queryToken: 'q' };
   let service: Service;
@@ -26,9 +26,7 @@ suite('URL Service', ({ expect, spy, stub }) => {
     expect(service).to.be.an.instanceOf(BaseService);
   });
 
-  it('should be a core service', () => {
-    expect(Service[CORE]).to.be.true;
-  });
+  itShouldBeCore(Service);
 
   it('should create a new URL Beautifier', () => {
     expect(urlBeautifier).to.be.calledWith(routes, beautifier);

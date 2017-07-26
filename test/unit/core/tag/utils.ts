@@ -1,4 +1,3 @@
-import * as sinon from 'sinon';
 import Tag, { TAG_DESC } from '../../../../src/core/tag';
 import Lifecycle from '../../../../src/core/tag/lifecycle';
 import utils from '../../../../src/core/tag/utils';

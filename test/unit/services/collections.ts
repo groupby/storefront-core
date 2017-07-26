@@ -2,12 +2,14 @@ import { Events, Selectors } from '@storefront/flux-capacitor';
 import { BaseService } from '../../../src/core/service';
 import Service from '../../../src/services/collections';
 import * as collectionsService from '../../../src/services/collections';
-import suite from '../_suite';
+import suite from './_suite';
 
-suite('Collections Service', ({ expect, spy, stub }) => {
+suite('Collections Service', ({ expect, spy, stub, itShouldBeCore }) => {
   let service: Service;
 
   beforeEach(() => service = new Service(<any>{}, <any>{}));
+
+  itShouldBeCore(Service);
 
   it('should extend BaseService', () => {
     expect(service).to.be.an.instanceOf(BaseService);
@@ -31,7 +33,7 @@ suite('Collections Service', ({ expect, spy, stub }) => {
 
       service.waitForResults();
 
-      expect(once).to.be.calledWith(Events.FETCH_SEARCH_DONE, service.fetchCollectionCounts);
+      expect(once).to.be.calledWith(Events.PRODUCTS_UPDATED, service.fetchCollectionCounts);
     });
   });
 

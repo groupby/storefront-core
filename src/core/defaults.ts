@@ -21,7 +21,11 @@ const DEFAULTS: Partial<Configuration> = {
     productCount: 4,
     navigationCount: 5,
     suggestionCount: 5,
-
+    recommendations: {
+      suggestionCount: 2,
+      suggestionMode: 'popular',
+      location: true,
+    },
     defaults: {
       suggestions: {},
       products: {}
@@ -30,6 +34,12 @@ const DEFAULTS: Partial<Configuration> = {
       suggestions: {},
       products: {}
     },
+  },
+  recommendations: {
+    idField: 'productId',
+    productCount: 4,
+    // TODO: switch to 'popular' once endpoint response format is fixed
+    mode: 'trending'
   },
   network: {},
 

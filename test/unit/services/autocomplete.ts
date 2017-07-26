@@ -1,26 +1,47 @@
 import { Events } from '@storefront/flux-capacitor';
+import * as sinon from 'sinon';
 import { BaseService } from '../../../src/core/service';
+import * as utils from '../../../src/core/utils';
 import Service from '../../../src/services/autocomplete';
 import * as autocompleteService from '../../../src/services/autocomplete';
-import suite from '../_suite';
+import suite from './_suite';
 
-suite('Autocomplete Service', ({ expect, spy }) => {
+suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore }) => {
   let service: Service;
 
   beforeEach(() => service = new Service(<any>{}, <any>{}));
 
-  it('should extend BaseService', () => {
-    expect(service).to.be.an.instanceOf(BaseService);
+  itShouldBeCore(Service);
+
+  describe('constructor()', () => {
+    it('should extend BaseService', () => {
+      expect(service).to.be.an.instanceOf(BaseService);
+    });
   });
 
   describe('lazyInit()', () => {
     it('should listen for AUTOCOMPLETE_QUERY_UPDATED event', () => {
       const on = spy();
-      service['app'] = <any>{ flux: { on } };
+      service['app'] = <any>{
+        flux: { on, once: () => expect.fail() },
+        config: { autocomplete: { recommendations: {} } }
+      };
 
       service.lazyInit();
 
       expect(on).to.be.calledWith(Events.AUTOCOMPLETE_QUERY_UPDATED, service.updateSearchTerms);
+    });
+
+    it('should prepare to request location if configured', () => {
+      const once = spy();
+      service['app'] = <any>{
+        flux: { once, on: () => null },
+        config: { autocomplete: { recommendations: { location: true } } }
+      };
+
+      service.lazyInit();
+
+      expect(once).to.be.calledWith(Events.AUTOCOMPLETE_QUERY_UPDATED, service.requestLocation);
     });
   });
 
@@ -102,9 +123,55 @@ suite('Autocomplete Service', ({ expect, spy }) => {
       const saytProducts = spy();
       service['app'] = <any>{ flux: { saytProducts } };
 
-      service.updateProducts(<any>{ suggestions: [query] });
+      service.updateProducts(<any>{ suggestions: [{ value: query }] });
 
       expect(saytProducts).to.be.calledWith(query);
+    });
+
+    it('should check for first suggestion', () => {
+      service['app'] = <any>{ flux: { saytProducts: () => expect.fail() } };
+
+      service.updateProducts(<any>{ suggestions: [] });
+    });
+  });
+
+  describe('requestLocation()', () => {
+    it('should store location when successful', () => {
+      const getCurrentPosition = spy();
+      stub(utils, 'WINDOW').returns({ navigator: { geolocation: { getCurrentPosition } } });
+
+      service.requestLocation();
+
+      expect(getCurrentPosition).to.be.calledWith(sinon.match((cb) => {
+        const dispatch = spy();
+        const updateLocationAction = { a: 'b' };
+        const updateLocation = spy(() => updateLocationAction);
+        const latitude = 142.312;
+        const longitude = -45.511;
+        service['app'] = <any>{ flux: { store: { dispatch }, actions: { updateLocation } } };
+
+        cb({ coords: { latitude, longitude } });
+
+        expect(updateLocation).to.be.calledWith({ latitude, longitude });
+        return expect(dispatch).to.be.calledWith(updateLocationAction);
+      }), sinon.match.func);
+    });
+
+    it('should log error when unsuccessful', () => {
+      const getCurrentPosition = spy();
+      stub(utils, 'WINDOW').returns({ navigator: { geolocation: { getCurrentPosition } } });
+
+      service.requestLocation();
+
+      expect(getCurrentPosition).to.be.calledWith(sinon.match.func, sinon.match((cb) => {
+        const error = new Error();
+        const log = spy();
+        service['app'] = <any>{ log: { error: log } };
+
+        cb(error);
+
+        return expect(log).to.be.calledWith('unable to get location', error);
+      }));
     });
   });
 });

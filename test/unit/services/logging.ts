@@ -1,13 +1,11 @@
 import { BaseService, CORE } from '../../../src/core/service';
 import { log } from '../../../src/core/utils';
 import Service from '../../../src/services/logging';
-import suite from '../_suite';
+import suite from './_suite';
 
-suite('Logging Service', ({ expect, stub }) => {
+suite('Logging Service', ({ expect, stub, itShouldBeCore }) => {
 
-  it('should be a core service', () => {
-    expect(Service[CORE]).to.be.true;
-  });
+  itShouldBeCore(Service);
 
   describe('constructor()', () => {
     it('should extend BaseService', () => {
