@@ -1,5 +1,8 @@
-defaults: &cache
-  key: node_cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+defaults:
+  node_cache: &node_cache
+    key: node_cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+  build_cache: &build_cache
+    key: build_cache-{{ .Branch }}-{{ epoch }}
 
 version: 2
 
@@ -10,7 +13,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          <<: *cache
+          <<: *node_cache
       - run:
           name: Dependencies
           command: yarn global add greenkeeper-lockfile@1
@@ -18,7 +21,7 @@ jobs:
           name: Install
           command: yarn
       - save_cache:
-          <<: *cache
+          <<: *node_cache
           paths:
             - ~/project/node_modules
       - run:
@@ -30,13 +33,18 @@ jobs:
       - run:
           name: Upload Lockfile
           command: greenkeeper-lockfile-upload
+      - save_cache:
+          <<: *build_cache
+          paths:
+            - ~/project/dist
+            - ~/project/esnext
   unit_test:
     docker:
       - image: kkarczmarczyk/node-yarn
     steps:
       - checkout
       - restore_cache:
-          <<: *cache
+          <<: *node_cache
       - run:
           name: Test
           command: yarn start ci
@@ -46,17 +54,19 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          <<: *cache
+          <<: *node_cache
+      - restore_cache:
+          key: build_cache
       - run:
           name: Release
-          command: 'yarn start release || true'
+          command: yarn start release || true
   documentation:
     docker:
       - image: kkarczmarczyk/node-yarn
     steps:
       - checkout
       - restore_cache:
-          <<: *cache
+          <<: *node_cache
       - restore_cache:
           key: docs_cache
       - run:
