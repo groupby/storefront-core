@@ -1,14 +1,16 @@
+defaults: &cache
+  key: node_cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+
 version: 2
 
 jobs:
   build:
-    working_directory: ~/storefront-core
     docker:
       - image: kkarczmarczyk/node-yarn
     steps:
       - checkout
       - restore_cache:
-          key: storefront-core-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          <<: *cache
       - run:
           name: Dependencies
           command: yarn global add greenkeeper-lockfile@1
@@ -16,18 +18,97 @@ jobs:
           name: Install
           command: yarn
       - save_cache:
-          key: storefront-core-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          <<: *cache
           paths:
-            - ~/node_modules
+            - ~/project/node_modules
       - run:
           name: Update Lockfile
           command: greenkeeper-lockfile-update
       - run:
-          name: Test
-          command: yarn start ci
-      - run:
-          name: Release
-          command: yarn start release || true
+          name: Build
+          command: yarn start build
       - run:
           name: Upload Lockfile
           command: greenkeeper-lockfile-upload
+  unit_test:
+    docker:
+      - image: kkarczmarczyk/node-yarn
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *cache
+      - run:
+          name: Test
+          command: yarn start ci
+  release:
+    docker:
+      - image: kkarczmarczyk/node-yarn
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *cache
+      - run:
+          name: Release
+          command: 'yarn start release || true'
+  documentation:
+    docker:
+      - image: kkarczmarczyk/node-yarn
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *cache
+      - restore_cache:
+          key: docs_cache
+      - run:
+          name: Documentation
+          command: |
+            set +e
+
+            git config --global user.email "ops@groupbyinc.com"
+            git config --global user.name "GroupBy Ops"
+            git config --global push.default simple
+
+            git remote rm origin
+            git remote add origin "https://${GH_TOKEN}@github.com/groupby/${CIRCLE_PROJECT_REPONAME}.git"
+
+            if [ -e component.docs.json ]; then
+              mv component.docs.json old-component.docs.json
+            else
+              touch old-component.docs.json
+            fi
+
+            yarn docs:json
+            DIFF=$(diff component.docs.json old-component.docs.json)
+            if [ "$DIFF" != "" ]; then
+              yarn docs
+              git add docs
+              git commit -m "docs: regenerate documentation" && git push -u origin master || true
+            else
+              echo "no change in generated documentation"
+            fi
+      - save_cache:
+          key: docs_cache-{{ checksum "component.docs.json" }}
+          paths:
+            - ~/project/component.docs.json
+
+workflows:
+  version: 2
+
+  build_test_release:
+    jobs:
+      - build
+      - unit_test:
+          requires:
+            - build
+      - release:
+          filters:
+            branches:
+              only: master
+          requires:
+            - unit_test
+      - documentation:
+          filters:
+            branches:
+              only: master
+          requires:
+            - release

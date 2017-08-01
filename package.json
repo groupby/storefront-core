@@ -27,7 +27,9 @@
     "test": "npm start test",
     "tdd": "npm start tdd",
     "prepush": "npm start prepush",
-    "prepublish": "npm start build && npm run esnext"
+    "prepublish": "npm start build && npm run esnext",
+    "docs": "typedoc src/**/*.ts",
+    "docs:json": "npm run docs -- --json component.docs.json"
   },
   "release": {
     "verifyConditions": "condition-circle"
@@ -63,6 +65,7 @@
     "start-simple-cli": "^4.1.1",
     "tslint": "^5.2.0",
     "tslint-config-groupby": "^1.0.0",
+    "typedoc": "^0.8.0",
     "typescript": "^2.4.2"
   },
   "dependencies": {
