@@ -13,7 +13,7 @@ namespace Globals {
   }
 
   export function get(key: string | symbol, defaultValue?: any) {
-    return key in GLOBALS ? GLOBALS[key] : defaultValue;
+    return GLOBALS[key] || defaultValue;
   }
 
   export function getTags() {
