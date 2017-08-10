@@ -18,9 +18,11 @@ const DEFAULTS: Partial<Configuration> = {
     overrides: {},
   },
   autocomplete: {
-    productCount: 4,
     navigationCount: 5,
     suggestionCount: 5,
+    products: {
+      count: 4,
+    },
     recommendations: {
       suggestionCount: 2,
       suggestionMode: 'popular',
