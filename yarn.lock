@@ -1597,9 +1597,9 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
-gb-tracker-client@^3.4.3:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/gb-tracker-client/-/gb-tracker-client-3.5.0.tgz#951869c285f1ab37297723d5bde4eac378007eb3"
+gb-tracker-client@^3.5.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/gb-tracker-client/-/gb-tracker-client-3.5.2.tgz#39e5d2f79fda48be08242c7541ef4191626845dd"
   dependencies:
     cookies-js "^1.2.3"
     deep-diff "^0.3.4"

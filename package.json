@@ -78,7 +78,7 @@
     "@types/riot": "^2.6.2",
     "clone": "^2.1.1",
     "deep-assign": "^2.0.0",
-    "gb-tracker-client": "^3.4.3",
+    "gb-tracker-client": "^3.5.2",
     "js-cookie": "^2.1.4",
     "lodash.camelcase": "^4.3.0",
     "loglevel": "^1.4.1",
