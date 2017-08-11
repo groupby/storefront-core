@@ -1,7 +1,22 @@
 {
+  "ignore": [
+    "**/node_modules/**",
+    "**/docs/**",
+    "**/custom_typings/**"
+  ],
+  "test": [
+    "**/test/**"
+  ],
+  "critics": {
+    "lint": {
+      "engine": "tslint"
+    }
+  },
   "dependencies": {
     "unused-ignores": [
-      "@types/*"
+      "@types/*",
+      "lodash.camelcase",
+      "js-cookie"
     ]
   }
 }
