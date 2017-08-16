@@ -26,7 +26,6 @@ suite('TagUtils', ({ expect, spy, stub }) => {
       const clazz = () => null;
       const tag: any = { a: 'b', trigger: () => null, init };
       const initializer = stub(utils, 'initializer').returns(() => null);
-      stub(utils, 'primeTagActions');
 
       utils.bindController(tag, clazz);
 
