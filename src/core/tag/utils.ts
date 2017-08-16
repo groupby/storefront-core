@@ -1,4 +1,5 @@
 import * as camelCase from 'lodash.camelcase';
+import * as riot from 'riot';
 import Tag, { TAG_DESC, TAG_META } from '.';
 import StoreFront from '../../storefront';
 import Lifecycle from './lifecycle';
