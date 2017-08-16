@@ -28,6 +28,7 @@ const DEFAULTS: Partial<Configuration> = {
       suggestionMode: 'popular',
       location: true,
     },
+    navigations: {},
     defaults: {
       suggestions: {},
       products: {}
