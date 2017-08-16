@@ -67,6 +67,14 @@ namespace TagUtils {
         .forEach((name) => Object.defineProperty(target, name, Object.getOwnPropertyDescriptor(superclass.prototype, name)));
     }
   }
+
+  export function setMetadata(target: any, key: string, value: any) {
+    const description = Tag.getDescription(target);
+    Tag.setDescription(target, {
+      ...description,
+      metadata: { ...description.metadata, [key]: value }
+    });
+  }
 }
 
 export default TagUtils;

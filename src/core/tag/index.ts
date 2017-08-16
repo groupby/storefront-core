@@ -84,7 +84,11 @@ namespace Tag {
   }
 
   export function getDescription(target: any): Description {
-    return target[TAG_DESC] = target[TAG_DESC] || { metadata: {} };
+    return Tag.setDescription(target, target[TAG_DESC] || { metadata: {} });
+  }
+
+  export function setDescription(target: any, description: Description) {
+    return target[TAG_DESC] = description;
   }
 
   export type PrimedActions = {

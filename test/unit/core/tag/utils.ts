@@ -107,4 +107,17 @@ suite('TagUtils', ({ expect, spy, stub }) => {
       expect(utils.tagDescriptors(clazz)).to.eql([name, view, css]);
     });
   });
+
+  describe('setMetadata()', () => {
+    it('should set update metadata to newly spread object', () => {
+      const tag = { a: 'b' };
+      const getDescription = stub(Tag, 'getDescription').returns({ metadata: { c: 'd' } });
+      const setDescription = stub(Tag, 'setDescription');
+
+      utils.setMetadata(tag, 'configurable', true);
+
+      expect(getDescription).to.be.calledWithExactly(tag);
+      expect(setDescription).to.calledWithExactly(tag, { metadata: { c: 'd', configurable: true } });
+    });
+  });
 });

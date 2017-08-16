@@ -35,7 +35,11 @@ export default class System {
 
   initRiot() {
     const riot = this.app.riot = this.app.config.options.riot || Globals.getRiot();
-    this.app.register = Tag.create(riot);
+    const register = Tag.create(riot);
+    this.app.register = (clazz, name) => {
+      register(clazz);
+      this.app.log.debug(`[tag/<${name}>] registered`);
+    };
   }
 
   initFlux() {

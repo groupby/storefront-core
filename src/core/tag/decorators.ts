@@ -1,17 +1,21 @@
 import StoreFront from '../../storefront';
 import Tag from '../tag';
+import utils from './utils';
 
 export function tag(name: string, template: string, css?: string) {
   return (target: any = function() { return this; }) => {
     const description = Tag.getDescription(target);
-
-    description.metadata.name = name;
-    description.view = template;
+    const newDescription = {
+      ...description,
+      metadata: { ...description.metadata, name },
+      view: template
+    };
 
     if (css) {
-      description.css = css;
+      newDescription.css = css;
     }
 
+    Tag.setDescription(target, newDescription);
     StoreFront.register((register) => register(target, name));
   };
 }
@@ -22,22 +26,25 @@ export function view(name: string, template: string, css?: string) {
 
 export function css(style: string) {
   return (target: any) => {
-    Object.assign(Tag.getDescription(target), { css: style.toString() });
+    Tag.setDescription(target, {
+      ...Tag.getDescription(target),
+      css: style.toString()
+    });
   };
 }
 
 export function alias(name: string) {
   return (target: any) => {
-    Object.assign(Tag.getDescription(target).metadata, { alias: name });
+    utils.setMetadata(target, 'alias', name);
   };
 }
 
 export function origin(name: string) {
   return (target: any) => {
-    Object.assign(Tag.getDescription(target).metadata, { origin: name });
+    utils.setMetadata(target, 'origin', name);
   };
 }
 
 export function configurable(target: any) {
-  Object.assign(Tag.getDescription(target).metadata, { configurable: true });
+  utils.setMetadata(target, 'configurable', true);
 }

@@ -155,18 +155,35 @@ suite('Tag', ({ expect, spy, stub }) => {
 
   describe('getDescription()', () => {
     it('should extract description', () => {
-      const description = { a: 'b' };
-      const clazz: any = { [TAG_DESC]: description };
+      const oldDescription = { a: 'b' };
+      const updatedDescription = { c: 'd' };
+      const clazz: any = { [TAG_DESC]: oldDescription };
+      const setDescription = stub(Tag, 'setDescription').returns(updatedDescription);
 
-      expect(Tag.getDescription(clazz)).to.eq(description);
+      const description = Tag.getDescription(clazz);
+
+      expect(description).to.eq(updatedDescription);
+      expect(setDescription).to.be.calledWith(clazz, oldDescription);
     });
 
     it('should have and set a default value', () => {
       const clazz: any = {};
+      const updatedDescription = { a: 'b' };
+      const setDescription = stub(Tag, 'setDescription').returns(updatedDescription);
 
       const description = Tag.getDescription(clazz);
 
-      expect(description).to.eql({ metadata: {} });
+      expect(description).to.eq(updatedDescription);
+      expect(setDescription).to.be.calledWith(clazz, { metadata: {} });
+    });
+  });
+
+  describe('setDescription()', () => {
+    it('should update and return description', () => {
+      const description: any = { a: 'b' };
+      const clazz: any = {};
+
+      expect(Tag.setDescription(clazz, description)).to.eq(description);
       expect(clazz[TAG_DESC]).to.eq(description);
     });
   });
