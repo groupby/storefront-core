@@ -22,12 +22,13 @@
   ],
   "scripts": {
     "start": "start-runner -p re-start/presets/typescript",
+    "build": "npm start build && npm run esnext",
     "esnext": "npm start build -- -- --compileOpts.configFile tsconfig.esnext.json --outDir esnext",
     "dev": "npm start dev",
     "test": "npm start test",
     "tdd": "npm start tdd",
     "prepush": "npm start prepush",
-    "prepublish": "npm start build && npm run esnext",
+    "prepublish": "npm run build",
     "docs": "typedoc src/**/*.ts",
     "docs:json": "npm run docs -- --json component.docs.json"
   },

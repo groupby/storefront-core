@@ -25,7 +25,7 @@ jobs:
           command: greenkeeper-lockfile-update
       - run:
           name: Build
-          command: yarn start build
+          command: yarn build
       - run:
           name: Upload Lockfile
           command: greenkeeper-lockfile-upload
