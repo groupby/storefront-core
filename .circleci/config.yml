@@ -20,10 +20,6 @@ jobs:
       - run:
           name: Install
           command: yarn
-      - save_cache:
-          <<: *node_cache
-          paths:
-            - ~/project/node_modules
       - run:
           name: Update Lockfile
           command: greenkeeper-lockfile-update
@@ -33,6 +29,13 @@ jobs:
       - run:
           name: Upload Lockfile
           command: greenkeeper-lockfile-upload
+      - run:
+          name: Revert Lockfile
+          command: git checkout yarn.lock
+      - save_cache:
+          <<: *node_cache
+          paths:
+            - ~/project/node_modules
       - save_cache:
           <<: *build_cache
           paths:
