@@ -66,6 +66,7 @@ const DEFAULTS: Partial<Configuration> = {
         useReferenceKeys: true,
         navigations: {}
       },
+      redirects: {},
       routes: {
         [Routes.SEARCH]: `/${Routes.SEARCH}`,
         [Routes.DETAILS]: `/${Routes.DETAILS}`,

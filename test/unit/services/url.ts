@@ -223,6 +223,27 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore }) => {
   });
 
   describe('updateHistory()', () => {
+    it('should redirect to another location', () => {
+      const url = '/some/url';
+      const externalUrl = 'whatever.com';
+      const route = 'search';
+      const assign = spy();
+      const build = spy(() => url);
+      const data = { e: 'f' };
+      const newState = { g: 'h' };
+      win.location = { assign };
+      service.beautifier = <any>{ build };
+      service['opts'] = { redirects: { [url]: externalUrl } };
+      service.urlState = <any>{
+        [route]: () => newState
+      };
+
+      service.updateHistory(<any>{ state: <any>{ data }, route });
+
+      expect(build).to.be.calledWith(route, newState);
+      expect(assign).to.be.calledWithExactly(externalUrl);
+    });
+
     it('should create urls search state from state', () => {
       const page = 48;
       const pageSize = 5;
@@ -245,6 +266,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore }) => {
       stub(Selectors, 'collection').returns(collection);
       service.beautifier = <any>{ build };
       service['app'].flux = <any>{ emit: () => null };
+      service['opts'] = { redirects: {} };
 
       service.updateHistory(<any>{ state: { data }, route });
 

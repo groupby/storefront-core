@@ -71,8 +71,13 @@ class UrlService extends BaseService<UrlService.Options> {
 
   updateHistory = ({ state, route }: { state: Store.State, route: string }) => {
     const url = this.beautifier.build(route, this.urlState[route](state));
-    WINDOW().history.pushState({ url, state, app: STOREFRONT_APP_ID }, '', url);
-    this.app.flux.emit(Events.URL_UPDATED, url);
+
+    if (this.opts.redirects[url]) {
+      WINDOW().location.assign(this.opts.redirects[url]);
+    } else {
+      WINDOW().history.pushState({ url, state, app: STOREFRONT_APP_ID }, '', url);
+      this.app.flux.emit(Events.URL_UPDATED, url);
+    }
   }
 
   replaceHistory(url: string) {
@@ -201,6 +206,7 @@ namespace UrlService {
   export interface Options {
     beautifier?: UrlBeautifier.Configuration;
     routes?: Routes;
+    redirects?: { [target: string]: string };
   }
 
   export interface Routes {
