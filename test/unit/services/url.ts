@@ -8,16 +8,19 @@ import suite from './_suite';
 
 suite('URL Service', ({ expect, spy, stub, itShouldBeCore }) => {
   const routes = { a: 'b' };
+  const routesWithBase = { a: '/base/b' };
   const beautifier = { refinementMapping: [], queryToken: 'q' };
   let service: Service;
   let urlBeautifier;
   let addEventListener;
   let win;
+  let generateRoutes;
 
   beforeEach(() => {
     addEventListener = spy();
     win = { addEventListener };
     stub(utils, 'WINDOW').returns(win);
+    generateRoutes = stub(Service.prototype, 'generateRoutes').returns(routesWithBase);
     urlBeautifier = stub(UrlBeautifier, 'default');
     service = new Service(<any>{}, <any>{ routes, beautifier });
   });
@@ -29,7 +32,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore }) => {
   itShouldBeCore(Service);
 
   it('should create a new URL Beautifier', () => {
-    expect(urlBeautifier).to.be.calledWith(routes, beautifier);
+    expect(urlBeautifier).to.be.calledWith(routesWithBase, beautifier);
   });
 
   it('should add popstate listener', () => {
@@ -43,6 +46,22 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore }) => {
       service.init();
 
       expect(readInitialUrl).to.be.called;
+    });
+  });
+
+  describe('generateRoutes()', () => {
+    beforeEach(() => generateRoutes.restore());
+
+    it('should generate routes with base path', () => {
+      const basePath = '/base';
+      const getBasePath = stub(Service, 'getBasePath').returns(basePath);
+      service['opts'] = <any>{ routes: { a: '/b', c: '/d', e: '/f' } };
+
+      expect(service.generateRoutes()).to.eql({
+        a: `${basePath}/b`,
+        c: `${basePath}/d`,
+        e: `${basePath}/f`
+      });
     });
   });
 
@@ -326,6 +345,33 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore }) => {
   });
 
   describe('static', () => {
+    describe('getBasePath()', () => {
+      it('should get base URL path', () => {
+        const baseURI = 'http://example.com/base/path';
+        win.document = { baseURI };
+        win.location = { pathname: '/not/base/path' };
+
+        expect(Service.getBasePath()).to.eq('/base/path');
+      });
+
+      it('should return the empty string for no defined base tag', () => {
+        const pathname = '/base/path';
+        const baseURI = `http://example.com${pathname}`;
+        win.document = { baseURI };
+        win.location = { pathname };
+
+        expect(Service.getBasePath()).to.eq('');
+      });
+
+      it('should strip trailing slashes', () => {
+        const baseURI = 'http://example.com/base/path/';
+        win.document = { baseURI };
+        win.location = { pathname: '/not/base/path' };
+
+        expect(Service.getBasePath()).to.eq('/base/path');
+      });
+    });
+
     describe('mergeSearchState()', () => {
       it('should merge state properly when given new request', () => {
         const state: any = {

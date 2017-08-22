@@ -1,4 +1,5 @@
 import { Events, Routes, Selectors, Store } from '@storefront/flux-capacitor';
+import * as UrlParse from 'url-parse';
 import { core, BaseService } from '../core/service';
 import UrlBeautifier from '../core/url-beautifier';
 import { WINDOW } from '../core/utils';
@@ -9,7 +10,7 @@ export const STOREFRONT_APP_ID = 'GroupBy StoreFront';
 @core
 class UrlService extends BaseService<UrlService.Options> {
 
-  beautifier: UrlBeautifier = new UrlBeautifier(this.opts.routes, this.opts.beautifier, this.app.config);
+  beautifier: UrlBeautifier = new UrlBeautifier(this.generateRoutes(), this.opts.beautifier, this.app.config);
   urlState: UrlService.UrlStateFunctions = {
     search: UrlService.searchUrlState,
     details: UrlService.detailsUrlState,
@@ -23,6 +24,15 @@ class UrlService extends BaseService<UrlService.Options> {
 
   init() {
     this.readInitialUrl();
+  }
+
+  generateRoutes() {
+    const basePath = UrlService.getBasePath();
+    const routes = this.opts.routes;
+
+    return Object.keys(routes)
+      .reduce((generatedRoutes: any, prop) =>
+        Object.assign(generatedRoutes, { [prop]: basePath + routes[prop] }), {});
   }
 
   readInitialUrl() {
@@ -98,6 +108,12 @@ class UrlService extends BaseService<UrlService.Options> {
 
   refreshState(state: any): Promise<any> {
     return <any>this.app.flux.store.dispatch(this.app.flux.actions.refreshState(state));
+  }
+
+  static getBasePath(): string {
+    const basePath = UrlParse(WINDOW().document.baseURI).pathname;
+
+    return basePath === WINDOW().location.pathname ? '' : basePath.replace(/\/+$/, '');
   }
 
   static searchUrlState(state: Store.State): UrlBeautifier.SearchUrlState {
