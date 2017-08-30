@@ -92,6 +92,17 @@ suite('System', ({ expect, spy, stub }) => {
 
       expect(app.riot).to.eq(riot);
     });
+
+    it('should set riot global', () => {
+      const app: any = { config: { options: {} } };
+      const system = new System(app);
+      const setGlobal = stub(Globals, 'set');
+      stub(Globals, 'getRiot').returns(riot);
+
+      system.initRiot();
+
+      expect(setGlobal).to.be.calledWith('riot', riot);
+    });
   });
 
   describe('initFlux()', () => {

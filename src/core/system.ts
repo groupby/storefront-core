@@ -35,6 +35,7 @@ export default class System {
 
   initRiot() {
     const riot = this.app.riot = this.app.config.options.riot || Globals.getRiot();
+    Globals.set('riot', riot);
     const register = Tag.create(riot);
     this.app.register = (clazz, name) => {
       register(clazz);
