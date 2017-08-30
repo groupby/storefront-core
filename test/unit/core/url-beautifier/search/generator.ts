@@ -1,4 +1,4 @@
-import { Adapters } from '@storefront/flux-capacitor';
+import { Adapters, Selectors } from '@storefront/flux-capacitor';
 import { UrlGenerator } from '../../../../../src/core/url-beautifier/handler';
 import SearchUrlGenerator from '../../../../../src/core/url-beautifier/search/generator';
 import suite, { refinement } from '../../../_suite';
@@ -152,6 +152,14 @@ suite('SearchUrlGenerator', ({ expect, stub }) => {
 
     expect(generator.build(<any>{ ...REQUEST, sort: { field: 'price' } }))
       .to.eq('/?sort=price:false');
+  });
+
+  it('should not convert sort to a query parameter if initial sort is undefined', () => {
+    config.params = { sort: 'sort' };
+    stub(Selectors, 'sorts').returns({ items: {} });
+
+    expect(generator.build(<any>{ ...REQUEST, sort: { field: 'price' } }))
+      .to.eq('/');
   });
 
   it('should convert collection to a query parameter', () => {

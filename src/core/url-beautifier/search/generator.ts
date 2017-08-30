@@ -41,15 +41,15 @@ export default class SearchUrlGenerator extends UrlGenerator<UrlBeautifier.Searc
         query[this.config.params.page] = page;
       }
     }
-    if ('sort' in state) {
+    if (state.sort) {
       const initialSorts = Selectors.sorts(initialState);
       const initialSort = initialSorts.items[initialSorts.selected];
       const sort = state.sort;
-      if (initialSort.field !== sort.field || initialSort.descending !== sort.descending) {
+      if (initialSort && (initialSort.field !== sort.field || initialSort.descending !== sort.descending)) {
         query[this.config.params.sort] = utils.encodeArray([SearchUrlGenerator.convertSort(sort)]);
       }
     }
-    if ('collection' in state) {
+    if (state.collection) {
       const initialCollection = Selectors.collection(initialState);
       const collection = state.collection;
       if (initialCollection !== collection) {
