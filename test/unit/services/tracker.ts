@@ -3,7 +3,7 @@ import * as sinon from 'sinon';
 import ProductTransformer from '../../../src/core/product-transformer';
 import { BaseService, CORE } from '../../../src/core/service';
 import * as utils from '../../../src/core/utils';
-import Service, { TRACKER_EVENT } from '../../../src/services/tracker';
+import Service, { DEFAULT_ORIGINS, TRACKER_EVENT } from '../../../src/services/tracker';
 import StoreFront from '../../../src/storefront';
 import suite from '../_suite';
 
@@ -115,7 +115,7 @@ suite('Tracker Service', ({ expect, spy, stub }) => {
 
       expect(sendEvent).to.be.calledWith('sendAutoSearchEvent', {
         metadata,
-        search: { id, origin: { [origin]: true }, },
+        search: { id, origin: { ...DEFAULT_ORIGINS, [origin]: true }, },
       });
       expect(getMetadata).to.be.calledWith(tagOrigin);
     });
@@ -129,7 +129,7 @@ suite('Tracker Service', ({ expect, spy, stub }) => {
 
       expect(sendEvent).to.be.calledWith('sendAutoSearchEvent', {
         metadata,
-        search: { id, origin: { search: true }, },
+        search: { id, origin: { ...DEFAULT_ORIGINS, search: true }, },
       });
     });
 
@@ -142,7 +142,7 @@ suite('Tracker Service', ({ expect, spy, stub }) => {
 
       expect(sendEvent).to.be.calledWith('sendAutoSearchEvent', {
         metadata,
-        search: { id, origin: { search: true }, },
+        search: { id, origin: { ...DEFAULT_ORIGINS, search: true }, },
       });
     });
 

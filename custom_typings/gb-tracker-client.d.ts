@@ -1,4 +1,4 @@
-declare module 'gb-tracker-client' {
+declare module 'gb-tracker-client/slim' {
   class TrackerClient {
     constructor(customerId: string, area: string);
 

@@ -1,7 +1,7 @@
 import FluxCapacitor, { Actions } from '@storefront/flux-capacitor';
 import * as clone from 'clone';
 import * as deepAssign from 'deep-assign';
-import * as GbTracker from 'gb-tracker-client';
+import * as GbTracker from 'gb-tracker-client/slim';
 import * as log from 'loglevel';
 import * as riot from 'riot';
 

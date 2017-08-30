@@ -5,6 +5,14 @@ import { GbTracker } from '../core/utils';
 import StoreFront from '../storefront';
 
 export const TRACKER_EVENT = 'tracker:send_event';
+export const DEFAULT_ORIGINS = {
+  dym: false,
+  recommendations: false,
+  autosearch: false,
+  navigation: false,
+  collectionSwitcher: false,
+  sayt: false,
+};
 
 class TrackerService extends BaseService<TrackerService.Options> {
 
@@ -43,7 +51,10 @@ class TrackerService extends BaseService<TrackerService.Options> {
     this.sendEvent('sendAutoSearchEvent', {
       search: {
         id,
-        origin: { [(origin || <any>{}).origin || 'search']: true },
+        origin: {
+          ...DEFAULT_ORIGINS,
+          [(origin || <any>{}).origin || 'search']: true
+        },
       },
       metadata: this.getMetadata(origin)
     });
