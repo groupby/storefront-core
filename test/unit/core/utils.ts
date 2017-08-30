@@ -1,5 +1,5 @@
-import * as deepAssign from 'deep-assign';
 import * as GbTracker from 'gb-tracker-client/slim';
+import * as deepAssign from 'lodash.merge';
 import * as log from 'loglevel';
 import * as riot from 'riot';
 import * as sinon from 'sinon';
@@ -13,6 +13,14 @@ suite('utils', ({ expect, spy, stub }) => {
     expect(utils.log).to.eq(log);
     expect(utils.riot).to.eq(riot);
     expect(utils.GbTracker).to.eq(GbTracker);
+  });
+
+  describe('deepAssign()', () => {
+    it('should allow functions to override objects', () => {
+      const myObj = () => null;
+
+      expect(deepAssign({ myObj: {}, a: 'b' }, { myObj })).to.eql({ myObj, a: 'b' });
+    });
   });
 
   describe('dot', () => {
