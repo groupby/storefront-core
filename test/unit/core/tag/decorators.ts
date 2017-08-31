@@ -133,4 +133,16 @@ suite('decorators', ({ expect, spy, stub }) => {
       expect(setMetadata).to.be.calledWithExactly(tag, 'configurable', true);
     });
   });
+
+  describe('@transform', () => {
+    it('should set transform on tag', () => {
+      const tag = { a: 'b' };
+      const transform = () => null;
+      const setMetadata = stub(utils, 'setMetadata');
+
+      decorators.transform(transform)(tag);
+
+      expect(setMetadata).to.be.calledWithExactly(tag, 'transform', transform);
+    });
+  });
 });

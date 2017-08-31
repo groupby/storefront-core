@@ -125,6 +125,50 @@ suite('Lifecycle', ({ expect, spy, stub }) => {
       Lifecycle.onRecalculateProps.call(tag);
 
       expect(tag.props).to.eq(props);
+      expect(buildProps).to.be.calledWith(tag);
+    });
+
+    it('should update state if transform exists', () => {
+      const props = { a: 'b' };
+      const tag: any = { state: { c: 'd' } };
+      const transform = () => null;
+      const transformProps = stub(Lifecycle, 'transformProps').returns({ e: 'f' });
+      const getMeta = stub(Tag, 'getMeta').returns({ transform });
+      stub(TagUtils, 'buildProps').returns(props);
+
+      Lifecycle.onRecalculateProps.call(tag);
+
+      expect(tag.state).to.eql({ c: 'd', e: 'f' });
+      expect(getMeta).to.be.calledWith(tag);
+      expect(transformProps).to.be.calledWithExactly(props, transform);
+    });
+  });
+
+  describe('transformProps()', () => {
+    const props = { a: 'b', c: 'd', e: 'f', m: { n: { o: 'p' } } };
+
+    it('should transform by copying an array of properties', () => {
+      expect(Lifecycle.transformProps(props, ['a', 'e'])).to.eql({ a: 'b', e: 'f' });
+    });
+
+    it('should transform by copying and renaming properties based on map', () => {
+      expect(Lifecycle.transformProps(props, { a: 'g', c: 'z' })).to.eql({ g: 'b', z: 'd' });
+    });
+
+    it('should be capable of deep rename', () => {
+      expect(Lifecycle.transformProps(props, { 'm.n.o': 'x' })).to.eql({ x: 'p' });
+    });
+
+    it('should apply transform function to props', () => {
+      const transformed = { g: 'h' };
+      const transform = spy(() => transformed);
+
+      expect(Lifecycle.transformProps(props, transform)).to.eq(transformed);
+      expect(transform).to.be.calledWith(props);
+    });
+
+    it('should return empty object if transform cannot be determined', () => {
+      expect(Lifecycle.transformProps(props, <any>true)).to.eql({});
     });
   });
 });

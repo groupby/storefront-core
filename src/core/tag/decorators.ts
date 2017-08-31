@@ -48,3 +48,9 @@ export function origin(name: string) {
 export function configurable(target: any) {
   utils.setMetadata(target, 'configurable', true);
 }
+
+export function transform(trfm: Tag.Transform) {
+  return (target: any) => {
+    utils.setMetadata(target, 'transform', trfm);
+  };
+}

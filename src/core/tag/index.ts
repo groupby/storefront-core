@@ -107,6 +107,7 @@ namespace Tag {
     alias?: string;
     origin?: string;
     configurable?: boolean;
+    transform?: Transform;
     attributes?: Attribute[];
   }
 
@@ -138,6 +139,8 @@ namespace Tag {
     log: typeof log;
     init: (this: riot.TagInterface) => void;
   }
+
+  export type Transform = object | string[] | ((obj: object) => object);
 }
 
 export default Tag;

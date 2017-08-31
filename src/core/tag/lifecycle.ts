@@ -1,5 +1,6 @@
 import { Events } from '@storefront/flux-capacitor';
 import Tag from '.';
+import { dot } from '../utils';
 import Attribute from './attribute';
 import TagUtils from './utils';
 
@@ -107,7 +108,25 @@ namespace Lifecycle {
   }
 
   export function onRecalculateProps(this: Tag) {
-    this.props = TagUtils.buildProps(this);
+    const props = this.props = TagUtils.buildProps(this);
+
+    const { transform } = Tag.getMeta(this);
+    if (transform) {
+      this.state = { ...this.state, ...Lifecycle.transformProps(props, transform) };
+    }
+  }
+
+  export function transformProps(props: any, transform: Tag.Transform) {
+    if (Array.isArray(transform)) {
+      return transform.reduce((transformed, prop) => Object.assign(transformed, { [prop]: props[prop] }), {});
+    } else if (typeof transform === 'object') {
+      return Object.keys(transform)
+        .reduce((transformed, key) => Object.assign(transformed, { [transform[key]]: dot.get(props, key) }), {});
+    } else if (typeof transform === 'function') {
+      return transform(props);
+    } else {
+      return {};
+    }
   }
 }
 
