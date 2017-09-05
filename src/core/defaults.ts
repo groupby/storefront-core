@@ -14,6 +14,7 @@ const DEFAULTS: Partial<Configuration> = {
   tags: {},
 
   search: {
+    redirectSingleResult: false,
     defaults: {},
     overrides: {},
   },
