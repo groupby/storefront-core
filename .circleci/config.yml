@@ -59,7 +59,7 @@ jobs:
       - restore_cache:
           <<: *node_cache
       - restore_cache:
-          key: build_cache
+          key: build_cache-{{ .Branch }}
       - run:
           name: Release
           command: yarn start release || true
