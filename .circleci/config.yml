@@ -71,7 +71,7 @@ jobs:
       - restore_cache:
           <<: *node_cache
       - restore_cache:
-          key: docs_cache
+          key: docs_cache-{{ .Branch }}
       - run:
           name: Documentation
           command: |
@@ -100,7 +100,7 @@ jobs:
               echo "no change in generated documentation"
             fi
       - save_cache:
-          key: docs_cache-{{ checksum "component.docs.json" }}
+          key: docs_cache-{{ .Branch }}-{{ epoch }}
           paths:
             - ~/project/component.docs.json
 
