@@ -62,6 +62,7 @@ jobs:
       - put: core-built
         params:
           repository: updated-core
+          rebase: true
           force: true
 
   - name: unit-test
@@ -80,4 +81,6 @@ jobs:
         passed: [unit-test]
         trigger: true
       - put: core
-        params: {repository: core-built}
+        params:
+          repository: core-built
+          rebase: true
