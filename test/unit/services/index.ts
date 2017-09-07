@@ -4,6 +4,7 @@ import collections from '../../../src/services/collections';
 import details from '../../../src/services/details';
 import logging from '../../../src/services/logging';
 import recommendations from '../../../src/services/recommendations';
+import redirect from '../../../src/services/redirect';
 import search from '../../../src/services/search';
 import tracker from '../../../src/services/tracker';
 import url from '../../../src/services/url';
@@ -19,6 +20,7 @@ suite('Services', ({ expect }) => {
         details,
         logging,
         recommendations,
+        redirect,
         search,
         tracker,
         url

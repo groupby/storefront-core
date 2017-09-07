@@ -5,6 +5,7 @@ import collections from './collections';
 import details from './details';
 import logging from './logging';
 import recommendations from './recommendations';
+import redirect from './redirect';
 import search from './search';
 import tracker from './tracker';
 import url from './url';
@@ -18,6 +19,7 @@ const SERVICES: Service.Constructor.Map = {
   details,
   tracker,
   recommendations,
+  redirect,
 };
 
 export default SERVICES;
@@ -32,6 +34,7 @@ export interface ServiceConfiguration {
   url?: Service.Options<any>;
   tracker?: Service.Options<tracker.Options>;
   recommendations?: Service.Options<any>;
+  redirect?: Service.Options<any>;
 }
 
 export interface CoreServices {
@@ -43,6 +46,7 @@ export interface CoreServices {
   url: url;
   tracker: tracker;
   recommendations: recommendations;
+  redirect: redirect;
 }
 
 export type SystemServices = CoreServices & Service.Map;
