@@ -63,7 +63,6 @@ jobs:
         params:
           repository: updated-core
           rebase: true
-          force: true
 
   - name: unit-test
     plan:
