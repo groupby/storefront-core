@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>UrlHandler | @storefront/core</title>
+	<title>RedirectService | @storefront/core</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="urlhandler.html">UrlHandler</a>
+					<a href="redirectservice.html">RedirectService</a>
 				</li>
 			</ul>
-			<h1>Class UrlHandler</h1>
+			<h1>Class RedirectService</h1>
 		</div>
 	</div>
 </header>
@@ -70,139 +70,143 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">UrlHandler</span>
+						<a href="baseservice.html" class="tsd-signature-type">BaseService</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>
 						<ul class="tsd-hierarchy">
 							<li>
-								<a href="urlparser.html" class="tsd-signature-type">UrlParser</a>
-							</li>
-							<li>
-								<a href="urlgenerator.html" class="tsd-signature-type">UrlGenerator</a>
+								<span class="target">RedirectService</span>
 							</li>
 						</ul>
 					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../modules/service.html" class="tsd-signature-type">Service</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="urlhandler.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="redirectservice.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-inherited tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="urlhandler.html#beautifier" class="tsd-kind-icon">beautifier</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="urlhandler.html#config" class="tsd-kind-icon">config</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="redirectservice.html#app" class="tsd-kind-icon">app</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="redirectservice.html#opts" class="tsd-kind-icon">opts</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="urlhandler.html#tokeys" class="tsd-kind-icon">to<wbr>Keys</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="urlhandler.html#toobject" class="tsd-kind-icon">to<wbr>Object</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="redirectservice.html#init" class="tsd-kind-icon">init</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="redirectservice.html#redirect" class="tsd-kind-icon">redirect</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Url<wbr>Handler<span class="tsd-signature-symbol">(</span>beautifier<span class="tsd-signature-symbol">: </span><a href="urlbeautifier.html" class="tsd-signature-type">UrlBeautifier</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="urlhandler.html" class="tsd-signature-type">UrlHandler</a></li>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Redirect<wbr>Service<span class="tsd-signature-symbol">(</span>app<span class="tsd-signature-symbol">: </span><a href="storefront.html" class="tsd-signature-type">StoreFront</a>, opts<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="redirectservice.html" class="tsd-signature-type">RedirectService</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="baseservice.html">BaseService</a>.<a href="baseservice.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/2f4a482/src/core/url-beautifier/handler.ts#L5">src/core/url-beautifier/handler.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/2f4a482/src/core/service/index.ts#L8">src/core/service/index.ts:8</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>beautifier: <a href="urlbeautifier.html" class="tsd-signature-type">UrlBeautifier</a></h5>
+									<h5>app: <a href="storefront.html" class="tsd-signature-type">StoreFront</a></h5>
+								</li>
+								<li>
+									<h5>opts: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="urlhandler.html" class="tsd-signature-type">UrlHandler</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="redirectservice.html" class="tsd-signature-type">RedirectService</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited tsd-is-private-protected">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-					<a name="beautifier" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> beautifier</h3>
-					<div class="tsd-signature tsd-kind-icon">beautifier<span class="tsd-signature-symbol">:</span> <a href="urlbeautifier.html" class="tsd-signature-type">UrlBeautifier</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="app" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> app</h3>
+					<div class="tsd-signature tsd-kind-icon">app<span class="tsd-signature-symbol">:</span> <a href="storefront.html" class="tsd-signature-type">StoreFront</a></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="baseservice.html">BaseService</a>.<a href="baseservice.html#app">app</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/2f4a482/src/core/url-beautifier/handler.ts#L7">src/core/url-beautifier/handler.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/2f4a482/src/core/service/index.ts#L10">src/core/service/index.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="config" class="tsd-anchor"></a>
-					<h3>config</h3>
-					<div class="tsd-signature tsd-kind-icon">config<span class="tsd-signature-symbol">:</span> <a href="../interfaces/urlbeautifier.configuration.html" class="tsd-signature-type">Configuration</a><span class="tsd-signature-symbol"> =&nbsp;this.beautifier.config</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="opts" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> opts</h3>
+					<div class="tsd-signature tsd-kind-icon">opts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="baseservice.html">BaseService</a>.<a href="baseservice.html#opts">opts</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/2f4a482/src/core/url-beautifier/handler.ts#L5">src/core/url-beautifier/handler.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/2f4a482/src/core/service/index.ts#L10">src/core/service/index.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="tokeys" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> to<wbr>Keys</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">to<wbr>Keys<span class="tsd-signature-symbol">(</span>mapping<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="init" class="tsd-anchor"></a>
+					<h3>init</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">init<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Overrides <a href="baseservice.html">BaseService</a>.<a href="baseservice.html#init">init</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/2f4a482/src/core/url-beautifier/handler.ts#L9">src/core/url-beautifier/handler.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/2f4a482/src/services/redirect.ts#L8">src/services/redirect.ts:8</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>mapping: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="toobject" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> to<wbr>Object</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">to<wbr>Object<span class="tsd-signature-symbol">(</span>mapping<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="redirect" class="tsd-anchor"></a>
+					<h3>redirect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">redirect<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/2f4a482/src/core/url-beautifier/handler.ts#L16">src/core/url-beautifier/handler.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/2f4a482/src/services/redirect.ts#L12">src/services/redirect.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>mapping: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>url: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -221,22 +225,22 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
-						<a href="urlhandler.html" class="tsd-kind-icon">Url<wbr>Handler</a>
+						<a href="redirectservice.html" class="tsd-kind-icon">Redirect<wbr>Service</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="urlhandler.html#constructor" class="tsd-kind-icon">constructor</a>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+								<a href="redirectservice.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-								<a href="urlhandler.html#beautifier" class="tsd-kind-icon">beautifier</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="redirectservice.html#app" class="tsd-kind-icon">app</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="urlhandler.html#config" class="tsd-kind-icon">config</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="redirectservice.html#opts" class="tsd-kind-icon">opts</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="urlhandler.html#tokeys" class="tsd-kind-icon">to<wbr>Keys</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="redirectservice.html#init" class="tsd-kind-icon">init</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="urlhandler.html#toobject" class="tsd-kind-icon">to<wbr>Object</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="redirectservice.html#redirect" class="tsd-kind-icon">redirect</a>
 							</li>
 						</ul>
 					</li>
