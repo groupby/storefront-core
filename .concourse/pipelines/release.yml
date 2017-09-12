@@ -18,7 +18,6 @@ resources:
     type: npm
     source:
       package: '@storefront/flux-capacitor'
-      diff: patch
   - name: core
     type: git
     source: &core-source
