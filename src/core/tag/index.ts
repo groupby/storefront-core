@@ -28,6 +28,10 @@ class Tag<P extends Tag.Props = any, S extends object = any> {
     this.update({ state: { ...<any>this.state, ...<any>state } });
   }
 
+  select(selector: (state: Store.State, ...args: any[]) => any, ...args: any[]) {
+    return selector(this.flux.store.getState(), ...args);
+  }
+
   dispatch(action: Actions.Action<string, any>) {
     this.flux.store.dispatch(<any>action);
   }

@@ -47,6 +47,19 @@ suite('Tag', ({ expect, spy, stub }) => {
       });
     });
 
+    describe('select()', () => {
+      it('should call selector with state and varargs', () => {
+        const state = { a: 'b' };
+        const args = [{ c: 'd' }, { e: 'f' }];
+        const selector = spy();
+        tag.flux = <any>{ store: { getState: () => state } };
+
+        tag.select(selector, ...args);
+
+        expect(selector).to.be.calledWithExactly(state, ...args);
+      });
+    });
+
     describe('dispatch()', () => {
       it('should dispatch an action to flux.store', () => {
         const dispatch = spy();
