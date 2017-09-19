@@ -24,9 +24,12 @@ export default class SearchUrlGenerator extends UrlGenerator<UrlBeautifier.Searc
     }
 
     if (this.config.params.refinements && state.refinements.length !== 0) {
-      query[this.config.params.refinements] = utils.encodeArray(SearchUrlGenerator.sortRefinements(state));
+      query[this.config.params.refinements] = utils.encodeArray(SearchUrlGenerator.sortRefinements(
+        state.refinements.map((refinement) =>
+                              refinement['value'] ?
+                              { ...refinement, value: utils.escapeSeparators(refinement['value']) } :
+                              refinement)));
     }
-
     if ('pageSize' in state) {
       const initialSizes = Selectors.pageSizes(initialState);
       const initialPageSize = initialSizes.items[initialSizes.selected];
@@ -129,7 +132,7 @@ export default class SearchUrlGenerator extends UrlGenerator<UrlBeautifier.Searc
     return path;
   }
 
-  static sortRefinements({ refinements }: UrlBeautifier.SearchUrlState) {
+  static sortRefinements(refinements: UrlBeautifier.Refinement[]) {
     return refinements.sort(SearchUrlGenerator.refinementsComparator)
       .reduce((refs, refinement, index) => {
         if ('value' in refinement) {

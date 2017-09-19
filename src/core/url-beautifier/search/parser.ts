@@ -18,7 +18,6 @@ export default class SearchUrlParser extends UrlParser<UrlBeautifier.SearchUrlSt
       : SearchUrlParser.parsePathWithoutReferenceKeys(path);
 
     const queryVariables = uri.query;
-
     const refinements = queryVariables[this.config.params.refinements];
     if (refinements) {
       query.refinements.push(...SearchUrlParser.extractUnmapped(refinements));
@@ -104,11 +103,11 @@ export default class SearchUrlParser extends UrlParser<UrlBeautifier.SearchUrlSt
   static extractUnmapped(refinementString: string): UrlBeautifier.Refinement[] {
     return utils.decodeArray(refinementString)
       .map(([field, value]) => {
-          if (typeof value === 'string') {
-            return SearchUrlParser.extractValueRefinements(field, value);
-          } else {
-            return SearchUrlParser.extractRangeRefinements(field, value[0], value[1]);
-          }
+        if (typeof value === 'string') {
+          return SearchUrlParser.extractValueRefinements(field, value);
+        } else {
+          return SearchUrlParser.extractRangeRefinements(field, value[0], value[1]);
+        }
       });
   }
 
