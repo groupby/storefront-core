@@ -27,4 +27,18 @@ suite('URL beautifier', ({ expect }) => {
       expect(utils.decodeChars('testing-this-thing-out%252Deyy')).to.eq('testing this thing out-eyy');
     });
   });
+
+  describe('splitExceptEscaped', () => {
+    it('should split strings to correct arrays', () => {
+      expect(utils.splitExceptEscaped('hello\\..wor..l\\..d', '..')).to.eql(['hello..wor','l..d']);
+      expect(utils.splitExceptEscaped('.....a','.')).to.eql(['','','','','','a']);
+    });
+  });
+
+  describe('escapeSeparators', () => {
+    it('should escape the separator characters', () => {
+      expect(utils.escapeSeparators('h:ello,wor..ld')).to.eq('h\\:ello\\,wor\\..ld');
+      expect(utils.escapeSeparators('h:::::ello,wor..ld')).to.eq('h\\:\\:\\:\\:\\:ello\\,wor\\..ld');
+    });
+  });
 });

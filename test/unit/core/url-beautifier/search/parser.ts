@@ -1,6 +1,7 @@
 import { UrlParser } from '../../../../../src/core/url-beautifier/handler';
 import SearchUrlParser from '../../../../../src/core/url-beautifier/search/parser';
 import suite, { refinement } from '../../../_suite';
+import * as utils from '../../../../../src/core/url-beautifier/utils';
 
 const QUERY = { a: 'b' };
 
@@ -86,6 +87,15 @@ suite('SearchUrlParser', ({ expect }) => {
     config.refinementMapping = [{ b: 'brand' }];
 
     expect(parser.parse('/De%2BWalt/b').refinements).to.eql([refinement('brand', 'De+Walt')]);
+  });
+
+  it('should extract a value refinement with an escaped character from URL', () => {
+    config.useReferenceKeys = true;
+    config.params.refinements = 'refs';
+
+    utils.SEPARATORS.forEach((separator) =>
+      expect(parser.parse(`/?refs=breadcrumb_cat1:Gifts\\${separator}Audio`).refinements)
+        .to.eql([refinement('breadcrumb_cat1', `Gifts${separator}Audio`)]));
   });
 
   it('should extract multiple refinements from URL', () => {

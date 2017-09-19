@@ -1,6 +1,7 @@
 import { Adapters, Selectors } from '@storefront/flux-capacitor';
 import { UrlGenerator } from '../../../../../src/core/url-beautifier/handler';
 import SearchUrlGenerator from '../../../../../src/core/url-beautifier/search/generator';
+import * as utils from '../../../../../src/core/url-beautifier/utils';
 import suite, { refinement } from '../../../_suite';
 
 const REQUEST = { refinements: [] };
@@ -52,6 +53,22 @@ suite('SearchUrlGenerator', ({ expect, stub }) => {
     config.useReferenceKeys = true;
 
     expect(generator.build(<any>{ refinements: [refinement('brand', 'DeWalt')] })).to.have.eq('/DeWalt/c');
+  });
+
+  it('should convert a value refinement query to a URL and escape special chars', () => {
+    const refinement1 = 'test';
+    const refinement2 = 'shoe';
+    config.refinementMapping = [{ c: 'brand' }];
+    config.useReferenceKeys = false;
+    config.params.refinements = 'someRefinement';
+    stub(utils, 'encodeChars').returnsArg(0);
+    stub(SearchUrlGenerator, 'convertPathRefinements').returns([]);
+
+    utils.SEPARATORS.forEach((separator) => {
+      expect(generator.build(<any>{
+        refinements: [refinement('brand', refinement1 + separator + refinement2)] }))
+          .to.have.eq(`/?${config.params.refinements}=brand:${refinement1}\\${separator}${refinement2}`);
+    });
   });
 
   it('should convert a multiple refinements on same field a URL', () => {
