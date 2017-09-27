@@ -1,10 +1,11 @@
 import { Store } from '@storefront/flux-capacitor';
 import * as URLparse from 'url-parse';
+import StoreFront from '../..';
 import UrlService from '../../services/url';
 import Configuration from '../configuration';
 import BeautifierFactory from './factory';
 
-class UrlBeautifier {
+class UrlBeautifier implements UrlBeautifier.SimpleBeautifier {
 
   beautifiers: UrlBeautifier.Beautifiers = BeautifierFactory.create(this);
 
@@ -27,13 +28,13 @@ class UrlBeautifier {
 
     if (activeRoute) {
       // tslint:disable-next-line max-line-length
-      return { route: activeRoute, request: this.beautifiers[activeRoute].parse(UrlBeautifier.extractAppRoute(uri, this.routes[activeRoute]))};
+      return { route: activeRoute, request: this.beautifiers[activeRoute].parse(UrlBeautifier.extractAppRoute(uri, this.routes[activeRoute])) };
     } else {
       throw new Error('invalid route');
     }
   }
 
-  build(type: string, request: any) {
+  build<T>(type: string, request: T) {
     if (type in this.routes) {
       return `${this.routes[type]}${this.beautifiers[type].build(request)}`;
     } else {
@@ -57,6 +58,15 @@ class UrlBeautifier {
 }
 
 namespace UrlBeautifier {
+  export interface SimpleBeautifier {
+    parse<T>(url: string): { route: string, request: T };
+    build<T>(type: string, request: T);
+  }
+
+  export interface Factory {
+    (app: StoreFront, routes: { [key: string]: string }): SimpleBeautifier;
+  }
+
   export interface Configuration {
     refinementMapping?: any[];
     variantMapping?: any[];
@@ -88,8 +98,7 @@ namespace UrlBeautifier {
   }
 
   export interface DetailsUrlState {
-    id: string;
-    title: string;
+    data: Store.Product;
     variants: ValueRefinement[];
   }
 

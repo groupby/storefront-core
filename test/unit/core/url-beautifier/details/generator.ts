@@ -13,8 +13,10 @@ suite('DetailsUrlGenerator', ({ expect }) => {
 
   it('should convert a simple detail to a URL', () => {
     expect(generator.build({
-      title: 'red and delicious apples',
-      id: '1923',
+      data: {
+        title: 'red and delicious apples',
+        id: '1923'
+      },
       variants: []
     }))
       .to.eq('/red-and-delicious-apples/1923');
@@ -22,8 +24,10 @@ suite('DetailsUrlGenerator', ({ expect }) => {
 
   it('should encode special characters + in detail', () => {
     expect(generator.build({
-      title: 'red+and+delicious+apples',
-      id: '1923',
+      data: {
+        title: 'red+and+delicious+apples',
+        id: '1923'
+      },
       variants: []
     }))
       .to.eq('/red%2Band%2Bdelicious%2Bapples/1923');
@@ -31,8 +35,10 @@ suite('DetailsUrlGenerator', ({ expect }) => {
 
   it('should encode special characters / in detail', () => {
     expect(generator.build({
-      title: 'red/and/delicious/apples',
-      id: '1923',
+      data: {
+        title: 'red/and/delicious/apples',
+        id: '1923'
+      },
       variants: []
     }))
       .to.eq('/red%2Fand%2Fdelicious%2Fapples/1923');
@@ -41,8 +47,10 @@ suite('DetailsUrlGenerator', ({ expect }) => {
   it('should convert a detail with variants to a URL without reference keys', () => {
     generator.config.useReferenceKeys = false;
     const url = generator.build({
-      title: 'satin shiny party dress',
-      id: '293014',
+      data: {
+        title: 'satin shiny party dress',
+        id: '293014'
+      },
       variants: [refinement('colour', 'red')]
     });
 
@@ -52,8 +60,10 @@ suite('DetailsUrlGenerator', ({ expect }) => {
   it('should convert detail with variants to a URL and encode special characters without reference keys', () => {
     generator.config.useReferenceKeys = false;
     const url = generator.build({
-      title: 'satin shiny party dress',
-      id: '293014',
+      data: {
+        title: 'satin shiny party dress',
+        id: '293014'
+      },
       variants: [refinement('colour', 'red+green/blue')]
     });
 
@@ -64,8 +74,10 @@ suite('DetailsUrlGenerator', ({ expect }) => {
     generator.config.useReferenceKeys = true;
     generator.config.variantMapping = [{ c: 'colour' }];
     const url = generator.build({
-      title: 'dress',
-      id: '293014',
+      data: {
+        title: 'dress',
+        id: '293014'
+      },
       variants: [refinement('colour', 'red')]
     });
 
@@ -76,8 +88,10 @@ suite('DetailsUrlGenerator', ({ expect }) => {
     generator.config.useReferenceKeys = true;
     generator.config.variantMapping = [{ c: 'colour' }, { b: 'brand' }];
     const url = generator.build({
-      title: 'dress',
-      id: '293014',
+      data: {
+        title: 'dress',
+        id: '293014'
+      },
       variants: [refinement('colour', 'red'), refinement('brand', 'h&m')]
     });
 
@@ -88,8 +102,10 @@ suite('DetailsUrlGenerator', ({ expect }) => {
     it('should throw an error if no reference key found for refinement navigation name', () => {
       generator.config.useReferenceKeys = true;
       const build = () => generator.build({
-        title: 'dress',
-        id: '293014',
+        data: {
+          title: 'dress',
+          id: '293014'
+        },
         variants: [refinement('colour', 'red')]
       });
 

@@ -1,4 +1,4 @@
-import { Events } from '@storefront/flux-capacitor';
+import { Events, Store } from '@storefront/flux-capacitor';
 import { core, BaseService } from '../core/service';
 import StoreFront from '../storefront';
 
@@ -14,7 +14,8 @@ class DetailsService extends BaseService {
     // no-op
   }
 
-  fetchDetails = (id: string) => this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchProductDetails(id));
+  fetchDetails = (data: Store.Product) =>
+    this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchProductDetails(data.id))
 }
 
 export default DetailsService;

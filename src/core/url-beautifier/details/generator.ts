@@ -16,12 +16,12 @@ export class DetailsUrlGenerator extends UrlGenerator<UrlBeautifier.DetailsUrlSt
       }
     }
 
-    if (request.title) {
-      path.unshift(request.title);
+    if (request.data.title) {
+      path.unshift(request.data.title);
     }
 
-    if (request.id) {
-      path.push(request.id);
+    if (request.data.id) {
+      path.push(request.data.id);
     }
 
     return `/${path.map((part) => utils.encodeChars(part)).join('/')}`;

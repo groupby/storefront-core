@@ -10,7 +10,7 @@ export const STOREFRONT_APP_ID = 'GroupBy StoreFront';
 @core
 class UrlService extends BaseService<UrlService.Options> {
 
-  beautifier: UrlBeautifier = new UrlBeautifier(this.generateRoutes(), this.opts.beautifier, this.app.config);
+  beautifier: UrlBeautifier.SimpleBeautifier;
   urlState: UrlService.UrlStateFunctions = {
     search: UrlService.searchUrlState,
     details: UrlService.detailsUrlState,
@@ -19,6 +19,11 @@ class UrlService extends BaseService<UrlService.Options> {
 
   constructor(app: StoreFront, opts: any) {
     super(app, opts);
+    if (typeof this.opts.beautifier === 'function') {
+      this.beautifier = this.opts.beautifier(this.app, this.generateRoutes());
+    } else {
+      this.beautifier = new UrlBeautifier(this.generateRoutes(), this.opts.beautifier, this.app.config);
+    }
     WINDOW().addEventListener('popstate', this.rewind);
   }
 
@@ -82,7 +87,9 @@ class UrlService extends BaseService<UrlService.Options> {
   updateHistory = ({ state, route }: { state: Store.State, route: string }) => {
     const url = this.beautifier.build(route, this.urlState[route](state));
 
-    if (this.opts.redirects[url]) {
+    if (typeof this.opts.urlHandler === 'function') {
+      this.opts.urlHandler(url);
+    } else if (this.opts.redirects[url]) {
       WINDOW().location.assign(this.opts.redirects[url]);
     } else {
       WINDOW().history.pushState({ url, state, app: STOREFRONT_APP_ID }, '', url);
@@ -136,8 +143,7 @@ class UrlService extends BaseService<UrlService.Options> {
   static detailsUrlState(state: Store.State): UrlBeautifier.DetailsUrlState {
     const details = Selectors.details(state);
     return {
-      id: details.id,
-      title: details.title,
+      data: details.data,
       variants: []
     };
   }
@@ -220,9 +226,10 @@ class UrlService extends BaseService<UrlService.Options> {
 
 namespace UrlService {
   export interface Options {
-    beautifier?: UrlBeautifier.Configuration;
+    beautifier?: UrlBeautifier.Configuration | UrlBeautifier.Factory;
     routes?: Routes;
     redirects?: { [target: string]: string };
+    urlHandler?: (url: string) => void;
   }
 
   export interface Routes {

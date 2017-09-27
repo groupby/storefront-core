@@ -58,8 +58,10 @@ suite('BeautifierFactory', ({ expect, stub }) => {
   describe('compatibility', () => {
     describe('details', () => {
       const request = {
-        title: 'dress',
-        id: '293014',
+        data: {
+          title: 'dress',
+          id: '293014'
+        },
         variants: [
           refinement('brand', 'h&m'),
           refinement('colour', 'blue'),
@@ -112,7 +114,7 @@ suite('BeautifierFactory', ({ expect, stub }) => {
       beforeEach(() => {
         generator = new SearchGenerator.default(URL_BEAUTIFIER);
         parser = new SearchParser.default(URL_BEAUTIFIER);
-        stub(Adapters.Configuration, 'initialState').returns({ data: {}});
+        stub(Adapters.Configuration, 'initialState').returns({ data: {} });
       });
 
       it('should convert from query object to a URL and back with reference keys', () => {
