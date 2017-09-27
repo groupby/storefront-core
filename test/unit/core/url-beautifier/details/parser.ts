@@ -13,8 +13,10 @@ suite('DetailsUrlParser', ({ expect }) => {
 
   it('should parse a simple URL and return a detail object', () => {
     const expectedDetail = {
-      title: 'apples',
-      id: '1923',
+      data: {
+        title: 'apples',
+        id: '1923',
+      },
       variants: []
     };
 
@@ -23,8 +25,10 @@ suite('DetailsUrlParser', ({ expect }) => {
 
   it('should parse a simple URL, replace \'-\' with \' \' and return a detail object', () => {
     const expectedDetail = {
-      title: 'red and delicious apples',
-      id: '1923',
+      data: {
+        title: 'red and delicious apples',
+        id: '1923'
+      },
       variants: []
     };
 
@@ -33,8 +37,10 @@ suite('DetailsUrlParser', ({ expect }) => {
 
   it('should parse a simple URL, decode special characters and return a detail object', () => {
     const expectedDetail = {
-      title: 'red+and+delicious+apples',
-      id: '1923',
+      data: {
+        title: 'red+and+delicious+apples',
+        id: '1923'
+      },
       variants: []
     };
 
@@ -44,8 +50,10 @@ suite('DetailsUrlParser', ({ expect }) => {
   it('should parse a URL with navigation names and values and return a detail object without reference keys', () => {
     parser.config.useReferenceKeys = false;
     const expectedDetail = {
-      title: 'satin shiny party dress',
-      id: '293014',
+      data: {
+        title: 'satin shiny party dress',
+        id: '293014'
+      },
       variants: [refinement('colour', 'blue')]
     };
 
@@ -56,8 +64,10 @@ suite('DetailsUrlParser', ({ expect }) => {
     parser.config.useReferenceKeys = false;
     const url = '/satin-shiny-party-dress/h%26m/brand/blue/colour/red/colour/293014';
     const expectedDetail = {
-      title: 'satin shiny party dress',
-      id: '293014',
+      data: {
+        title: 'satin shiny party dress',
+        id: '293014'
+      },
       variants: [refinement('brand', 'h&m'), refinement('colour', 'blue'), refinement('colour', 'red')]
     };
 
@@ -68,15 +78,16 @@ suite('DetailsUrlParser', ({ expect }) => {
     parser.config.variantMapping = [{ c: 'colour' }, { b: 'brand' }];
     parser.config.useReferenceKeys = true;
     const expectedDetail = {
-      title: 'dress',
-      id: '293014',
+      data: {
+        title: 'dress',
+        id: '293014'
+      },
       variants: [refinement('brand', 'h&m'), refinement('colour', 'blue'), refinement('colour', 'red')]
     };
 
     const parsed = parser.parse('/dress/h%26m/blue/red/bcc/293014');
 
-    expect(parsed.id).to.eql(expectedDetail.id);
-    expect(parsed.title).to.eql(expectedDetail.title);
+    expect(parsed.data).to.eql(expectedDetail.data);
     expect(parsed.variants).to.eql(expectedDetail.variants);
   });
 
@@ -86,7 +97,7 @@ suite('DetailsUrlParser', ({ expect }) => {
     });
 
     it('should throw an error if the path has too few parts', () => {
-      parser.config.variantMapping = [{c: 'type'}];
+      parser.config.variantMapping = [{ c: 'type' }];
       parser.config.useReferenceKeys = true;
 
       expect(() => parser.parse('/dress/c/129384')).to.throw('path has too few parts');

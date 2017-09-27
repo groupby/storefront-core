@@ -25,18 +25,30 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore }) => {
     service = new Service(<any>{}, <any>{ routes, beautifier });
   });
 
-  it('should extend BaseService', () => {
-    expect(service).to.be.an.instanceOf(BaseService);
-  });
-
   itShouldBeCore(Service);
 
-  it('should create a new URL Beautifier', () => {
-    expect(urlBeautifier).to.be.calledWith(routesWithBase, beautifier);
-  });
+  describe('constructor()', () => {
+    it('should extend BaseService', () => {
+      expect(service).to.be.an.instanceOf(BaseService);
+    });
 
-  it('should add popstate listener', () => {
-    expect(addEventListener).to.be.calledWith('popstate', service.rewind);
+    it('should create a new URL Beautifier', () => {
+      expect(urlBeautifier).to.be.calledWith(routesWithBase, beautifier);
+    });
+
+    it('should create a new user-defined beautifier', () => {
+      const app: any = { a: 'b' };
+      const userBeautifier = { c: 'd' };
+      const beautifierFactory = spy(() => userBeautifier);
+      service = new Service(app, <any>{ routes, beautifier: beautifierFactory });
+
+      expect(beautifierFactory).to.be.calledWith(app, routesWithBase);
+      expect(service.beautifier).to.eq(userBeautifier);
+    });
+
+    it('should add popstate listener', () => {
+      expect(addEventListener).to.be.calledWith('popstate', service.rewind);
+    });
   });
 
   describe('init()', () => {
@@ -242,6 +254,19 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore }) => {
   });
 
   describe('updateHistory()', () => {
+    it('should redirect using custom urlHandler', () => {
+      const url = '/some/url';
+      const route = 'search';
+      const urlHandler = spy();
+      service.beautifier = <any>{ build: () => url };
+      service['opts'] = { urlHandler };
+      service.urlState = <any>{ [route]: () => null };
+
+      service.updateHistory(<any>{ state: <any>{}, route });
+
+      expect(urlHandler).to.be.calledWithExactly(url);
+    });
+
     it('should redirect to another location', () => {
       const url = '/some/url';
       const externalUrl = 'whatever.com';
