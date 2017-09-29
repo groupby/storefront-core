@@ -1,21 +1,20 @@
 import { Events, Selectors } from '@storefront/flux-capacitor';
 import * as sinon from 'sinon';
-import { BaseService, CORE } from '../../../src/core/service';
 import * as UrlBeautifier from '../../../src/core/url-beautifier';
 import * as utils from '../../../src/core/utils';
 import Service from '../../../src/services/redirect';
 import suite from './_suite';
 
-suite('URL Service', ({ expect, spy, stub, itShouldBeCore }) => {
+suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseService }) => {
   let service: Service;
 
   beforeEach(() => service = new Service(<any>{}, <any>{}));
 
-  it('should extend BaseService', () => {
-    expect(service).to.be.an.instanceOf(BaseService);
-  });
-
   itShouldBeCore(Service);
+
+  describe('constructor()', () => {
+    itShouldExtendBaseService(() => service);
+  });
 
   describe('init()', () => {
     it('should listen for redirect event', () => {

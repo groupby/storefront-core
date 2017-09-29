@@ -1,18 +1,17 @@
 import { Events } from '@storefront/flux-capacitor';
 import * as sinon from 'sinon';
 import ProductTransformer from '../../../src/core/product-transformer';
-import { BaseService, CORE } from '../../../src/core/service';
 import * as utils from '../../../src/core/utils';
 import Service, { DEFAULT_ORIGINS, TRACKER_EVENT } from '../../../src/services/tracker';
 import StoreFront from '../../../src/storefront';
-import suite from '../_suite';
+import suite from './_suite';
 
 const USER_TRANSFORM = () => null;
 const STRUCTURE = { y: 'z' };
 const CUSTOMER_ID = 'myCustomer';
 const AREA = 'myArea';
 
-suite('Tracker Service', ({ expect, spy, stub }) => {
+suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
   let app: StoreFront;
   let opts: Service.Options;
   let service: Service;
@@ -30,6 +29,8 @@ suite('Tracker Service', ({ expect, spy, stub }) => {
   });
 
   describe('constructor()', () => {
+    itShouldExtendBaseService(() => service);
+
     it('should initialize GbTracker client', () => {
       expect(tracker).to.be.calledWith(CUSTOMER_ID, AREA);
     });

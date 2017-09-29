@@ -18,6 +18,8 @@ class Alias {
   oldParentAliases: object = this.parent.map;
   oldState: object;
 
+  constructor(private tag: Tag) { }
+
   get parentAliases() {
     const { map: parentAliases, internal: privateAliases } = this.parent;
 
@@ -25,8 +27,6 @@ class Alias {
       .filter((alias) => !privateAliases.includes(alias))
       .reduce((aliases, alias) => Object.assign(aliases, { [alias]: parentAliases[alias] }), {});
   }
-
-  constructor(private tag: Tag) { }
 
   attach() {
     this.tag.on(Phase.INITIALIZE, this.onInitialize);

@@ -83,7 +83,7 @@ suite('StoreFront', ({ expect, spy, stub }) => {
       });
     });
 
-    describe.skip('register()', () => {
+    describe('register()', () => {
       it('should push to global tags registery', () => {
         const tags = ['a', 'b'];
         const registerTag = () => null;
