@@ -1,4 +1,5 @@
-import ProductTransformer, { DEFAULT_TRANSFORM, TransformUtils } from '../../../src/core/product-transformer';
+// tslint:disable-next-line max-line-length
+import ProductTransformer, { DEFAULT_TRANSFORM, DEFAULT_VARIANT_FIELD, TransformUtils } from '../../../src/core/product-transformer';
 import * as utils from '../../../src/core/utils';
 import suite from '../_suite';
 
@@ -34,66 +35,60 @@ suite('Product Transformation', ({ expect, spy, stub }) => {
       });
 
       it('should apply user transform', () => {
-        const transformedProduct = { e: 'f' };
-        const userTransform = spy(() => transformedProduct);
+        const userTransform = spy(() => ({ e: 'f' }));
         const product: any = { c: 'd' };
         const cloned = { g: 'h' };
+        const structure: any = { a: 'b', _transform: userTransform };
         const extendStructure = stub(TransformUtils, 'extendStructure');
         const clone = stub(utils, 'clone').returns(cloned);
         stub(TransformUtils, 'remap');
 
-        ProductTransformer.transform(product, <any>{ a: 'b', _transform: userTransform });
+        ProductTransformer.transform(product, structure);
 
         expect(clone).to.be.calledWith(product);
         expect(userTransform).to.be.calledWith(cloned);
-        expect(extendStructure).to.be.calledWith(product, transformedProduct, { a: 'b' });
+        expect(extendStructure).to.be.calledWith(product, { c: 'd', e: 'f' }, structure);
       });
 
-      it('should use product if user transform returns falsy', () => {
+      it('should use empty object if user transform returns falsy', () => {
         const product: any = { c: 'd' };
+        const structure: any = { a: 'b', _transform: () => null };
         const extendStructure = stub(TransformUtils, 'extendStructure');
         stub(TransformUtils, 'remap');
 
-        ProductTransformer.transform(product, <any>{ a: 'b', _transform: () => null });
+        ProductTransformer.transform(product, structure);
 
-        expect(extendStructure).to.be.calledWith(product, product, { a: 'b' });
+        expect(extendStructure).to.be.calledWith(product, product, structure);
       });
 
       it('should unpack variant data', () => {
-        const effectiveStructure = { a: 'b' };
         const variantInfo = { i: 'j' };
-        const structure: any = { c: 'd', _variant: variantInfo };
         const product: any = { e: 'f' };
         const remapped: any = { g: 'h' };
-        const variants = [{ k: 'l' }, { m: 'n' }];
-        const extendStructure = stub(TransformUtils, 'extendStructure').returns(effectiveStructure);
-        const unpackVariants = stub(TransformUtils, 'unpackVariants').returns(variants);
+        const extendStructure = stub(TransformUtils, 'extendStructure').returns({ a: 'b' });
+        const unpackVariants = stub(TransformUtils, 'unpackVariants').returns([{ k: 'l' }, { m: 'n' }]);
         stub(TransformUtils, 'remap').returns(remapped);
 
-        const result = ProductTransformer.transform(product, structure);
+        const result = ProductTransformer.transform(product, <any>{ c: 'd', _variant: variantInfo });
 
         expect(result).to.eql({ data: { g: 'h', k: 'l' }, variants: [{ g: 'h', k: 'l' }, { g: 'h', m: 'n' }] });
         expect(extendStructure).to.be.calledWith(product, product, { c: 'd' });
         // tslint:disable-next-line max-line-length
-        expect(unpackVariants).to.be.calledWith(variantInfo, product, remapped, { c: 'd' }, DEFAULT_TRANSFORM);
+        expect(unpackVariants).to.be.calledWith(variantInfo, product, remapped, { c: 'd' });
       });
 
       it('should apply user transform to variant data', () => {
-        const effectiveStructure = { a: 'b' };
         const variantInfo = { i: 'j' };
-        const transformedProduct = { o: 'p' };
-        const userTransform = spy(() => transformedProduct);
-        const structure: any = { c: 'd', _variant: variantInfo, _transform: userTransform };
         const product: any = { e: 'f' };
         const remapped: any = { g: 'h' };
         const unpackVariants = stub(TransformUtils, 'unpackVariants').returns([{ k: 'l' }, { m: 'n' }]);
-        stub(TransformUtils, 'extendStructure').returns(effectiveStructure);
+        stub(TransformUtils, 'extendStructure');
         stub(TransformUtils, 'remap').returns(remapped);
 
-        ProductTransformer.transform(product, structure);
+        ProductTransformer.transform(product, <any>{ c: 'd', _variant: variantInfo });
 
         // tslint:disable-next-line max-line-length
-        expect(unpackVariants).to.be.calledWith(variantInfo, transformedProduct, remapped, { c: 'd' }, userTransform);
+        expect(unpackVariants).to.be.calledWith(variantInfo, product, remapped, { c: 'd' });
       });
     });
   });
@@ -113,13 +108,94 @@ suite('Product Transformation', ({ expect, spy, stub }) => {
 
     describe('remap()', () => {
       it('should remap paths from product based on structure', () => {
-        const data: any = { a: 'b', c: 'd', e: 'j' };
+        const data = { a: 'b', c: 'd', e: 'j' };
         const defaults = { c: 'e', f: 'g', h: 'i' };
         const structure: any = { k: 'a', l: 'c', m: 'f' };
 
         const remapped = TransformUtils.remap(data, structure, defaults);
 
         expect(remapped).to.eql({ k: 'b', l: 'd', m: 'g' });
+      });
+
+      it('should ignore non-string values', () => {
+        const structure: any = { x: false, y: {}, z: () => null };
+
+        expect(() => TransformUtils.remap({}, structure, {})).to.not.throw();
+      });
+    });
+
+    describe('unpackVariants()', () => {
+      it('should return an empty array if no variants found', () => {
+        const product = { a: 'b' };
+        const get = stub(utils.dot, 'get');
+
+        const unpacked = TransformUtils.unpackVariants({}, product, {}, <any>{});
+
+        expect(get).to.be.calledWithExactly(product, DEFAULT_VARIANT_FIELD);
+        expect(unpacked).to.eql([{}]);
+      });
+
+      it('should transform and remap variants from structure', () => {
+        const variants = [{ c: 'd' }, { e: 'f' }];
+        const remappedVariant1 = { g: 'h' };
+        const remappedVariant2 = { i: 'j' };
+        const product = { a: 'b' };
+        const remappedProduct = { k: 'l' };
+        const get = stub(utils.dot, 'get').returns(variants);
+        const remapper = stub();
+        const remapVariant = stub(TransformUtils, 'remapVariant').returns(remapper);
+        remapper.withArgs(variants[0]).returns(remappedVariant1);
+        remapper.withArgs(variants[1]).returns(remappedVariant2);
+
+        const unpacked = TransformUtils.unpackVariants({
+          structure: <any>{ m: 'n', _transform: () => null }
+        }, product, remappedProduct, <any>{});
+
+        expect(get).to.be.calledWithExactly(product, DEFAULT_VARIANT_FIELD);
+        expect(unpacked).to.eql([remappedVariant1, remappedVariant2]);
+        expect(remapVariant).to.be.calledWithExactly(remappedProduct, variants, { m: 'n' });
+      });
+
+      it('should use variant transform if provided', () => {
+        const variant1 = { c: 'd' };
+        const variant2 = { e: 'f' };
+        const product = { a: 'b' };
+        const transform = spy();
+        stub(utils.dot, 'get').returns([variant1, variant2]);
+        stub(TransformUtils, 'remapVariant').returns(() => null);
+
+        TransformUtils.unpackVariants({ structure: { _transform: transform } }, product, {}, <any>{});
+
+        expect(transform).to.be.calledWithExactly(variant1, 0, product)
+          .and.calledWithExactly(variant2, 1, product);
+      });
+
+      it('should default to base transform if none found', () => {
+        const variant1 = { c: 'd' };
+        const variant2 = { e: 'f' };
+        const product = { a: 'b' };
+        const transform = spy();
+        stub(utils.dot, 'get').returns([variant1, variant2]);
+        stub(TransformUtils, 'remapVariant').returns(() => null);
+
+        TransformUtils.unpackVariants({}, product, {}, <any>{ _transform: transform });
+
+        expect(transform).to.be.calledWithExactly(variant1, 0, product)
+          .and.calledWithExactly(variant2, 1, product);
+      });
+
+      it('should handle falsey transform result', () => {
+        const variant1 = { c: 'd' };
+        const variant2 = { e: 'f' };
+        const product = { a: 'b' };
+        const remapper = spy();
+        stub(utils.dot, 'get').returns([variant1, variant2]);
+        stub(TransformUtils, 'remapVariant').returns(remapper);
+
+        TransformUtils.unpackVariants({}, product, {}, <any>{ _transform: () => null });
+
+        expect(remapper).to.be.calledWith(variant1, 0)
+          .and.calledWith(variant2, 1);
       });
     });
   });
