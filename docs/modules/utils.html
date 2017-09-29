@@ -83,6 +83,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="utils.html#extendstructure" class="tsd-kind-icon">extend<wbr>Structure</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="utils.html#remap" class="tsd-kind-icon">remap</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="utils.html#remapvariant" class="tsd-kind-icon">remap<wbr>Variant</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="utils.html#unpackvariants" class="tsd-kind-icon">unpack<wbr>Variants</a></li>
 							</ul>
 						</section>
@@ -97,7 +98,7 @@
 					<div class="tsd-signature tsd-kind-icon">expect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ExpectStatic</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/87bc805/test/unit/_suite.ts#L7">test/unit/_suite.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/0bd29cb/test/unit/_suite.ts#L7">test/unit/_suite.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -107,7 +108,7 @@
 					<div class="tsd-signature tsd-kind-icon">spy<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">sinon.SinonSpyStatic</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/87bc805/test/unit/_suite.ts#L8">test/unit/_suite.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/0bd29cb/test/unit/_suite.ts#L8">test/unit/_suite.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -117,7 +118,7 @@
 					<div class="tsd-signature tsd-kind-icon">stub<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">sinon.SinonStubStatic</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/87bc805/test/unit/_suite.ts#L9">test/unit/_suite.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/0bd29cb/test/unit/_suite.ts#L9">test/unit/_suite.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -128,22 +129,22 @@
 					<a name="extendstructure" class="tsd-anchor"></a>
 					<h3>extend<wbr>Structure</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">extend<wbr>Structure<span class="tsd-signature-symbol">(</span>originalData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, transformedData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, structure<span class="tsd-signature-symbol">: </span><a href="../interfaces/structure.base.html" class="tsd-signature-type">Base</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+						<li class="tsd-signature tsd-kind-icon">extend<wbr>Structure<span class="tsd-signature-symbol">(</span>originalData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, transformedData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, structure<span class="tsd-signature-symbol">: </span><a href="../interfaces/structure.base.html" class="tsd-signature-type">Base</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/87bc805/src/core/product-transformer.ts#L58">src/core/product-transformer.ts:58</a></li>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/0bd29cb/src/core/product-transformer.ts#L55">src/core/product-transformer.ts:55</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>originalData: <span class="tsd-signature-type">any</span></h5>
+									<h5>originalData: <span class="tsd-signature-type">object</span></h5>
 								</li>
 								<li>
-									<h5>transformedData: <span class="tsd-signature-type">any</span></h5>
+									<h5>transformedData: <span class="tsd-signature-type">object</span></h5>
 								</li>
 								<li>
 									<h5>structure: <a href="../interfaces/structure.base.html" class="tsd-signature-type">Base</a></h5>
@@ -159,25 +160,25 @@
 					<a name="remap" class="tsd-anchor"></a>
 					<h3>remap</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">remap<span class="tsd-signature-symbol">(</span>product<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Product</span>, structure<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="structure.html" class="tsd-signature-type">Structure</a><span class="tsd-signature-symbol">&gt;</span>, defaults<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+						<li class="tsd-signature tsd-kind-icon">remap<span class="tsd-signature-symbol">(</span>product<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, structure<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="structure.html" class="tsd-signature-type">Structure</a><span class="tsd-signature-symbol">&gt;</span>, defaults<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/87bc805/src/core/product-transformer.ts#L63">src/core/product-transformer.ts:63</a></li>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/0bd29cb/src/core/product-transformer.ts#L60">src/core/product-transformer.ts:60</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>product: <span class="tsd-signature-type">Product</span></h5>
+									<h5>product: <span class="tsd-signature-type">object</span></h5>
 								</li>
 								<li>
 									<h5>structure: <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="structure.html" class="tsd-signature-type">Structure</a><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> defaults: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> defaults: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
@@ -187,55 +188,73 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
-					<a name="unpackvariants" class="tsd-anchor"></a>
-					<h3>unpack<wbr>Variants</h3>
+					<a name="remapvariant" class="tsd-anchor"></a>
+					<h3>remap<wbr>Variant</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">unpack<wbr>Variants<span class="tsd-signature-symbol">(</span>variantInfo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/structure.variant.html" class="tsd-signature-type">Variant</a><span class="tsd-signature-symbol">&gt;</span>, product<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, remappedProduct<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, baseStructure<span class="tsd-signature-symbol">: </span><a href="../interfaces/structure.base.html" class="tsd-signature-type">Base</a>, defaultTransform<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						<li class="tsd-signature tsd-kind-icon">remap<wbr>Variant<span class="tsd-signature-symbol">(</span>baseProduct<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, variants<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, structure<span class="tsd-signature-symbol">: </span><a href="../interfaces/structure.base.html" class="tsd-signature-type">Base</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/87bc805/src/core/product-transformer.ts#L40">src/core/product-transformer.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/0bd29cb/src/core/product-transformer.ts#L68">src/core/product-transformer.ts:68</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>variantInfo: <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/structure.variant.html" class="tsd-signature-type">Variant</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>baseProduct: <span class="tsd-signature-type">object</span></h5>
 								</li>
 								<li>
-									<h5>product: <span class="tsd-signature-type">any</span></h5>
+									<h5>variants: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
-									<h5>remappedProduct: <span class="tsd-signature-type">any</span></h5>
+									<h5>structure: <a href="../interfaces/structure.base.html" class="tsd-signature-type">Base</a></h5>
 								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="unpackvariants" class="tsd-anchor"></a>
+					<h3>unpack<wbr>Variants</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">unpack<wbr>Variants<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, product<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, remappedProduct<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, baseStructure<span class="tsd-signature-symbol">: </span><a href="../interfaces/structure.base.html" class="tsd-signature-type">Base</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/0bd29cb/src/core/product-transformer.ts#L41">src/core/product-transformer.ts:41</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
 								<li>
-									<h5>baseStructure: <a href="../interfaces/structure.base.html" class="tsd-signature-type">Base</a></h5>
-								</li>
-								<li>
-									<h5>defaultTransform: <span class="tsd-signature-type">function</span></h5>
+									<h5>__namedParameters: <span class="tsd-signature-type">object</span></h5>
 									<ul class="tsd-parameters">
-										<li class="tsd-parameter-siganture">
-											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5>data: <span class="tsd-signature-type">any</span></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-												</li>
+										<li class="tsd-parameter">
+											<h5>field<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>structure<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></h5>
+											<ul class="tsd-parameters">
 											</ul>
 										</li>
 									</ul>
 								</li>
+								<li>
+									<h5>product: <span class="tsd-signature-type">object</span></h5>
+								</li>
+								<li>
+									<h5>remappedProduct: <span class="tsd-signature-type">object</span></h5>
+								</li>
+								<li>
+									<h5>baseStructure: <a href="../interfaces/structure.base.html" class="tsd-signature-type">Base</a></h5>
+								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -295,6 +314,9 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="utils.html#remap" class="tsd-kind-icon">remap</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="utils.html#remapvariant" class="tsd-kind-icon">remap<wbr>Variant</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="utils.html#unpackvariants" class="tsd-kind-icon">unpack<wbr>Variants</a>
