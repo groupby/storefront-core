@@ -1,12 +1,11 @@
 import { Events } from '@storefront/flux-capacitor';
 import * as sinon from 'sinon';
-import { BaseService } from '../../../src/core/service';
 import * as utils from '../../../src/core/utils';
 import Service from '../../../src/services/autocomplete';
 import * as autocompleteService from '../../../src/services/autocomplete';
 import suite from './_suite';
 
-suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore }) => {
+suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseService }) => {
   let service: Service;
 
   beforeEach(() => service = new Service(<any>{}, <any>{}));
@@ -14,9 +13,7 @@ suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore }) => {
   itShouldBeCore(Service);
 
   describe('constructor()', () => {
-    it('should extend BaseService', () => {
-      expect(service).to.be.an.instanceOf(BaseService);
-    });
+    itShouldExtendBaseService(() => service);
   });
 
   describe('lazyInit()', () => {

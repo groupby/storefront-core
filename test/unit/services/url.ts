@@ -6,7 +6,7 @@ import * as utils from '../../../src/core/utils';
 import Service, { STOREFRONT_APP_ID } from '../../../src/services/url';
 import suite from './_suite';
 
-suite('URL Service', ({ expect, spy, stub, itShouldBeCore }) => {
+suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseService }) => {
   const routes = { a: 'b' };
   const routesWithBase = { a: '/base/b' };
   const beautifier = { refinementMapping: [], queryToken: 'q' };
@@ -28,9 +28,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore }) => {
   itShouldBeCore(Service);
 
   describe('constructor()', () => {
-    it('should extend BaseService', () => {
-      expect(service).to.be.an.instanceOf(BaseService);
-    });
+    itShouldExtendBaseService(() => service);
 
     it('should create a new URL Beautifier', () => {
       expect(urlBeautifier).to.be.calledWith(routesWithBase, beautifier);

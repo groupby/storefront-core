@@ -1,11 +1,10 @@
 import { Events } from '@storefront/flux-capacitor';
 import * as sinon from 'sinon';
-import { BaseService } from '../../../src/core/service';
 import Service from '../../../src/services/details';
 import StoreFront from '../../../src/storefront';
-import suite from '../_suite';
+import suite from './_suite';
 
-suite('Details Service', ({ expect, spy }) => {
+suite('Details Service', ({ expect, spy, itShouldExtendBaseService }) => {
   let app: StoreFront;
   let service: Service;
   let on: sinon.SinonSpy;
@@ -17,12 +16,16 @@ suite('Details Service', ({ expect, spy }) => {
   });
 
   describe('constructor()', () => {
-    it('should extend BaseService', () => {
-      expect(service).to.be.an.instanceOf(BaseService);
-    });
+    itShouldExtendBaseService(() => service);
 
     it('should listen for DETAILS_UPDATED', () => {
       expect(on).to.be.calledWithExactly(Events.DETAILS_UPDATED, service.fetchDetails);
+    });
+  });
+
+  describe('init()', () => {
+    it('should be a no-op', () => {
+      expect(() => service.init()).to.not.throw();
     });
   });
 

@@ -1,16 +1,15 @@
 import { Events, Selectors } from '@storefront/flux-capacitor';
-import { BaseService } from '../../../src/core/service';
 import Service from '../../../src/services/recommendations';
 import * as collectionsService from '../../../src/services/recommendations';
-import suite from '../_suite';
+import suite from './_suite';
 
-suite('Recommendations Service', ({ expect, spy }) => {
+suite('Recommendations Service', ({ expect, spy, itShouldExtendBaseService }) => {
   let service: Service;
 
   beforeEach(() => service = new Service(<any>{}, <any>{}));
 
-  it('should extend BaseService', () => {
-    expect(service).to.be.an.instanceOf(BaseService);
+  describe('constructor()', () => {
+    itShouldExtendBaseService(() => service);
   });
 
   describe('init()', () => {

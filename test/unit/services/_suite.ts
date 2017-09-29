@@ -8,5 +8,8 @@ export default suite.extendable((utils) => ({
   itShouldBeCore: (clazz) =>
     describe('@core', () =>
       it('should set core to be true', () =>
-        utils.expect(clazz[CORE]).to.be.true))
+        utils.expect(clazz[CORE]).to.be.true)),
+  itShouldExtendBaseService: (serviceFactory: () => BaseService) =>
+    it('should extend BaseService', () =>
+      utils.expect(serviceFactory()).to.be.an.instanceOf(BaseService))
 }));
