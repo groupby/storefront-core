@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>RangeRefinement | @storefront/core</title>
+	<title>INav | @storefront/core</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,19 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../classes/urlbeautifier.html">UrlBeautifier</a>
+					<a href="../modules/configuration.html">Configuration</a>
 				</li>
 				<li>
-					<a href="urlbeautifier.rangerefinement.html">RangeRefinement</a>
+					<a href="../modules/configuration.configuration-1.html">Configuration</a>
+				</li>
+				<li>
+					<a href="../modules/configuration.configuration-1.recommendations.html">Recommendations</a>
+				</li>
+				<li>
+					<a href="configuration.configuration-1.recommendations.inav.html">INav</a>
 				</li>
 			</ul>
-			<h1>Interface RangeRefinement</h1>
+			<h1>Interface INav</h1>
 		</div>
 	</div>
 </header>
@@ -73,12 +79,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="urlbeautifier.baserefinement.html" class="tsd-signature-type">BaseRefinement</a>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">RangeRefinement</span>
-							</li>
-						</ul>
+						<span class="target">INav</span>
 					</li>
 				</ul>
 			</section>
@@ -89,9 +90,11 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="urlbeautifier.rangerefinement.html#field" class="tsd-kind-icon">field</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="urlbeautifier.rangerefinement.html#high" class="tsd-kind-icon">high</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="urlbeautifier.rangerefinement.html#low" class="tsd-kind-icon">low</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.inav.html#minsize" class="tsd-kind-icon">min<wbr>Size</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.inav.html#navigations" class="tsd-kind-icon">navigations</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.inav.html#refinements" class="tsd-kind-icon">refinements</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.inav.html#size" class="tsd-kind-icon">size</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.inav.html#window" class="tsd-kind-icon">window</a></li>
 							</ul>
 						</section>
 					</div>
@@ -99,34 +102,53 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="field" class="tsd-anchor"></a>
-					<h3>field</h3>
-					<div class="tsd-signature tsd-kind-icon">field<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="minsize" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> min<wbr>Size</h3>
+					<div class="tsd-signature tsd-kind-icon">min<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="urlbeautifier.baserefinement.html">BaseRefinement</a>.<a href="urlbeautifier.baserefinement.html#field">field</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/0d3e971/src/core/url-beautifier/index.ts#L117">src/core/url-beautifier/index.ts:117</a></li>
+							<li>Defined in node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:229</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="high" class="tsd-anchor"></a>
-					<h3>high</h3>
-					<div class="tsd-signature tsd-kind-icon">high<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="navigations" class="tsd-anchor"></a>
+					<h3>navigations</h3>
+					<div class="tsd-signature tsd-kind-icon">navigations<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Navigations</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/0d3e971/src/core/url-beautifier/index.ts#L113">src/core/url-beautifier/index.ts:113</a></li>
+							<li>Defined in node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:227</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="low" class="tsd-anchor"></a>
-					<h3>low</h3>
-					<div class="tsd-signature tsd-kind-icon">low<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="refinements" class="tsd-anchor"></a>
+					<h3>refinements</h3>
+					<div class="tsd-signature tsd-kind-icon">refinements<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Refinements</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/0d3e971/src/core/url-beautifier/index.ts#L112">src/core/url-beautifier/index.ts:112</a></li>
+							<li>Defined in node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:228</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="size" class="tsd-anchor"></a>
+					<h3>size</h3>
+					<div class="tsd-signature tsd-kind-icon">size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:230</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="window" class="tsd-anchor"></a>
+					<h3>window</h3>
+					<div class="tsd-signature tsd-kind-icon">window<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"day"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"week"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"month"</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:231</li>
 						</ul>
 					</aside>
 				</section>
@@ -138,99 +160,95 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/attribute.html">Attribute</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/beautifierfactory.html">Beautifier<wbr>Factory</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/configuration.html">Configuration</a>
+						<ul>
+							<li class="current tsd-kind-module tsd-parent-kind-module">
+								<a href="../modules/configuration.configuration-1.html">Configuration</a>
+								<ul>
+									<li class=" tsd-kind-module tsd-parent-kind-module">
+										<a href="../modules/configuration.configuration-1.autocomplete.html">Autocomplete</a>
+									</li>
+									<li class="current tsd-kind-module tsd-parent-kind-module">
+										<a href="../modules/configuration.configuration-1.recommendations.html">Recommendations</a>
+									</li>
+								</ul>
+							</li>
+							<li class=" tsd-kind-module tsd-parent-kind-module">
+								<a href="../modules/configuration.transformer.html">Transformer</a>
+							</li>
+						</ul>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/globals.html">Globals</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/lifecycle.html">Lifecycle</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/producttransformer.html">Product<wbr>Transformer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/service.html">Service</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/structure.html">Structure</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/tagutils.html">Tag<wbr>Utils</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-not-exported">
+						<a href="../modules/utils.html">Utils</a>
+					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class">
-						<a href="../classes/urlbeautifier.html" class="tsd-kind-icon">Url<wbr>Beautifier</a>
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
+						<a href="configuration.configuration-1.recommendations.inav.html" class="tsd-kind-icon">INav</a>
 						<ul>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="urlbeautifier.baserefinement.html" class="tsd-kind-icon">Base<wbr>Refinement</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="configuration.configuration-1.recommendations.inav.html#minsize" class="tsd-kind-icon">min<wbr>Size</a>
 							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="urlbeautifier.beautifiers.html" class="tsd-kind-icon">Beautifiers</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="configuration.configuration-1.recommendations.inav.html#navigations" class="tsd-kind-icon">navigations</a>
 							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="urlbeautifier.configuration.html" class="tsd-kind-icon">Configuration</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="configuration.configuration-1.recommendations.inav.html#refinements" class="tsd-kind-icon">refinements</a>
 							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="urlbeautifier.detailsurlstate.html" class="tsd-kind-icon">Details<wbr>Url<wbr>State</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="configuration.configuration-1.recommendations.inav.html#size" class="tsd-kind-icon">size</a>
 							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="urlbeautifier.factory.html" class="tsd-kind-icon">Factory</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class tsd-has-type-parameter">
-								<a href="urlbeautifier.generator.html" class="tsd-kind-icon">Generator</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class tsd-has-type-parameter">
-								<a href="urlbeautifier.parser.html" class="tsd-kind-icon">Parser</a>
-							</li>
-							<li class="current tsd-kind-interface tsd-parent-kind-class">
-								<a href="urlbeautifier.rangerefinement.html" class="tsd-kind-icon">Range<wbr>Refinement</a>
-								<ul>
-									<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-										<a href="urlbeautifier.rangerefinement.html#field" class="tsd-kind-icon">field</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="urlbeautifier.rangerefinement.html#high" class="tsd-kind-icon">high</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="urlbeautifier.rangerefinement.html#low" class="tsd-kind-icon">low</a>
-									</li>
-								</ul>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="urlbeautifier.searchurlstate.html" class="tsd-kind-icon">Search<wbr>Url<wbr>State</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="urlbeautifier.simplebeautifier.html" class="tsd-kind-icon">Simple<wbr>Beautifier</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="urlbeautifier.url.html" class="tsd-kind-icon">Url</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="urlbeautifier.valuerefinement.html" class="tsd-kind-icon">Value<wbr>Refinement</a>
-							</li>
-							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-								<a href="../classes/urlbeautifier.html#beautifier" class="tsd-kind-icon">Beautifier</a>
-							</li>
-							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-								<a href="../classes/urlbeautifier.html#refinement" class="tsd-kind-icon">Refinement</a>
-							</li>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="../classes/urlbeautifier.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/urlbeautifier.html#appconfig" class="tsd-kind-icon">app<wbr>Config</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/urlbeautifier.html#beautifiers-1" class="tsd-kind-icon">beautifiers</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/urlbeautifier.html#config" class="tsd-kind-icon">config</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/urlbeautifier.html#routes" class="tsd-kind-icon">routes</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-								<a href="../classes/urlbeautifier.html#build" class="tsd-kind-icon">build</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-								<a href="../classes/urlbeautifier.html#parse" class="tsd-kind-icon">parse</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="../classes/urlbeautifier.html#extractapproute" class="tsd-kind-icon">extract<wbr>App<wbr>Route</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="../classes/urlbeautifier.html#validatetoken" class="tsd-kind-icon">validate<wbr>Token</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="configuration.configuration-1.recommendations.inav.html#window" class="tsd-kind-icon">window</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="configuration.configuration-1.recommendations.navigations.html" class="tsd-kind-icon">Navigations</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="configuration.configuration-1.recommendations.pinned.html" class="tsd-kind-icon">Pinned</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="configuration.configuration-1.recommendations.refinements.html" class="tsd-kind-icon">Refinements</a>
+					</li>
+					<li class=" tsd-kind-property tsd-parent-kind-module">
+						<a href="../modules/configuration.configuration-1.recommendations.html#inav-1" class="tsd-kind-icon">i<wbr>Nav</a>
+					</li>
+					<li class=" tsd-kind-property tsd-parent-kind-module">
+						<a href="../modules/configuration.configuration-1.recommendations.html#productsuggestions" class="tsd-kind-icon">product<wbr>Suggestions</a>
+					</li>
 				</ul>
 			</nav>
 		</div>

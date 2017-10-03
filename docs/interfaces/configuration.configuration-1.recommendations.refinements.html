@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Recommendations | @storefront/core</title>
+	<title>Refinements | @storefront/core</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -62,10 +62,13 @@
 					<a href="../modules/configuration.configuration-1.html">Configuration</a>
 				</li>
 				<li>
-					<a href="configuration.configuration-1.recommendations.html">Recommendations</a>
+					<a href="../modules/configuration.configuration-1.recommendations.html">Recommendations</a>
+				</li>
+				<li>
+					<a href="configuration.configuration-1.recommendations.refinements.html">Refinements</a>
 				</li>
 			</ul>
-			<h1>Interface Recommendations</h1>
+			<h1>Interface Refinements</h1>
 		</div>
 	</div>
 </header>
@@ -76,7 +79,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Recommendations</span>
+						<span class="target">Refinements</span>
 					</li>
 				</ul>
 			</section>
@@ -87,9 +90,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.html#idfield" class="tsd-kind-icon">id<wbr>Field</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.html#mode" class="tsd-kind-icon">mode</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.html#productcount" class="tsd-kind-icon">product<wbr>Count</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.refinements.html#pinned" class="tsd-kind-icon">pinned</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.refinements.html#sort" class="tsd-kind-icon">sort</a></li>
 							</ul>
 						</section>
 					</div>
@@ -98,49 +100,24 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="idfield" class="tsd-anchor"></a>
-					<h3>id<wbr>Field</h3>
-					<div class="tsd-signature tsd-kind-icon">id<wbr>Field<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="pinned" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> pinned</h3>
+					<div class="tsd-signature tsd-kind-icon">pinned<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Pinned</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:215</li>
+							<li>Defined in node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:239</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>product ID field as used in recommendations</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="mode" class="tsd-anchor"></a>
-					<h3>mode</h3>
-					<div class="tsd-signature tsd-kind-icon">mode<span class="tsd-signature-symbol">:</span> <a href="../modules/configuration.configuration-1.html#recommendationmode" class="tsd-signature-type">RecommendationMode</a></div>
+					<a name="sort" class="tsd-anchor"></a>
+					<h3>sort</h3>
+					<div class="tsd-signature tsd-kind-icon">sort<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:219</li>
+							<li>Defined in node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:238</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>type of product recommendations to request</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="productcount" class="tsd-anchor"></a>
-					<h3>product<wbr>Count</h3>
-					<div class="tsd-signature tsd-kind-icon">product<wbr>Count<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:211</li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>number of products to request</p>
-						</div>
-					</div>
 				</section>
 			</section>
 		</div>
@@ -164,6 +141,9 @@
 								<ul>
 									<li class=" tsd-kind-module tsd-parent-kind-module">
 										<a href="../modules/configuration.configuration-1.autocomplete.html">Autocomplete</a>
+									</li>
+									<li class="current tsd-kind-module tsd-parent-kind-module">
+										<a href="../modules/configuration.configuration-1.recommendations.html">Recommendations</a>
 									</li>
 								</ul>
 							</li>
@@ -198,40 +178,34 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="configuration.configuration-1.bridge.html" class="tsd-kind-icon">Bridge</a>
+						<a href="configuration.configuration-1.recommendations.inav.html" class="tsd-kind-icon">INav</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="configuration.configuration-1.clients.html" class="tsd-kind-icon">Clients</a>
+						<a href="configuration.configuration-1.recommendations.navigations.html" class="tsd-kind-icon">Navigations</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="configuration.configuration-1.recommendations.pinned.html" class="tsd-kind-icon">Pinned</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="configuration.configuration-1.recommendations.html" class="tsd-kind-icon">Recommendations</a>
+						<a href="configuration.configuration-1.recommendations.refinements.html" class="tsd-kind-icon">Refinements</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="configuration.configuration-1.recommendations.html#idfield" class="tsd-kind-icon">id<wbr>Field</a>
+								<a href="configuration.configuration-1.recommendations.refinements.html#pinned" class="tsd-kind-icon">pinned</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="configuration.configuration-1.recommendations.html#mode" class="tsd-kind-icon">mode</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="configuration.configuration-1.recommendations.html#productcount" class="tsd-kind-icon">product<wbr>Count</a>
+								<a href="configuration.configuration-1.recommendations.refinements.html#sort" class="tsd-kind-icon">sort</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="configuration.configuration-1.search.html" class="tsd-kind-icon">Search</a>
+					<li class=" tsd-kind-property tsd-parent-kind-module">
+						<a href="../modules/configuration.configuration-1.recommendations.html#inav-1" class="tsd-kind-icon">i<wbr>Nav</a>
 					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/configuration.configuration-1.html#recommendationmode" class="tsd-kind-icon">Recommendation<wbr>Mode</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/configuration.configuration-1.html#valueoptions" class="tsd-kind-icon">Value<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module">
-						<a href="../modules/configuration.configuration-1.html#recommendation_modes" class="tsd-kind-icon">RECOMMENDATION_<wbr>MODES</a>
+					<li class=" tsd-kind-property tsd-parent-kind-module">
+						<a href="../modules/configuration.configuration-1.recommendations.html#productsuggestions" class="tsd-kind-icon">product<wbr>Suggestions</a>
 					</li>
 				</ul>
 			</nav>
