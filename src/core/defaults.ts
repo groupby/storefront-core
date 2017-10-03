@@ -40,10 +40,21 @@ const DEFAULTS: Partial<Configuration> = {
     },
   },
   recommendations: {
-    idField: 'productId',
-    productCount: 4,
-    // TODO: switch to 'popular' once endpoint response format is fixed
-    mode: 'trending'
+    iNav: {
+      navigations: {
+        sort: false,
+      },
+      refinements: {
+        sort: false,
+      },
+      size: 10,
+      window: 'day',
+    },
+    productSuggestions: {
+      idField: 'productId',
+      productCount: 4,
+      mode: 'trending'
+    }
   },
   network: {},
 
