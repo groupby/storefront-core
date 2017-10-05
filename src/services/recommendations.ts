@@ -6,6 +6,7 @@ class RecommendationsService extends BaseService {
 
   init() {
     this.app.flux.store.dispatch(this.app.flux.actions.fetchRecommendationsProducts());
+    this.app.flux.store.dispatch(this.app.flux.actions.fetchPastPurchases());
   }
 }
 
