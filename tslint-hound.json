@@ -1,0 +1,6 @@
+{
+  "extends": "tslint-config-groupby",
+  "rules": {
+    "no-unused-expression": false
+  }
+}

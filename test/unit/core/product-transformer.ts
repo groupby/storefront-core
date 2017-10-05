@@ -198,5 +198,23 @@ suite('Product Transformation', ({ expect, spy, stub }) => {
           .and.calledWith(variant2, 1);
       });
     });
+
+    describe('remapVariant()', () => {
+      it('should call remap with extended structure', () => {
+        const baseProduct = { a: 'b' };
+        const variants = [{}, { c: 'd' }, {}];
+        const structure: any = { e: 'f' };
+        const transformed = { g: 'h' };
+        const effectiveStructure = { i: 'j' };
+        const extendStructure = stub(TransformUtils, 'extendStructure').returns(effectiveStructure);
+        const remap = stub(TransformUtils, 'remap');
+
+        const transform = TransformUtils.remapVariant(baseProduct, variants, structure);
+        transform(transformed, 1);
+
+        expect(extendStructure).to.be.calledWithExactly(variants[1], transformed, structure);
+        expect(remap).to.be.calledWithExactly(transformed, effectiveStructure, baseProduct);
+      });
+    });
   });
 });

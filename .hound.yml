@@ -1,4 +1,4 @@
 tslint:
   enabled: true
-  config_file: tslint.json
+  config_file: tslint-hound.json
 fail_on_violations: true
