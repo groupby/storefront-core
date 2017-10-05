@@ -52,8 +52,11 @@ const DEFAULTS: Partial<Configuration> = {
     },
     productSuggestions: {
       idField: 'productId',
-      productCount: 4,
+      productCount: 0,
       mode: 'trending'
+    },
+    pastPurchases: {
+      productCount: 0
     }
   },
   network: {},
