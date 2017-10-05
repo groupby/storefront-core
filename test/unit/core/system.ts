@@ -103,6 +103,24 @@ suite('System', ({ expect, spy, stub }) => {
 
       expect(setGlobal).to.be.calledWith('riot', riot);
     });
+
+    it('should set register', () => {
+      const clazz = () => null;
+      const debug = spy();
+      const app: any = { config: { options: {} }, log: { debug } };
+      const system = new System(app);
+      const register = spy();
+      const createRegister = stub(Tag, 'create').returns(register);
+      stub(Globals, 'set');
+      stub(Globals, 'getRiot').returns(riot);
+
+      system.initRiot();
+      app.register(clazz, 'myTag');
+
+      expect(createRegister).to.be.calledWithExactly(riot);
+      expect(register).to.be.calledWithExactly(clazz);
+      expect(debug).to.be.calledWithExactly('[tag/<myTag>] registered');
+    });
   });
 
   describe('initFlux()', () => {

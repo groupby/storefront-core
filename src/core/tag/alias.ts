@@ -119,8 +119,8 @@ class Alias {
   }
 
   updatePropsAliases(currentAliases: { [key: string]: any }) {
-    const propsAliases = this.aliases.props;
     const props = this.tag.props;
+    const propsAliases = this.aliases.props;
     const loggableAliases = propsAliases.reduce((aliases, key) => Object.assign(aliases, { [key]: props }), {});
     this.emit('updated', 'props', loggableAliases);
 
