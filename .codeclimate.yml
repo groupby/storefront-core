@@ -1,7 +1,2 @@
-ratings:
-  paths:
-  - 'src/**/*.ts'
-  - 'test/**/*.ts'
-  - 'custom_typings/**/*.ts'
 exclude_paths:
 - docs/
