@@ -1,2 +1,17 @@
+---
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - javascript
+  fixme:
+    enabled: true
+ratings:
+  paths:
+  - "**.ts"
 exclude_paths:
 - docs/
+- dist/
+- node_modules/
+- test/
