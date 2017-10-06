@@ -2,6 +2,5 @@ engines:
   tslint:
     enabled: true
     channel: beta
-    config: tslint.json
 exclude_paths:
 - 'docs/'
