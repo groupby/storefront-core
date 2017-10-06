@@ -3,6 +3,7 @@
 [![npm (scoped with tag)](https://img.shields.io/npm/v/@storefront/core.svg?style=flat-square)](https://www.npmjs.com/package/@storefront/core)
 [![CircleCI branch](https://img.shields.io/circleci/project/github/groupby/storefront-core/master.svg?style=flat-square)](https://circleci.com/gh/groupby/storefront-core/tree/master)
 [![Codecov branch](https://img.shields.io/codecov/c/github/groupby/storefront-core/master.svg?style=flat-square)](https://codecov.io/gh/groupby/storefront-core)
+[![Code Climate](https://codeclimate.com/github/groupby/storefront-core/badges/gpa.svg)](https://codeclimate.com/github/groupby/storefront-core)
 [![Dependency Status](https://dependencyci.com/github/groupby/storefront-core/badge?style=flat-square)](https://dependencyci.com/github/groupby/storefront-core)
 [![Known Vulnerabilities](https://snyk.io/test/github/groupby/storefront-core/badge.svg)](https://snyk.io/test/github/groupby/storefront-core)
 
