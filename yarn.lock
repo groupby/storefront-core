@@ -39,9 +39,9 @@
     conventional-changelog "0.0.17"
     github-url-from-git "^1.4.0"
 
-"@storefront/flux-capacitor@1.20.0":
-  version "1.20.0"
-  resolved "https://registry.yarnpkg.com/@storefront/flux-capacitor/-/flux-capacitor-1.20.0.tgz#31ca7309d6f3bb9d0e184a38d43d24dc4fd216c5"
+"@storefront/flux-capacitor@1.20.1":
+  version "1.20.1"
+  resolved "https://registry.yarnpkg.com/@storefront/flux-capacitor/-/flux-capacitor-1.20.1.tgz#5cc423cce734132f396b4f6296cb214ffaaa520b"
   dependencies:
     "@manaflair/redux-batch" "^0.1.0"
     "@types/redux-logger" "^3.0.0"
@@ -53,7 +53,7 @@
     redux-logger "^3.0.6"
     redux-saga "^0.15.4"
     redux-undo "^0.6.1"
-    redux-validator "^0.2.1"
+    redux-validator "^0.2.2"
     sayt "^0.1.8"
 
 "@types/axios@^0.9.35":
@@ -3255,9 +3255,9 @@ redux-undo@^0.6.1:
   dependencies:
     redux "^3.0.2"
 
-redux-validator@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/redux-validator/-/redux-validator-0.2.1.tgz#41329d56a3fc932ef1e23c6f06bedd9c34092ef0"
+redux-validator@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/redux-validator/-/redux-validator-0.2.2.tgz#1306a8aec52536961d91b5da2763a83886514a17"
 
 redux@^3.0.2, redux@^3.6.0, redux@^3.7.0:
   version "3.7.2"
