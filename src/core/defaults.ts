@@ -27,7 +27,6 @@ const DEFAULTS: Partial<Configuration> = {
     recommendations: {
       suggestionCount: 2,
       suggestionMode: 'popular',
-      location: true,
     },
     navigations: {},
     defaults: {
@@ -40,6 +39,10 @@ const DEFAULTS: Partial<Configuration> = {
     },
   },
   recommendations: {
+    location: {
+      distance: '10km',
+      minSize: 10,
+    },
     iNav: {
       navigations: {
         sort: false,

@@ -13,7 +13,7 @@ class AutocompleteService extends LazyService {
 
   lazyInit() {
     this.app.flux.on(Events.AUTOCOMPLETE_QUERY_UPDATED, this.updateSearchTerms);
-    if (this.app.config.autocomplete.recommendations.location) {
+    if (this.app.config.recommendations.location) {
       this.app.flux.once(Events.AUTOCOMPLETE_QUERY_UPDATED, this.requestLocation);
     }
   }
