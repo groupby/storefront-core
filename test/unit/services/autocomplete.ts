@@ -21,7 +21,7 @@ suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore, itShouldExte
       const on = spy();
       service['app'] = <any>{
         flux: { on, once: () => expect.fail() },
-        config: { autocomplete: { recommendations: {} } }
+        config: { recommendations: { location: false } }
       };
 
       service.lazyInit();
@@ -33,7 +33,7 @@ suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore, itShouldExte
       const once = spy();
       service['app'] = <any>{
         flux: { once, on: () => null },
-        config: { autocomplete: { recommendations: { location: true } } }
+        config: { recommendations: { location: { } } }
       };
 
       service.lazyInit();
