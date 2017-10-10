@@ -18,10 +18,21 @@ suite('Collections Service', ({ expect, spy, stub, itShouldBeCore, itShouldExten
     it('should listen for RECALL_CHANGED event', () => {
       const on = spy();
       service['app'] = <any>{ flux: { on } };
+      stub(service,'fetchCollectionCounts');
 
       service.lazyInit();
 
       expect(on).to.be.calledWith(Events.RECALL_CHANGED, service.waitForResults);
+    });
+
+    it('should call fetchCollectionsCount', () => {
+      const on = spy();
+      const fetchCollectionsCount = stub(service,'fetchCollectionCounts');
+      service['app'] = <any>{ flux: { on } };
+
+      service.lazyInit();
+
+      expect(fetchCollectionsCount).to.be.calledOnce;
     });
   });
 
