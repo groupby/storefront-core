@@ -43,6 +43,7 @@ const DEFAULTS: Partial<Configuration> = {
       distance: '10km',
       minSize: 10,
     },
+    idField: 'productId',
     iNav: {
       navigations: {
         sort: false,
@@ -54,12 +55,14 @@ const DEFAULTS: Partial<Configuration> = {
       window: 'day',
     },
     productSuggestions: {
-      idField: 'productId',
       productCount: 0,
       mode: 'trending'
     },
     pastPurchases: {
-      productCount: 0
+      productCount: 0,
+      biasCount: 0,
+      biasStrength: 'Medium_Increase',
+      biasInfluence: 5,
     }
   },
   network: {
