@@ -62,7 +62,9 @@ const DEFAULTS: Partial<Configuration> = {
       productCount: 0
     }
   },
-  network: {},
+  network: {
+    https: typeof window !== 'undefined' && window.location.protocol === 'https:'
+  },
 
   services: {
     logging: {
