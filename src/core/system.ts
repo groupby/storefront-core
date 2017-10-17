@@ -27,6 +27,10 @@ export default class System {
     this.initServices();
     this.initMixin();
     this.registerTags();
+
+    Object.defineProperty(this.app.flux, 'config', {
+      get() { return this.selectors.config(this.store.getState()); }
+    });
   }
 
   initConfig(config: Configuration) {
