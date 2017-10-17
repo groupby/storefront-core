@@ -13,13 +13,18 @@ class AutocompleteService extends LazyService {
 
   lazyInit() {
     this.app.flux.on(Events.AUTOCOMPLETE_QUERY_UPDATED, this.updateSearchTerms);
+
     if (this.app.config.recommendations.location) {
       this.app.flux.once(Events.AUTOCOMPLETE_QUERY_UPDATED, this.requestLocation);
     }
   }
 
   lazyInitProducts() {
-    this.app.flux.on(Events.AUTOCOMPLETE_SUGGESTIONS_UPDATED, this.updateProducts);
+    if (this.app.config.services.autocomplete.useFirstResult) {
+      this.app.flux.on(Events.AUTOCOMPLETE_SUGGESTIONS_UPDATED, this.updateProductsWithSearchTerms);
+    } else {
+      this.app.flux.on(Events.AUTOCOMPLETE_QUERY_UPDATED, this.updateProducts);
+    }
   }
 
   registerAutocomplete(tag: AutocompleteTag) {
@@ -38,7 +43,9 @@ class AutocompleteService extends LazyService {
 
   updateSearchTerms = (query: string) => this.app.flux.saytSuggestions(query);
 
-  updateProducts = ({ suggestions }: Store.Autocomplete) => {
+  updateProducts = (query: string) => this.app.flux.saytProducts(query);
+
+  updateProductsWithSearchTerms = ({ suggestions }: Store.Autocomplete) => {
     if (suggestions && suggestions.length !== 0) {
       this.app.flux.saytProducts(suggestions[0].value);
     }
