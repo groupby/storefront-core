@@ -23,7 +23,8 @@ suite('System', ({ expect, spy, stub }) => {
   describe('bootstrap()', () => {
     it('should call all bootstrap functions', () => {
       const services: any = { a: 'b' };
-      const system = new System(<any>{});
+      const app = { flux: {} };
+      const system = new System(<any>app);
       const initConfig = system.initConfig = spy(() => ({ options: {} }));
       const initRiot = system.initRiot = spy();
       const initFlux = system.initFlux = spy();
@@ -31,6 +32,7 @@ suite('System', ({ expect, spy, stub }) => {
       const initServices = system.initServices = spy();
       const initMixin = system.initMixin = spy();
       const registerTags = system.registerTags = spy();
+      const defineProp = stub(Object, 'defineProperty');
 
       system.bootstrap(services, CONFIG);
 
@@ -41,6 +43,7 @@ suite('System', ({ expect, spy, stub }) => {
       expect(initServices).to.be.called;
       expect(initMixin).to.be.called;
       expect(registerTags).to.be.called;
+      expect(defineProp).to.be.calledWith(app.flux, 'config');
     });
 
     it('should call user bootstrap function if provided', () => {
