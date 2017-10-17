@@ -43,13 +43,28 @@ suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore, itShouldExte
   });
 
   describe('lazyInitProducts()', () => {
-    it('should listen for AUTOCOMPLETE_SUGGESTIONS_UPDATED event', () => {
+    it('should listen for AUTOCOMPLETE_QUERY_UPDATED event', () => {
       const on = spy();
-      service['app'] = <any>{ flux: { on } };
+      service['app'] = <any>{
+        flux: { on },
+        config: { services: { autocomplete: { useFirstResult: false } } }
+      };
 
       service.lazyInitProducts();
 
-      expect(on).to.be.calledWith(Events.AUTOCOMPLETE_SUGGESTIONS_UPDATED, service.updateProducts);
+      expect(on).to.be.calledWith(Events.AUTOCOMPLETE_QUERY_UPDATED, service.updateProducts);
+    });
+
+    it('should listen for AUTOCOMPLETE_SUGGESTIONS_UPDATED event and then use search terms if enabled', () => {
+      const on = spy();
+      service['app'] = <any>{
+        flux: { on },
+        config: { services: { autocomplete: { useFirstResult: true } } }
+      };
+
+      service.lazyInitProducts();
+
+      expect(on).to.be.calledWith(Events.AUTOCOMPLETE_SUGGESTIONS_UPDATED, service.updateProductsWithSearchTerms);
     });
   });
 
@@ -120,7 +135,19 @@ suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore, itShouldExte
       const saytProducts = spy();
       service['app'] = <any>{ flux: { saytProducts } };
 
-      service.updateProducts(<any>{ suggestions: [{ value: query }] });
+      service.updateProducts(query);
+
+      expect(saytProducts).to.be.calledWith(query);
+    });
+  });
+
+  describe('updateProductsWithSearchTerms()', () => {
+    it('should call flux.saytProducts()', () => {
+      const query = 'middleschool diaries';
+      const saytProducts = spy();
+      service['app'] = <any>{ flux: { saytProducts } };
+
+      service.updateProductsWithSearchTerms(<any>{ suggestions: [{ value: query }] });
 
       expect(saytProducts).to.be.calledWith(query);
     });
@@ -128,7 +155,7 @@ suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore, itShouldExte
     it('should check for first suggestion', () => {
       service['app'] = <any>{ flux: { saytProducts: () => expect.fail() } };
 
-      service.updateProducts(<any>{ suggestions: [] });
+      service.updateProductsWithSearchTerms(<any>{ suggestions: [] });
     });
   });
 

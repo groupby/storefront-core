@@ -70,6 +70,9 @@ const DEFAULTS: Partial<Configuration> = {
   },
 
   services: {
+    autocomplete: {
+      useFirstResult: false
+    },
     logging: {
       level: 'debug'
     },
