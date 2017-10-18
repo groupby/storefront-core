@@ -21,6 +21,7 @@ declare module 'gb-tracker-client/slim' {
     sendSearchEvent(data: TrackerClient.SearchEvent): void;
     sendAutoSearchEvent(data: TrackerClient.SearchEvent): void;
     sendViewProductEvent(data: TrackerClient.ViewProductEvent): void;
+    sendMoreRefinementsEvent(data: TrackerClient.MoreRefinementsEvent): void;
   }
   namespace TrackerClient {
     export const SESSION_COOKIE_KEY: string;
@@ -83,6 +84,13 @@ declare module 'gb-tracker-client/slim' {
 
     export interface ViewProductEvent {
       product: Product;
+      metadata?: Metadata[];
+    }
+
+    export interface MoreRefinementsEvent {
+      moreRefinements: {
+        id: string;
+      };
       metadata?: Metadata[];
     }
   }

@@ -27,6 +27,7 @@ class TrackerService extends BaseService<TrackerService.Options> {
     app.flux.on(Events.BEACON_REMOVE_FROM_CART, this.sendRemoveFromCartEvent);
     app.flux.on(Events.BEACON_ORDER, this.sendOrderEvent);
     app.flux.on(Events.BEACON_VIEW_PRODUCT, this.sendViewProductEvent);
+    app.flux.on(Events.BEACON_MORE_REFINEMENTS, this.sendMoreRefinementsEvent);
   }
 
   init() {
@@ -61,12 +62,16 @@ class TrackerService extends BaseService<TrackerService.Options> {
   }
   sendViewCartEvent = (event: GbTracker.CartEvent) =>
     this.sendEvent('sendViewCartEvent', this.addMetadata(event))
+
   sendAddToCartEvent = (event: GbTracker.CartEvent) =>
     this.sendEvent('sendAddToCartEvent', this.addMetadata(event))
+
   sendRemoveFromCartEvent = (event: GbTracker.CartEvent) =>
     this.sendEvent('sendRemoveFromCartEvent', this.addMetadata(event))
+
   sendOrderEvent = (event: GbTracker.OrderEvent) =>
     this.sendEvent('sendOrderEvent', this.addMetadata(event))
+
   sendViewProductEvent = (record: any) => {
     const { data: { id: productId, title, price } } = this.transform(record.allMeta);
     this.sendEvent('sendViewProductEvent', this.addMetadata({
@@ -78,6 +83,9 @@ class TrackerService extends BaseService<TrackerService.Options> {
       }
     }));
   }
+
+  sendMoreRefinementsEvent = (id: string) =>
+    this.sendEvent('sendMoreRefinementsEvent', this.addMetadata({ moreRefinements: { id } }))
 
   addMetadata(event: any) {
     return {

@@ -41,13 +41,14 @@ suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
     });
 
     it('should listen for events', () => {
-      expect(on).to.have.callCount(6)
+      expect(on).to.have.callCount(7)
         .and.calledWith(Events.BEACON_SEARCH, service.sendSearchEvent)
         .and.calledWith(Events.BEACON_VIEW_CART, service.sendViewCartEvent)
         .and.calledWith(Events.BEACON_ADD_TO_CART, service.sendAddToCartEvent)
         .and.calledWith(Events.BEACON_REMOVE_FROM_CART, service.sendRemoveFromCartEvent)
         .and.calledWith(Events.BEACON_VIEW_PRODUCT, service.sendViewProductEvent)
-        .and.calledWith(Events.BEACON_ORDER, service.sendOrderEvent);
+        .and.calledWith(Events.BEACON_ORDER, service.sendOrderEvent)
+        .and.calledWith(Events.BEACON_MORE_REFINEMENTS, service.sendMoreRefinementsEvent);
     });
   });
 
@@ -228,6 +229,21 @@ suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
         }
       });
       expect(sendEvent).to.be.calledWith('sendViewProductEvent', withMetadata);
+    });
+  });
+
+  describe('sendMoreRefinementsEvent()', () => {
+    it('should send event with metadata', () => {
+      const id = 'colour';
+      const withMetadata = { c: 'd' };
+      const sendEvent = service.sendEvent = spy();
+      const addMetadata = service.addMetadata = spy(() => withMetadata);
+
+      service.sendMoreRefinementsEvent(id);
+
+      expect(addMetadata).to.be.calledWith({ moreRefinements: { id } });
+
+      expect(sendEvent).to.be.calledWith('sendMoreRefinementsEvent', withMetadata);
     });
   });
 
