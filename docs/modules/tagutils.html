@@ -73,6 +73,8 @@
 						<section class="tsd-index-section tsd-is-external">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="tagutils.html#augmentaction" class="tsd-kind-icon">augment<wbr>Action</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="tagutils.html#augmentmeta" class="tsd-kind-icon">augment<wbr>Meta</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="tagutils.html#bindcontroller" class="tsd-kind-icon">bind<wbr>Controller</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="tagutils.html#buildprops" class="tsd-kind-icon">build<wbr>Props</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="tagutils.html#globalconfiguration" class="tsd-kind-icon">global<wbr>Configuration</a></li>
@@ -80,6 +82,9 @@
 								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="tagutils.html#initializer" class="tsd-kind-icon">initializer</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="tagutils.html#setmetadata" class="tsd-kind-icon">set<wbr>Metadata</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="tagutils.html#tagdescriptors" class="tsd-kind-icon">tag<wbr>Descriptors</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="tagutils.html#wrapactioncreator" class="tsd-kind-icon">wrap<wbr>Action<wbr>Creator</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="tagutils.html#wrapactioncreators" class="tsd-kind-icon">wrap<wbr>Action<wbr>Creators</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="tagutils.html#wrapthunk" class="tsd-kind-icon">wrap<wbr>Thunk</a></li>
 							</ul>
 						</section>
 					</div>
@@ -87,6 +92,70 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group tsd-is-external">
 				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-external">
+					<a name="augmentaction" class="tsd-anchor"></a>
+					<h3>augment<wbr>Action</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-external">
+						<li class="tsd-signature tsd-kind-icon">augment<wbr>Action<span class="tsd-signature-symbol">(</span>action<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Action</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Action</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Thunk</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>, metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Action</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">(Anonymous function)</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4e8468b/src/core/tag/utils.ts#L94">core/tag/utils.ts:94</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>action: <span class="tsd-signature-type">Action</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Action</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Thunk</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>metadata: <span class="tsd-signature-type">object</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Action</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">(Anonymous function)</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">object</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">[]</span>
+							</h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-external">
+					<a name="augmentmeta" class="tsd-anchor"></a>
+					<h3>augment<wbr>Meta</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-external">
+						<li class="tsd-signature tsd-kind-icon">augment<wbr>Meta<span class="tsd-signature-symbol">(</span>action<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Action</span>, metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4e8468b/src/core/tag/utils.ts#L111">core/tag/utils.ts:111</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>action: <span class="tsd-signature-type">Action</span></h5>
+								</li>
+								<li>
+									<h5>metadata: <span class="tsd-signature-type">object</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter">
+									<h5>meta<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></h5>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-external">
 					<a name="bindcontroller" class="tsd-anchor"></a>
 					<h3>bind<wbr>Controller</h3>
@@ -97,7 +166,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4cc83ec/src/core/tag/utils.ts#L24">core/tag/utils.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4e8468b/src/core/tag/utils.ts#L25">core/tag/utils.ts:25</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -123,7 +192,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4cc83ec/src/core/tag/utils.ts#L44">core/tag/utils.ts:44</a></li>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4e8468b/src/core/tag/utils.ts#L45">core/tag/utils.ts:45</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -146,7 +215,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4cc83ec/src/core/tag/utils.ts#L39">core/tag/utils.ts:39</a></li>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4e8468b/src/core/tag/utils.ts#L40">core/tag/utils.ts:40</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -169,7 +238,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4cc83ec/src/core/tag/utils.ts#L60">core/tag/utils.ts:60</a></li>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4e8468b/src/core/tag/utils.ts#L61">core/tag/utils.ts:61</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -195,7 +264,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4cc83ec/src/core/tag/utils.ts#L12">core/tag/utils.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4e8468b/src/core/tag/utils.ts#L13">core/tag/utils.ts:13</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -223,7 +292,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4cc83ec/src/core/tag/utils.ts#L71">core/tag/utils.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4e8468b/src/core/tag/utils.ts#L72">core/tag/utils.ts:72</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -252,7 +321,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4cc83ec/src/core/tag/utils.ts#L34">core/tag/utils.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4e8468b/src/core/tag/utils.ts#L35">core/tag/utils.ts:35</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -262,6 +331,133 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-external">
+					<a name="wrapactioncreator" class="tsd-anchor"></a>
+					<h3>wrap<wbr>Action<wbr>Creator</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-external">
+						<li class="tsd-signature tsd-kind-icon">wrap<wbr>Action<wbr>Creator<span class="tsd-signature-symbol">(</span>actionCreator<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ActionCreator</span>, metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, dispatch<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4e8468b/src/core/tag/utils.ts#L89">core/tag/utils.ts:89</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>actionCreator: <span class="tsd-signature-type">ActionCreator</span></h5>
+								</li>
+								<li>
+									<h5>metadata: <span class="tsd-signature-type">object</span></h5>
+								</li>
+								<li>
+									<h5>dispatch: <span class="tsd-signature-type">function</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>action<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>action: <span class="tsd-signature-type">any</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-external">
+					<a name="wrapactioncreators" class="tsd-anchor"></a>
+					<h3>wrap<wbr>Action<wbr>Creators</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-external">
+						<li class="tsd-signature tsd-kind-icon">wrap<wbr>Action<wbr>Creators<span class="tsd-signature-symbol">(</span>actionCreators<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, dispatch<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4e8468b/src/core/tag/utils.ts#L81">core/tag/utils.ts:81</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>actionCreators: <span class="tsd-signature-type">object</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-index-signature">
+											<h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">ActionCreator</span></h5>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<h5>metadata: <span class="tsd-signature-type">object</span></h5>
+								</li>
+								<li>
+									<h5>dispatch: <span class="tsd-signature-type">function</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>action<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>action: <span class="tsd-signature-type">any</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
+							<ul class="tsd-parameters">
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-external">
+					<a name="wrapthunk" class="tsd-anchor"></a>
+					<h3>wrap<wbr>Thunk</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-external">
+						<li class="tsd-signature tsd-kind-icon">wrap<wbr>Thunk<span class="tsd-signature-symbol">(</span>thunk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Thunk</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>, metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/4e8468b/src/core/tag/utils.ts#L107">core/tag/utils.ts:107</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>thunk: <span class="tsd-signature-type">Thunk</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>metadata: <span class="tsd-signature-type">object</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -314,6 +510,12 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
+						<a href="tagutils.html#augmentaction" class="tsd-kind-icon">augment<wbr>Action</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
+						<a href="tagutils.html#augmentmeta" class="tsd-kind-icon">augment<wbr>Meta</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
 						<a href="tagutils.html#bindcontroller" class="tsd-kind-icon">bind<wbr>Controller</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
@@ -333,6 +535,15 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
 						<a href="tagutils.html#tagdescriptors" class="tsd-kind-icon">tag<wbr>Descriptors</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
+						<a href="tagutils.html#wrapactioncreator" class="tsd-kind-icon">wrap<wbr>Action<wbr>Creator</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
+						<a href="tagutils.html#wrapactioncreators" class="tsd-kind-icon">wrap<wbr>Action<wbr>Creators</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
+						<a href="tagutils.html#wrapthunk" class="tsd-kind-icon">wrap<wbr>Thunk</a>
 					</li>
 				</ul>
 			</nav>
