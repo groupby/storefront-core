@@ -39,9 +39,9 @@
     conventional-changelog "0.0.17"
     github-url-from-git "^1.4.0"
 
-"@storefront/flux-capacitor@1.25.0":
-  version "1.25.0"
-  resolved "https://registry.yarnpkg.com/@storefront/flux-capacitor/-/flux-capacitor-1.25.0.tgz#650bf4d4e34e704924ae343ab8548c96ae15726d"
+"@storefront/flux-capacitor@1.26.1":
+  version "1.26.1"
+  resolved "https://registry.yarnpkg.com/@storefront/flux-capacitor/-/flux-capacitor-1.26.1.tgz#ea255b582714859c54da5a99c5e5e6b00007db83"
   dependencies:
     "@manaflair/redux-batch" "^0.1.0"
     "@types/redux-logger" "^3.0.0"

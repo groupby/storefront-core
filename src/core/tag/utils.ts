@@ -1,3 +1,4 @@
+import { Actions } from '@storefront/flux-capacitor';
 import * as camelCase from 'lodash.camelcase';
 import * as riot from 'riot';
 import Tag, { TAG_DESC, TAG_META } from '.';
@@ -74,6 +75,41 @@ namespace TagUtils {
       ...description,
       metadata: { ...description.metadata, [key]: value }
     });
+  }
+
+  // tslint:disable-next-line max-line-length
+  export function wrapActionCreators(actionCreators: { [key: string]: Actions.ActionCreator }, metadata: object, dispatch: (action: any) => any) {
+    return Object.keys(actionCreators)
+      .reduce((creators, key) => Object.assign(creators, {
+        [key]: TagUtils.wrapActionCreator(actionCreators[key], metadata, dispatch)
+      }), {});
+  }
+
+  // tslint:disable-next-line max-line-length
+  export function wrapActionCreator(actionCreator: Actions.ActionCreator, metadata: object, dispatch: (action: any) => any) {
+    return (...args) => dispatch(TagUtils.augmentAction(actionCreator(...args), metadata));
+  }
+
+  // tslint:disable-next-line max-line-length
+  export function augmentAction(action: Actions.Action | Actions.Action[] | Actions.Thunk<any>, metadata: object) {
+    if (typeof action === 'function') {
+      return TagUtils.wrapThunk(action, metadata);
+    } else if (Array.isArray(action)) {
+      return action.map((subAction) => TagUtils.augmentMeta(subAction, metadata));
+    } else if (action && typeof action === 'object') {
+      return TagUtils.augmentMeta(action, metadata);
+    } else {
+      return action;
+    }
+  }
+
+  // tslint:disable-next-line max-line-length
+  export function wrapThunk(thunk: Actions.Thunk<any>, metadata: object) {
+    return (getState) => TagUtils.augmentAction(thunk(getState), metadata);
+  }
+
+  export function augmentMeta(action: Actions.Action, metadata: object) {
+    return { ...action, meta: { ...action.meta, ...metadata } };
   }
 }
 

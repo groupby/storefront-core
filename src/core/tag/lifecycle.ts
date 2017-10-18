@@ -1,4 +1,4 @@
-import { Events } from '@storefront/flux-capacitor';
+import { ActionCreators, Events } from '@storefront/flux-capacitor';
 import Tag from '.';
 import { dot } from '../utils';
 import Attribute from './attribute';
@@ -80,18 +80,15 @@ namespace Lifecycle {
 
   export function primeTagActions(tag: Tag) {
     const { name, origin } = Tag.getMeta(tag);
-    const primed = tag.flux.__rawActions(() => ({ tag: { name, origin, id: tag._riot_id } }));
-    tag.actions = <any>Object.keys(primed)
-      .reduce((actions, key) => {
-        actions[key] = (...args) => tag.flux.store.dispatch(primed[key](...args));
-        return actions;
-      }, {});
+    return <any>TagUtils.wrapActionCreators(<any>ActionCreators, {
+      tag: { name, origin, id: tag._riot_id }
+    }, (action) => tag.flux.store.dispatch(action));
   }
 
   export function onInitialize(this: Tag) {
     Lifecycle.addSugar(this);
     Lifecycle.addMetadata(this);
-    Lifecycle.primeTagActions(this);
+    this.actions = Lifecycle.primeTagActions(this);
 
     Lifecycle.onRecalculateProps.call(this);
 

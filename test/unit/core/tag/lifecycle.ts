@@ -1,3 +1,4 @@
+import { ActionCreators } from '@storefront/flux-capacitor';
 import * as sinon from 'sinon';
 import Tag from '../../../../src/core/tag';
 import Lifecycle, { STYLISH_CLASS, UI_CLASS } from '../../../../src/core/tag/lifecycle';
@@ -7,44 +8,28 @@ import suite from '../../_suite';
 suite('Lifecycle', ({ expect, spy, stub }) => {
 
   describe('primeTagActions()', () => {
-    it('should create actions with metadata factory', () => {
+    it('should wrap actions for easy dispatch', () => {
       const name = 'my-tag';
       const origin = 'search';
       const id = 4;
-      const rawActions = spy(() => ({}));
-      const getMeta = stub(Tag, 'getMeta').returns({ name, origin });
-
-      Lifecycle.primeTagActions(<any>{ flux: { __rawActions: rawActions }, _riot_id: id });
-
-      expect(rawActions).to.be.calledWith(sinon.match((cb) => {
-        const meta = cb();
-
-        return expect(meta).to.eql({ tag: { name, origin, id } });
-      }));
-    });
-
-    it('should wrap actions for easy dispatch', () => {
-      const args = ['a', 'b', 'c'];
-      const action1 = { d: 'e' };
-      const action2 = { f: 'g' };
+      const wrappedActionCreators = { a: 'b' };
       const dispatch = spy();
-      const actionCreator1 = spy(() => action1);
-      const actionCreator2 = spy(() => action2);
-      const actions = { action1: actionCreator1, action2: actionCreator2 };
-      const tag: any = { flux: { __rawActions: () => actions, store: { dispatch } } };
-      const getMeta = stub(Tag, 'getMeta').returns({});
+      const getMeta = stub(Tag, 'getMeta').returns({ name, origin });
+      const wrapActionCreators = stub(TagUtils, 'wrapActionCreators').returns(wrappedActionCreators);
 
-      Lifecycle.primeTagActions(tag);
+      const actionCreators = Lifecycle.primeTagActions(<any>{ flux: { store: { dispatch } }, _riot_id: id });
 
-      expect(tag.actions).to.have.keys('action1', 'action2');
+      expect(actionCreators).to.eq(wrappedActionCreators);
+      expect(wrapActionCreators).to.be.calledWithExactly(
+        ActionCreators,
+        { tag: { name, origin, id } },
+        sinon.match((cb) => {
+          const action = { c: 'd' };
+          cb(action);
 
-      tag.actions.action1(...args);
-      expect(actionCreator1).to.have.been.calledWith(...args);
-      expect(dispatch).to.be.calledWith(action1);
-
-      tag.actions.action2(...args);
-      expect(actionCreator2).to.have.been.calledWith(...args);
-      expect(dispatch).to.be.calledWith(action2);
+          return expect(dispatch).to.be.calledWithExactly(action);
+        })
+      );
     });
   });
 
