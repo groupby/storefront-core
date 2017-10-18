@@ -1,4 +1,4 @@
-import FluxCapacitor, { Actions } from '@storefront/flux-capacitor';
+import FluxCapacitor, { Actions, Store } from '@storefront/flux-capacitor';
 import * as clone from 'clone';
 import * as GbTracker from 'gb-tracker-client/slim';
 import * as deepAssign from 'lodash.merge';

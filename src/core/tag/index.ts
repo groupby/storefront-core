@@ -1,4 +1,4 @@
-import FluxCapacitor, { Actions, Events, Store } from '@storefront/flux-capacitor';
+import FluxCapacitor, { Actions, ActionCreators, Events, Store } from '@storefront/flux-capacitor';
 import { SystemServices } from '../../services';
 import StoreFront from '../../storefront';
 import Configuration from '../configuration';
@@ -54,7 +54,7 @@ interface Tag<P extends Tag.Props, S extends object> extends riot.TagInterface, 
   _riot_id: number;
   root: HTMLElement;
   isMounted: boolean;
-  actions: Tag.PrimedActions;
+  actions: typeof ActionCreators;
   init(): void;
 }
 namespace Tag {
@@ -94,10 +94,6 @@ namespace Tag {
   export function setDescription(target: any, description: Description) {
     return target[TAG_DESC] = description;
   }
-
-  export type PrimedActions = {
-    [P in keyof typeof FluxCapacitor.prototype.actions]: (...args: any[]) => void;
-  };
 
   export interface Description {
     view: string;
