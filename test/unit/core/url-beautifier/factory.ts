@@ -60,8 +60,9 @@ suite('BeautifierFactory', ({ expect, stub }) => {
       const request = {
         data: {
           title: 'dress',
-          id: '293014'
+          id: '293014',
         },
+        id: '293014',
         variants: [
           refinement('brand', 'h&m'),
           refinement('colour', 'blue'),

@@ -17,6 +17,7 @@ suite('DetailsUrlParser', ({ expect }) => {
         title: 'apples',
         id: '1923',
       },
+      id: '1923',
       variants: []
     };
 
@@ -27,8 +28,9 @@ suite('DetailsUrlParser', ({ expect }) => {
     const expectedDetail = {
       data: {
         title: 'red and delicious apples',
-        id: '1923'
+        id: '1923',
       },
+      id: '1923',
       variants: []
     };
 
@@ -39,8 +41,9 @@ suite('DetailsUrlParser', ({ expect }) => {
     const expectedDetail = {
       data: {
         title: 'red+and+delicious+apples',
-        id: '1923'
+        id: '1923',
       },
+      id: '1923',
       variants: []
     };
 
@@ -52,8 +55,9 @@ suite('DetailsUrlParser', ({ expect }) => {
     const expectedDetail = {
       data: {
         title: 'satin shiny party dress',
-        id: '293014'
+        id: '293014',
       },
+      id: '293014',
       variants: [refinement('colour', 'blue')]
     };
 
@@ -66,8 +70,9 @@ suite('DetailsUrlParser', ({ expect }) => {
     const expectedDetail = {
       data: {
         title: 'satin shiny party dress',
-        id: '293014'
+        id: '293014',
       },
+      id: '293014',
       variants: [refinement('brand', 'h&m'), refinement('colour', 'blue'), refinement('colour', 'red')]
     };
 
@@ -80,8 +85,9 @@ suite('DetailsUrlParser', ({ expect }) => {
     const expectedDetail = {
       data: {
         title: 'dress',
-        id: '293014'
+        id: '293014',
       },
+      id: '293014',
       variants: [refinement('brand', 'h&m'), refinement('colour', 'blue'), refinement('colour', 'red')]
     };
 

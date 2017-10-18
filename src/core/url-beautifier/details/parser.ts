@@ -28,7 +28,7 @@ export class DetailsUrlParser extends UrlParser<UrlBeautifier.DetailsUrlState> {
       }
     }
 
-    return { variants, data: { id, title } };
+    return { variants, data: { id, title }, id };
   }
 
   static extractReferencesRefinements(path: string[], keysToVariants: { [key: string]: string }) {
