@@ -31,6 +31,12 @@ suite('utils', ({ expect, spy, stub }) => {
         expect(utils.dot.get(obj, 'a.bcd.1.5.name.0.%valu!')).to.eq('e');
       });
 
+      it('should return nested value with simplified array notation (no quotes for keys)', () => {
+        const obj = { a: { bcd: [{}, { 5: { name: [{ '%valu!': 'e' }] } }] } };
+
+        expect(utils.dot.get(obj, 'a.bcd[1][5].name[0].%valu!')).to.eq('e');
+      });
+
       it('should return default value if no nested value found', () => {
         const defaultValue = 'mark';
         const obj = { a: { bcd: [{}, { 5: { name: [{ '%valu!': 'e' }] } }] } };
@@ -84,6 +90,22 @@ suite('utils', ({ expect, spy, stub }) => {
 
     it('should return global window object', () => {
       expect(utils.WINDOW()).to.eq(win);
+    });
+  });
+
+  describe('arrayToDotNotation()', () => {
+    it('should throw error with throw error flag on with non-string input', () => {
+      expect(() => utils.arrayToDotNotation(<any>1)).to.throw('input not a string');
+    });
+
+    it('should return correct dot notation version', () => {
+      expect(utils.arrayToDotNotation('henlo[2][1].b[3]')).to.eql('henlo.2.1.b.3');
+    });
+
+    it('should should not modify string if entirely dot notation to begin with', () => {
+      const input = 'henlo.a.1.b.a';
+
+      expect(utils.arrayToDotNotation(input)).to.eql(input);
     });
   });
 });
