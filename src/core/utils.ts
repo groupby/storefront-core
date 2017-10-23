@@ -9,8 +9,11 @@ export { clone, deepAssign, log, riot, GbTracker };
 
 export const WINDOW = () => window;
 
+const ARRAY_TO_DOT_NOTATION_REGEX = /\[(\d+)\]/g;
+
 export const dot = {
   get(obj: any, path: string, defaultValue?: any) {
+    path = arrayToDotNotation(path);
     const dotIndex = path.indexOf('.');
     if (dotIndex === -1) {
       return path in obj ? obj[path] : defaultValue;
@@ -28,3 +31,10 @@ export function mapToSearchActions(values: string[], actions: typeof FluxCapacit
 }
 
 export const rayify = <T>(values: T | T[]): T[] => Array.isArray(values) ? values : [values];
+
+export const arrayToDotNotation = (input: string): string => {
+  if (typeof input !== 'string') {
+    throw new Error('input not a string');
+  }
+  return input.replace(ARRAY_TO_DOT_NOTATION_REGEX, '.$1');
+};
