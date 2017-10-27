@@ -1,4 +1,4 @@
-import { Events, Routes, Selectors, Store } from '@storefront/flux-capacitor';
+import { Actions, Events, Routes, Selectors, Store } from '@storefront/flux-capacitor';
 import * as UrlParse from 'url-parse';
 import { core, BaseService } from '../core/service';
 import UrlBeautifier from '../core/url-beautifier';
@@ -92,7 +92,7 @@ class UrlService extends BaseService<UrlService.Options> {
     } else if (this.opts.redirects[url]) {
       WINDOW().location.assign(this.opts.redirects[url]);
     } else {
-      WINDOW().history.pushState({ url, state, app: STOREFRONT_APP_ID }, '', url);
+      WINDOW().history.pushState({ url, state: this.filterState(state), app: STOREFRONT_APP_ID }, '', url);
       this.app.flux.emit(Events.URL_UPDATED, url);
     }
   }
@@ -100,9 +100,14 @@ class UrlService extends BaseService<UrlService.Options> {
   replaceHistory(url: string) {
     WINDOW().history.replaceState({
       url,
-      state: this.app.flux.store.getState(),
+      state: this.filterState(this.app.flux.store.getState()),
       app: STOREFRONT_APP_ID
     }, WINDOW().document.title, url);
+  }
+
+  filterState(state: Store.State) {
+    const { session: { config, ...session }, ...rootConfig } = state;
+    return { ...rootConfig, session };
   }
 
   rewind = (event: PopStateEvent) => {

@@ -237,17 +237,49 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const state = { a: 'b' };
       const replaceState = spy();
       const getState = spy(() => state);
+      const filterState = service.filterState = spy((value) => value);
       service['app'] = <any>{ flux: { store: { getState } } };
       win.history = { replaceState };
       win.document = { title };
 
       service.replaceHistory(url);
 
+      expect(filterState).to.be.calledWithExactly(state);
       expect(replaceState).to.be.calledWith({
         url,
         state,
         app: STOREFRONT_APP_ID,
       }, title, url);
+    });
+  });
+
+  describe('filterState()', () => {
+    it('should filter config from state without modifying state', () => {
+      const config = 'a';
+      const session = { a: 'b', c: 'd' };
+      const sessionWithConfig = { ...session, config };
+      const otherData = {
+        e : 'f',
+        j: {
+          h: 1
+        },
+        o: [2,3,4],
+        n: {
+          i: 'r',
+          k: {}
+        }
+      };
+      const state: any = { ...otherData, session: sessionWithConfig };
+      Object.freeze(state);
+      Object.freeze(session);
+      Object.freeze(sessionWithConfig);
+
+      const stateWithoutConfig = service.filterState(state);
+
+      expect(stateWithoutConfig).to.eql({
+        ...otherData,
+        session
+      });
     });
   });
 
@@ -299,6 +331,8 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const pushState = spy();
       const build = spy(() => url);
       const data = { e: 'f' };
+      const state = { data };
+      const filterState = service.filterState = spy((value) => value);
       win.history = { pushState };
       stub(Selectors, 'query').returns(query);
       stub(Selectors, 'pageSize').returns(pageSize);
@@ -310,7 +344,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       service['app'].flux = <any>{ emit: () => null };
       service['opts'] = { redirects: {} };
 
-      service.updateHistory(<any>{ state: { data }, route });
+      service.updateHistory(<any>{ state, route });
 
       expect(build).to.be.calledWith(route, {
         query,
@@ -320,6 +354,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
         sort,
         collection
       });
+      expect(filterState).to.be.calledWithExactly(state);
       expect(pushState).to.be.calledWith({ url, state: { data }, app: STOREFRONT_APP_ID }, '', url);
     });
   });
