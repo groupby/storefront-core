@@ -72,10 +72,10 @@ class UrlService extends BaseService<UrlService.Options> {
     });
     switch (route) {
       case Routes.SEARCH:
-        this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchProducts());
+        this.app.flux.awaitBiasingRehydration(this.app.flux.actions.fetchProducts());
         break;
       case Routes.DETAILS:
-        this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchProductDetails(request.id));
+        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductDetails(request.id));
         break;
     }
   }
