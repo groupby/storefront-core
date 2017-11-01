@@ -182,11 +182,13 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
     it('should request products', () => {
       const dispatch = spy();
       const fetchProducts = stub();
+      const awaitBiasingRehydration = spy();
       service.replaceHistory = spy();
       win.location = { pathname: '/thing1', search: '?q=thing2' };
       service['app'] = <any>{
         flux: {
           actions: { fetchProducts },
+          awaitBiasingRehydration,
           store: { getState: () => ({}), dispatch },
           once: () => null,
         }
@@ -195,7 +197,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       service.augmentHistory('search', {});
 
       expect(fetchProducts).to.be.called;
-      expect(dispatch).to.be.calledWith(fetchProducts());
+      expect(awaitBiasingRehydration).to.be.calledWith(fetchProducts());
     });
 
     it('should request product details', () => {
