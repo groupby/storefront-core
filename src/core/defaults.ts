@@ -18,6 +18,13 @@ const DEFAULTS: Partial<Configuration> = {
     defaults: {},
     overrides: {},
   },
+  personalization: {
+    realTimeBiasing: {
+      globalStrength: 'Medium_Increase',
+      globalMaxBiases: 50,
+      globalExpiry: 2592000
+    }
+  },
   autocomplete: {
     navigationCount: 5,
     suggestionCount: 5,
