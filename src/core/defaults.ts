@@ -20,9 +20,9 @@ const DEFAULTS: Partial<Configuration> = {
   },
   personalization: {
     realTimeBiasing: {
-      globalStrength: 'Medium_Increase',
-      globalMaxBiases: 50,
-      globalExpiry: 2592000
+      strength: 'Medium_Increase',
+      maxBiases: 50,
+      expiry: 2592000
     }
   },
   autocomplete: {
