@@ -17,6 +17,10 @@ class AutocompleteService extends LazyService {
     if (this.app.config.recommendations.location) {
       this.app.flux.once(Events.AUTOCOMPLETE_QUERY_UPDATED, this.requestLocation);
     }
+
+    if (this.app.config.services.autocomplete.getPastPurchases) {
+      this.app.flux.on(Events.AUTOCOMPLETE_SUGGESTIONS_UPDATED, this.getPastPurchases);
+    }
   }
 
   lazyInitProducts() {
@@ -48,6 +52,12 @@ class AutocompleteService extends LazyService {
   updateProductsWithSearchTerms = ({ suggestions }: Store.Autocomplete) => {
     if (suggestions && suggestions.length !== 0) {
       this.app.flux.saytProducts(suggestions[0].value);
+    }
+  }
+
+  getPastPurchases = ({ suggestions }: Store.Autocomplete) => {
+    if (suggestions && suggestions.length !== 0) {
+      this.app.flux.saytPastPurchases(suggestions[0].value);
     }
   }
 
