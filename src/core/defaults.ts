@@ -71,7 +71,8 @@ const DEFAULTS: Partial<Configuration> = {
 
   services: {
     autocomplete: {
-      useFirstResult: false
+      useFirstResult: false,
+      getPastPurchases: false,
     },
     logging: {
       level: 'debug'

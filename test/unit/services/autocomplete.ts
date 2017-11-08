@@ -17,13 +17,21 @@ suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore, itShouldExte
   });
 
   describe('lazyInit()', () => {
-    it('should listen for AUTOCOMPLETE_QUERY_UPDATED event', () => {
-      const on = spy();
+    let on;
+    beforeEach(() => {
+      on = spy();
       service['app'] = <any>{
-        flux: { on, once: () => expect.fail() },
-        config: { recommendations: { location: false } }
+        flux: { on },
+        config: {
+          services: { autocomplete: { getPastPurchases: false } },
+          recommendations: {}
+        }
       };
+    });
 
+    it('should listen for AUTOCOMPLETE_QUERY_UPDATED event', () => {
+      service['app'].flux.once = <any>(() => expect.fail());
+      service['app'].config.recommendations.location = <any>false;
       service.lazyInit();
 
       expect(on).to.be.calledWith(Events.AUTOCOMPLETE_QUERY_UPDATED, service.updateSearchTerms);
@@ -31,14 +39,22 @@ suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore, itShouldExte
 
     it('should prepare to request location if configured', () => {
       const once = spy();
-      service['app'] = <any>{
-        flux: { once, on: () => null },
-        config: { recommendations: { location: { } } }
-      };
+      service['app'].flux.once = <any>once;
+      service['app'].config.recommendations.location = <any>{};
 
       service.lazyInit();
 
       expect(once).to.be.calledWith(Events.AUTOCOMPLETE_QUERY_UPDATED, service.requestLocation);
+    });
+
+    it('should call pastPurchases if past purchase enabled', () => {
+      service['app'].config.services.autocomplete.getPastPurchases = true;
+
+      service.lazyInit();
+
+      expect(on).to.be.calledTwice
+        .and.calledWith()
+        .and.calledWith(Events.AUTOCOMPLETE_SUGGESTIONS_UPDATED, service.getPastPurchases);
     });
   });
 
@@ -156,6 +172,24 @@ suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore, itShouldExte
       service['app'] = <any>{ flux: { saytProducts: () => expect.fail() } };
 
       service.updateProductsWithSearchTerms(<any>{ suggestions: [] });
+    });
+  });
+
+  describe('updateProductsWithSearchTerms()', () => {
+    it('should call flux.saytProducts()', () => {
+      const query = 'middleschool diaries';
+      const saytPastPurchases = spy();
+      service['app'] = <any>{ flux: { saytPastPurchases } };
+
+      service.getPastPurchases(<any>{ suggestions: [{ value: query }] });
+
+      expect(saytPastPurchases).to.be.calledWith(query);
+    });
+
+    it('should check for first suggestion', () => {
+      service['app'] = <any>{ flux: { saytPastPurchases: () => expect.fail() } };
+
+      service.getPastPurchases(<any>{ suggestions: [] });
     });
   });
 
