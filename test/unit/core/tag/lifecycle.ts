@@ -107,7 +107,7 @@ suite('Lifecycle', ({ expect, spy, stub }) => {
       const tag: any = {};
       const buildProps = stub(TagUtils, 'buildProps').returns(props);
 
-      Lifecycle.onRecalculateProps.call(tag);
+      Lifecycle.onUpdate.call(tag);
 
       expect(tag.props).to.eq(props);
       expect(buildProps).to.be.calledWith(tag);
@@ -121,7 +121,7 @@ suite('Lifecycle', ({ expect, spy, stub }) => {
       const getMeta = stub(Tag, 'getMeta').returns({ transform });
       stub(TagUtils, 'buildProps').returns(props);
 
-      Lifecycle.onRecalculateProps.call(tag);
+      Lifecycle.onUpdate.call(tag);
 
       expect(tag.state).to.eql({ c: 'd', e: 'f' });
       expect(getMeta).to.be.calledWith(tag);

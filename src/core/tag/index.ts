@@ -17,10 +17,9 @@ class Tag<P extends Tag.Props = any, S extends object = any> {
   opts: P;
   props: P = <any>{};
   state: S = <any>{};
-  aliasing: Alias = new Alias(this);
+  aliasing: Alias = Alias.attach(this);
 
   constructor() {
-    this.aliasing.attach();
     Lifecycle.attach(this);
   }
 
@@ -36,7 +35,7 @@ class Tag<P extends Tag.Props = any, S extends object = any> {
     this.flux.store.dispatch(<any>action);
   }
 
-  expose(alias: string, value: any = this.state) {
+  expose(alias: string, value: any = () => this.state) {
     this.aliasing.expose(alias, value);
   }
 
@@ -141,6 +140,12 @@ namespace Tag {
   }
 
   export type Transform = object | string[] | ((obj: object) => object);
+
+  export type Selector = (state: Store.State) => any;
+
+  export interface SelectorMap {
+    [key: string]: Selector | [string, Selector];
+  }
 }
 
 export default Tag;

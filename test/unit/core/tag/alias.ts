@@ -80,7 +80,7 @@ suite('Tag Alias', ({ expect, spy, stub }) => {
 
       expect(on).to.have.callCount(4)
         .and.calledWithExactly(Phase.INITIALIZE, alias.onInitialize)
-        .and.calledWithExactly(Phase.STATE_FINALIZED, alias.onStateFinalized)
+        .and.calledWithExactly(Phase.STATE_FINALIZED, alias.onBeforeMount)
         .and.calledWithExactly(Phase.UPDATE, sinon.match((cb) => {
           cb();
           return expect(trigger).to.be.calledWithExactly(Phase.RECALCULATE_PROPS);
@@ -157,7 +157,7 @@ suite('Tag Alias', ({ expect, spy, stub }) => {
       alias.aliases = <any>{ map: aliasMap };
       alias.stateAliasesChanged = () => true;
 
-      alias.onStateFinalized();
+      alias.onBeforeMount();
 
       expect(updateStateAliases).to.be.calledWithExactly(aliasMap);
       expect(updateAliases).to.be.calledWithExactly(updatedAliases);
@@ -167,7 +167,7 @@ suite('Tag Alias', ({ expect, spy, stub }) => {
       alias.updateAliases = () => expect.fail();
       alias.stateAliasesChanged = () => false;
 
-      alias.onStateFinalized();
+      alias.onBeforeMount();
     });
   });
 

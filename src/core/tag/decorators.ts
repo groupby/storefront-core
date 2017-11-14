@@ -33,24 +33,18 @@ export function css(style: string) {
   };
 }
 
-export function alias(name: string) {
-  return (target: any) => {
-    utils.setMetadata(target, 'alias', name);
-  };
-}
+export const alias = metadataDecorator<string>('alias');
 
-export function origin(name: string) {
-  return (target: any) => {
-    utils.setMetadata(target, 'origin', name);
-  };
-}
+export const origin = metadataDecorator<string>('origin');
 
-export function configurable(target: any) {
-  utils.setMetadata(target, 'configurable', true);
-}
+export const configurable = metadataDecorator('configurable')(true);
 
-export function transform(trfm: Tag.Transform) {
-  return (target: any) => {
-    utils.setMetadata(target, 'transform', trfm);
+export const transform = metadataDecorator<Tag.Transform>('transform');
+
+export const connect = metadataDecorator<Tag.SelectorMap>('selector');
+
+export function metadataDecorator<T>(key: string) {
+  return (value: T) => (target: any) => {
+    utils.setMetadata(target, key, value);
   };
 }
