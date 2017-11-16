@@ -86,11 +86,14 @@ suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore, itShouldExte
 
   describe('registerAutocomplete()', () => {
     it('should add tag to registeredAutocompleteTags', () => {
-      const tag: any = { a: 'b' };
+      const on = spy();
+      const tag: any = { a: 'b', on };
 
       service.registerAutocomplete(tag);
 
       expect(service.registeredAutocompleteTags).to.eql([tag]);
+      on.args[0][1]();
+      expect(service.registeredAutocompleteTags).to.eql([]);
     });
   });
 
