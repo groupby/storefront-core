@@ -33,6 +33,7 @@ class AutocompleteService extends LazyService {
 
   registerAutocomplete(tag: AutocompleteTag) {
     this.registeredAutocompleteTags.push(tag);
+    tag.on('unmount', () => this.registeredAutocompleteTags.splice(this.registeredAutocompleteTags.indexOf(tag), 1));
   }
 
   registerProducts(tag: Tag) {
