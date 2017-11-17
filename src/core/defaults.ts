@@ -21,8 +21,8 @@ const DEFAULTS: Partial<Configuration> = {
   personalization: {
     realTimeBiasing: {
       strength: 'Medium_Increase',
-      maxBiases: 50,
-      expiry: 2592000
+      maxBiases: 25,
+      expiry: 14
     }
   },
   autocomplete: {
