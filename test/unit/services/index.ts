@@ -1,7 +1,6 @@
 import Services from '../../../src/services';
 import autocomplete from '../../../src/services/autocomplete';
 import collections from '../../../src/services/collections';
-import details from '../../../src/services/details';
 import logging from '../../../src/services/logging';
 import recommendations from '../../../src/services/recommendations';
 import redirect from '../../../src/services/redirect';
@@ -17,7 +16,6 @@ suite('Services', ({ expect }) => {
       expect(Services).to.eql({
         autocomplete,
         collections,
-        details,
         logging,
         recommendations,
         redirect,
