@@ -29,4 +29,4 @@ run:
       yarn add "@storefront/flux-capacitor@$version" --no-progress
 
       git add package.json yarn.lock
-      git commit -am "fix(package): update @storefront/flux-capacitor to $version"
+      git commit -am "fix(package): update @storefront/flux-capacitor to $version" || true
