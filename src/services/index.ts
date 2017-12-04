@@ -1,3 +1,4 @@
+import cart from './cart';
 import Service from '../core/service';
 import StoreFront from '../storefront';
 import autocomplete from './autocomplete';
@@ -15,6 +16,7 @@ const SERVICES: Service.Constructor.Map = {
   search,
   url,
   autocomplete,
+  cart,
   collections,
   tracker,
   recommendations,
@@ -30,6 +32,7 @@ export interface ServiceConfiguration {
   search?: Service.Options<search.Options>;
   pastPurchases?: Service.Options<pastPurchases.Options>;
   autocomplete?: Service.Options<any>;
+  cart? : Service.Options<any>;
   collections?: Service.Options<any>;
   url?: Service.Options<any>;
   tracker?: Service.Options<tracker.Options>;
@@ -42,6 +45,7 @@ export interface CoreServices {
   search: search;
   pastPurchases: pastPurchases;
   autocomplete: autocomplete;
+  cart: cart;
   collections: collections;
   url: url;
   tracker: tracker;
