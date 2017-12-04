@@ -22,6 +22,7 @@ const DEFAULTS: Partial<Configuration> = {
     realTimeBiasing: {
       strength: 'Medium_Increase',
       maxBiases: 25,
+      attributeMaxBiases: 3,
       expiry: 14
     }
   },
