@@ -1,5 +1,6 @@
 import { Actions, Events, Routes, Selectors, Store } from '@storefront/flux-capacitor';
 import * as UrlParse from 'url-parse';
+import CoreSelectors from '../core/selectors';
 import { core, BaseService } from '../core/service';
 import UrlBeautifier from '../core/url-beautifier';
 import { WINDOW } from '../core/utils';
@@ -146,7 +147,7 @@ class UrlService extends BaseService<UrlService.Options> {
   }
 
   static detailsUrlState(state: Store.State): UrlBeautifier.DetailsUrlState {
-    const details = Selectors.details(state);
+    const details: Store.Product = <any>CoreSelectors.transformedDetailsProduct(state);
     return {
       data: details.data,
       variants: []
