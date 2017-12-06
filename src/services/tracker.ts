@@ -38,12 +38,8 @@ class TrackerService extends BaseService<TrackerService.Options> {
     this.client.autoSetVisitor(this.app.config.visitorId);
 
     // incorporate in state
-<<<<<<< 0a9f17094d16a1a1cd33751153e358f3e7197fa9
     // tslint:disable-next-line:max-line-length
     this.app.flux.store.dispatch(this.app.flux.actions.getTrackerInfo(this.client.getVisitorId(), this.client.getSessionId()));
-=======
-    this.app.flux.actions.getTrackerInfo(this.client.getVisitorId(), this.client.getSessionId());
->>>>>>> move read cookie to use persist
   }
 
   sendEvent(method: keyof GbTracker, event: any) {
