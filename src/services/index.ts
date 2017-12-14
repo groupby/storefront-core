@@ -1,7 +1,7 @@
-import cart from './cart';
 import Service from '../core/service';
 import StoreFront from '../storefront';
 import autocomplete from './autocomplete';
+import cart from './cart';
 import collections from './collections';
 import logging from './logging';
 import pastPurchases from './pastPurchases';
@@ -32,7 +32,7 @@ export interface ServiceConfiguration {
   search?: Service.Options<search.Options>;
   pastPurchases?: Service.Options<pastPurchases.Options>;
   autocomplete?: Service.Options<any>;
-  cart? : Service.Options<any>;
+  cart?: Service.Options<any>;
   collections?: Service.Options<any>;
   url?: Service.Options<any>;
   tracker?: Service.Options<tracker.Options>;
