@@ -93,7 +93,10 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.pastpurchases.html#biascount" class="tsd-kind-icon">bias<wbr>Count</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.pastpurchases.html#biasinfluence" class="tsd-kind-icon">bias<wbr>Influence</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.pastpurchases.html#biasstrength" class="tsd-kind-icon">bias<wbr>Strength</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.pastpurchases.html#enabled" class="tsd-kind-icon">enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.pastpurchases.html#navigations" class="tsd-kind-icon">navigations</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.pastpurchases.html#productcount" class="tsd-kind-icon">product<wbr>Count</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configuration.configuration-1.recommendations.pastpurchases.html#securedpayload" class="tsd-kind-icon">secured<wbr>Payload</a></li>
 							</ul>
 						</section>
 					</div>
@@ -107,7 +110,7 @@
 					<div class="tsd-signature tsd-kind-icon">bias<wbr>Count<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in /root/project/node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:243</li>
+							<li>Defined in /root/project/node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:247</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -122,7 +125,7 @@
 					<div class="tsd-signature tsd-kind-icon">bias<wbr>Influence<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in /root/project/node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:247</li>
+							<li>Defined in /root/project/node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:251</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -137,7 +140,7 @@
 					<div class="tsd-signature tsd-kind-icon">bias<wbr>Strength<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">BiasStrength</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in /root/project/node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:251</li>
+							<li>Defined in /root/project/node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:255</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -147,17 +150,62 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="enabled" class="tsd-anchor"></a>
+					<h3>enabled</h3>
+					<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in /root/project/node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:263</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Enable past purchases or not</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="navigations" class="tsd-anchor"></a>
+					<h3>navigations</h3>
+					<div class="tsd-signature tsd-kind-icon">navigations<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">PastPurchaseNavigation</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in /root/project/node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:267</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Display settings for refinements under each navigation</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="productcount" class="tsd-anchor"></a>
 					<h3>product<wbr>Count</h3>
 					<div class="tsd-signature tsd-kind-icon">product<wbr>Count<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in /root/project/node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:239</li>
+							<li>Defined in /root/project/node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:243</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>Number of products to request.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="securedpayload" class="tsd-anchor"></a>
+					<h3>secured<wbr>Payload</h3>
+					<div class="tsd-signature tsd-kind-icon">secured<wbr>Payload<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">SecuredPayload</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">function</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in /root/project/node_modules/@storefront/flux-capacitor/dist/core/configuration.d.ts:259</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A security token or a function to retrieve a token</p>
 						</div>
 					</div>
 				</section>
@@ -203,6 +251,9 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/structure.html">Structure</a>
 					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/urlutils.html">Url<wbr>Utils</a>
+					</li>
 					<li class=" tsd-kind-module tsd-is-not-exported">
 						<a href="../modules/utils.html">Utils</a>
 					</li>
@@ -240,6 +291,9 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="configuration.configuration-1.recommendations.navigations.html" class="tsd-kind-icon">Navigations</a>
 					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="configuration.configuration-1.recommendations.pastpurchasenavigation.html" class="tsd-kind-icon">Past<wbr>Purchase<wbr>Navigation</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
@@ -255,7 +309,16 @@
 								<a href="configuration.configuration-1.recommendations.pastpurchases.html#biasstrength" class="tsd-kind-icon">bias<wbr>Strength</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="configuration.configuration-1.recommendations.pastpurchases.html#enabled" class="tsd-kind-icon">enabled</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="configuration.configuration-1.recommendations.pastpurchases.html#navigations" class="tsd-kind-icon">navigations</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="configuration.configuration-1.recommendations.pastpurchases.html#productcount" class="tsd-kind-icon">product<wbr>Count</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="configuration.configuration-1.recommendations.pastpurchases.html#securedpayload" class="tsd-kind-icon">secured<wbr>Payload</a>
 							</li>
 						</ul>
 					</li>
@@ -269,6 +332,9 @@
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="configuration.configuration-1.recommendations.refinements.html" class="tsd-kind-icon">Refinements</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="configuration.configuration-1.recommendations.securedpayload.html" class="tsd-kind-icon">Secured<wbr>Payload</a>
 					</li>
 					<li class=" tsd-kind-property tsd-parent-kind-module">
 						<a href="../modules/configuration.configuration-1.recommendations.html#inav-1" class="tsd-kind-icon">i<wbr>Nav</a>
