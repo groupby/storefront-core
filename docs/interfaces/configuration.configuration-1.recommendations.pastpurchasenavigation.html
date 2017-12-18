@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Variant | @storefront/core</title>
+	<title>PastPurchaseNavigation | @storefront/core</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,19 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/structure.html">Structure</a>
+					<a href="../modules/configuration.html">Configuration</a>
 				</li>
 				<li>
-					<a href="structure.variant.html">Variant</a>
+					<a href="../modules/configuration.configuration-1.html">Configuration</a>
+				</li>
+				<li>
+					<a href="../modules/configuration.configuration-1.recommendations.html">Recommendations</a>
+				</li>
+				<li>
+					<a href="configuration.configuration-1.recommendations.pastpurchasenavigation.html">PastPurchaseNavigation</a>
 				</li>
 			</ul>
-			<h1>Interface Variant</h1>
+			<h1>Interface PastPurchaseNavigation</h1>
 		</div>
 	</div>
 </header>
@@ -73,46 +79,13 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Variant</span>
+						<span class="target">PastPurchaseNavigation</span>
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel-group tsd-index-group">
-				<h2>Index</h2>
-				<section class="tsd-panel tsd-index-panel">
-					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="structure.variant.html#field" class="tsd-kind-icon">field</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="structure.variant.html#structure" class="tsd-kind-icon">structure</a></li>
-							</ul>
-						</section>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="field" class="tsd-anchor"></a>
-					<h3>field</h3>
-					<div class="tsd-signature tsd-kind-icon">field<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/6c0641a/src/core/types.ts#L17">core/types.ts:17</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="structure" class="tsd-anchor"></a>
-					<h3>structure</h3>
-					<div class="tsd-signature tsd-kind-icon">structure<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="structure.tranformable.html" class="tsd-signature-type">Tranformable</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/6c0641a/src/core/types.ts#L18">core/types.ts:18</a></li>
-						</ul>
-					</aside>
-				</section>
+			<section class="tsd-panel tsd-kind-interface tsd-parent-kind-module">
+				<h3 class="tsd-before-signature">Indexable</h3>
+				<div class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">[</span>field: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></div>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -124,8 +97,27 @@
 					<li class="label tsd-is-external">
 						<span>Internals</span>
 					</li>
-					<li class=" tsd-kind-module">
+					<li class="current tsd-kind-module">
 						<a href="../modules/configuration.html">Configuration</a>
+						<ul>
+							<li class="current tsd-kind-module tsd-parent-kind-module">
+								<a href="../modules/configuration.configuration-1.html">Configuration</a>
+								<ul>
+									<li class=" tsd-kind-module tsd-parent-kind-module">
+										<a href="../modules/configuration.configuration-1.autocomplete.html">Autocomplete</a>
+									</li>
+									<li class=" tsd-kind-module tsd-parent-kind-module">
+										<a href="../modules/configuration.configuration-1.personalization.html">Personalization</a>
+									</li>
+									<li class="current tsd-kind-module tsd-parent-kind-module">
+										<a href="../modules/configuration.configuration-1.recommendations.html">Recommendations</a>
+									</li>
+								</ul>
+							</li>
+							<li class=" tsd-kind-module tsd-parent-kind-module">
+								<a href="../modules/configuration.transformer.html">Transformer</a>
+							</li>
+						</ul>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/producttransformer.html">Product<wbr>Transformer</a>
@@ -133,7 +125,7 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/selectors.html">Selectors</a>
 					</li>
-					<li class="current tsd-kind-module">
+					<li class=" tsd-kind-module">
 						<a href="../modules/structure.html">Structure</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -168,43 +160,50 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="structure.base.html" class="tsd-kind-icon">Base</a>
+						<a href="configuration.configuration-1.recommendations.inav.html" class="tsd-kind-icon">INav</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
-						<a href="structure.tranformable.html" class="tsd-kind-icon">Tranformable</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="configuration.configuration-1.recommendations.location.html" class="tsd-kind-icon">Location</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="configuration.configuration-1.recommendations.navigations.html" class="tsd-kind-icon">Navigations</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="structure.variant.html" class="tsd-kind-icon">Variant</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="structure.variant.html#field" class="tsd-kind-icon">field</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="structure.variant.html#structure" class="tsd-kind-icon">structure</a>
-							</li>
-						</ul>
+						<a href="configuration.configuration-1.recommendations.pastpurchasenavigation.html" class="tsd-kind-icon">Past<wbr>Purchase<wbr>Navigation</a>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-property tsd-parent-kind-module tsd-is-inherited">
-						<a href="../modules/structure.html#_transform" class="tsd-kind-icon">_transform</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="configuration.configuration-1.recommendations.pastpurchases.html" class="tsd-kind-icon">Past<wbr>Purchases</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="configuration.configuration-1.recommendations.pinned.html" class="tsd-kind-icon">Pinned</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="configuration.configuration-1.recommendations.productsuggestions.html" class="tsd-kind-icon">Product<wbr>Suggestions</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="configuration.configuration-1.recommendations.refinements.html" class="tsd-kind-icon">Refinements</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="configuration.configuration-1.recommendations.securedpayload.html" class="tsd-kind-icon">Secured<wbr>Payload</a>
 					</li>
 					<li class=" tsd-kind-property tsd-parent-kind-module">
-						<a href="../modules/structure.html#_variant" class="tsd-kind-icon">_variant</a>
+						<a href="../modules/configuration.configuration-1.recommendations.html#inav-1" class="tsd-kind-icon">i<wbr>Nav</a>
 					</li>
-					<li class=" tsd-kind-property tsd-parent-kind-module tsd-is-inherited">
-						<a href="../modules/structure.html#id" class="tsd-kind-icon">id</a>
+					<li class=" tsd-kind-property tsd-parent-kind-module">
+						<a href="../modules/configuration.configuration-1.recommendations.html#idfield" class="tsd-kind-icon">id<wbr>Field</a>
 					</li>
-					<li class=" tsd-kind-property tsd-parent-kind-module tsd-is-inherited">
-						<a href="../modules/structure.html#price" class="tsd-kind-icon">price</a>
+					<li class=" tsd-kind-property tsd-parent-kind-module">
+						<a href="../modules/configuration.configuration-1.recommendations.html#location-1" class="tsd-kind-icon">location</a>
 					</li>
-					<li class=" tsd-kind-property tsd-parent-kind-module tsd-is-inherited">
-						<a href="../modules/structure.html#title" class="tsd-kind-icon">title</a>
+					<li class=" tsd-kind-property tsd-parent-kind-module">
+						<a href="../modules/configuration.configuration-1.recommendations.html#pastpurchases-1" class="tsd-kind-icon">past<wbr>Purchases</a>
 					</li>
-					<li class=" tsd-kind-property tsd-parent-kind-module tsd-is-inherited">
-						<a href="../modules/structure.html#url" class="tsd-kind-icon">url</a>
+					<li class=" tsd-kind-property tsd-parent-kind-module">
+						<a href="../modules/configuration.configuration-1.recommendations.html#productsuggestions-1" class="tsd-kind-icon">product<wbr>Suggestions</a>
 					</li>
 				</ul>
 			</nav>
