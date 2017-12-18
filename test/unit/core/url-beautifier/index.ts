@@ -31,6 +31,21 @@ suite('URL beautifier', ({ expect, spy, stub }) => {
       expect(build).to.have.been.calledWith(request);
     });
 
+    it('should error out if invalid route', () => {
+      const build = spy();
+      const request = { a: 'b' };
+      beautifiers.search = <any>{ build };
+
+      try {
+        beautifier.build('Probably invalid', request);
+        expect.fail();
+      } catch (e) {
+        expect(e.message).to.eql('invalid route');
+      }
+
+      expect(build).to.not.be.called;
+    });
+
     it('should call navigation url generator', () => {
       const name = 'Apples';
       const build = spy();

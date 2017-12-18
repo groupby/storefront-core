@@ -67,10 +67,13 @@ const DEFAULTS: Partial<Configuration> = {
       mode: 'trending'
     },
     pastPurchases: {
+      enabled: false,
       productCount: 0,
       biasCount: 0,
       biasStrength: 'Medium_Increase',
       biasInfluence: 5,
+      securedPayload: null,
+      navigations: {}
     }
   },
   network: {
@@ -80,7 +83,6 @@ const DEFAULTS: Partial<Configuration> = {
   services: {
     autocomplete: {
       useFirstResult: false,
-      getPastPurchases: false,
     },
     logging: {
       level: 'debug'
@@ -105,7 +107,8 @@ const DEFAULTS: Partial<Configuration> = {
       routes: {
         [Routes.SEARCH]: `/${Routes.SEARCH}`,
         [Routes.DETAILS]: `/${Routes.DETAILS}`,
-        [Routes.NAVIGATION]: `/${Routes.NAVIGATION}`
+        [Routes.NAVIGATION]: `/${Routes.NAVIGATION}`,
+        [Routes.PAST_PURCHASE]: `/${Routes.PAST_PURCHASE}`
       }
     },
     tracker: {

@@ -3,6 +3,7 @@ import StoreFront from '../storefront';
 import autocomplete from './autocomplete';
 import collections from './collections';
 import logging from './logging';
+import pastPurchases from './pastPurchases';
 import recommendations from './recommendations';
 import redirect from './redirect';
 import search from './search';
@@ -18,6 +19,7 @@ const SERVICES: Service.Constructor.Map = {
   tracker,
   recommendations,
   redirect,
+  pastPurchases,
 };
 
 export default SERVICES;
@@ -26,6 +28,7 @@ export interface ServiceConfiguration {
   [key: string]: Service.Options<any>;
   logging?: Service.Options<logging.Options>;
   search?: Service.Options<search.Options>;
+  pastPurchases?: Service.Options<pastPurchases.Options>;
   autocomplete?: Service.Options<any>;
   collections?: Service.Options<any>;
   url?: Service.Options<any>;
@@ -37,6 +40,7 @@ export interface ServiceConfiguration {
 export interface CoreServices {
   logging: logging;
   search: search;
+  pastPurchases: pastPurchases;
   autocomplete: autocomplete;
   collections: collections;
   url: url;

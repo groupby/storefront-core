@@ -39,14 +39,14 @@
     conventional-changelog "0.0.17"
     github-url-from-git "^1.4.0"
 
-"@storefront/flux-capacitor@1.33.1":
-  version "1.33.1"
-  resolved "https://registry.yarnpkg.com/@storefront/flux-capacitor/-/flux-capacitor-1.33.1.tgz#3217eb78ecbb6a3c405898122592226e3bcc1934"
+"@storefront/flux-capacitor@1.35.0":
+  version "1.35.0"
+  resolved "https://registry.yarnpkg.com/@storefront/flux-capacitor/-/flux-capacitor-1.35.0.tgz#b0bc5bd8656fd7c63fec0a52b545882e44d2522a"
   dependencies:
     "@manaflair/redux-batch" "^0.1.0"
     "@types/redux-logger" "^3.0.0"
     cuid "^1.3.8"
-    eventemitter3 "^2.0.3"
+    eventemitter3 "^3.0.0"
     fetch-ponyfill "^4.1.0"
     groupby-api "2.4.0"
     redux "^3.7.0"
@@ -1343,9 +1343,9 @@ event-stream@^3.3.0:
     stream-combiner "~0.0.4"
     through "~2.3.1"
 
-eventemitter3@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-2.0.3.tgz#b5e1079b59fb5e1ba2771c0a993be060a58c99ba"
+eventemitter3@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.0.0.tgz#fc29ecf233bd19fbd527bb4089bbf665dc90c1e3"
 
 events@^1.0.0:
   version "1.1.1"
