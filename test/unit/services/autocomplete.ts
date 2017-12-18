@@ -32,6 +32,7 @@ suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore, itShouldExte
     it('should listen for AUTOCOMPLETE_QUERY_UPDATED event', () => {
       service['app'].flux.once = <any>(() => expect.fail());
       service['app'].config.recommendations.location = <any>false;
+      service['app'].config.recommendations.pastPurchases = <any>{ enabled: false };
       service.lazyInit();
 
       expect(on).to.be.calledWith(Events.AUTOCOMPLETE_QUERY_UPDATED, service.updateSearchTerms);
@@ -41,6 +42,7 @@ suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore, itShouldExte
       const once = spy();
       service['app'].flux.once = <any>once;
       service['app'].config.recommendations.location = <any>{};
+      service['app'].config.recommendations.pastPurchases = <any>{ enabled: false };
 
       service.lazyInit();
 
@@ -48,7 +50,7 @@ suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore, itShouldExte
     });
 
     it('should call pastPurchases if past purchase enabled', () => {
-      service['app'].config.services.autocomplete.getPastPurchases = true;
+      service['app'].config.recommendations.pastPurchases = <any>{ enabled: true };
 
       service.lazyInit();
 

@@ -114,6 +114,7 @@ namespace Tag {
   export interface Props {
     ui?: boolean;
     stylish?: boolean;
+    storeSection?: string;
   }
 
   export interface Event {

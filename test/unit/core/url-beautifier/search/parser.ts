@@ -1,7 +1,7 @@
 import { UrlParser } from '../../../../../src/core/url-beautifier/handler';
 import SearchUrlParser from '../../../../../src/core/url-beautifier/search/parser';
-import suite, { refinement } from '../../../_suite';
 import * as utils from '../../../../../src/core/url-beautifier/utils';
+import suite, { refinement } from '../../../_suite';
 
 const QUERY = { a: 'b' };
 

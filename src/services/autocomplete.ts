@@ -18,7 +18,7 @@ class AutocompleteService extends LazyService {
       this.app.flux.once(Events.AUTOCOMPLETE_QUERY_UPDATED, this.requestLocation);
     }
 
-    if (this.app.config.services.autocomplete.getPastPurchases) {
+    if (this.app.config.recommendations.pastPurchases.enabled) {
       this.app.flux.on(Events.AUTOCOMPLETE_SUGGESTIONS_UPDATED, this.getPastPurchases);
     }
   }

@@ -3,31 +3,25 @@ import DetailsUrlGenerator from './details/generator';
 import DetailsUrlParser from './details/parser';
 import NavigationUrlGenerator from './navigation/generator';
 import NavigationUrlParser from './navigation/parser';
+import PastPurchaseUrlGenerator from './pastPurchase/generator';
+import PastPurchaseUrlParser from './pastPurchase/parser';
 import SearchUrlGenerator from './search/generator';
 import SearchUrlParser from './search/parser';
 
 namespace BeautifierFactory {
   export function create(beautifier: UrlBeautifier): UrlBeautifier.Beautifiers {
-    const detailsParser = new DetailsUrlParser(beautifier);
-    const detailsGenerator = new DetailsUrlGenerator(beautifier);
-    const navigationParser = new NavigationUrlParser(beautifier);
-    const navigationGenerator = new NavigationUrlGenerator(beautifier);
-    const searchParser = new SearchUrlParser(beautifier);
-    const searchGenerator = new SearchUrlGenerator(beautifier);
-
     return {
-      search: {
-        parse: searchParser.parse,
-        build: searchGenerator.build
-      },
-      navigation: {
-        parse: navigationParser.parse,
-        build: navigationGenerator.build
-      },
-      details: {
-        parse: detailsParser.parse,
-        build: detailsGenerator.build
-      }
+      search: this.makeUrlHandler(beautifier, SearchUrlParser, SearchUrlGenerator),
+      pastpurchase: this.makeUrlHandler(beautifier, PastPurchaseUrlParser, PastPurchaseUrlGenerator),
+      navigation: this.makeUrlHandler(beautifier, NavigationUrlParser, NavigationUrlGenerator),
+      details: this.makeUrlHandler(beautifier, DetailsUrlParser, DetailsUrlGenerator),
+    };
+  }
+
+  export function makeUrlHandler(beautifier: UrlBeautifier, urlParser: any, urlGenerator: any) {
+    return {
+      parse: (new urlParser(beautifier)).parse,
+      build: (new urlGenerator(beautifier)).build,
     };
   }
 }

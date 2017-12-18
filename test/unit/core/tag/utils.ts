@@ -1,3 +1,4 @@
+import { StoreSections } from '@storefront/flux-capacitor';
 import Tag, { TAG_DESC } from '../../../../src/core/tag';
 import Lifecycle from '../../../../src/core/tag/lifecycle';
 import utils from '../../../../src/core/tag/utils';
@@ -56,27 +57,45 @@ suite('TagUtils', ({ expect, spy, stub }) => {
   describe('buildProps()', () => {
     it('should disable stylish if disabling all style', () => {
       const ui = false;
-      const tag: any = { opts: {}, config: { options: {} }, parent: { props: { ui, stylish: true } } };
+      const tag: any = { opts: {}, props: {},
+                         config: { options: {} }, parent: { props: { ui, stylish: true } } };
       const getMeta = stub(Tag, 'getMeta').returns({ defaults: {} });
       stub(utils, 'globalConfiguration');
 
       const props = utils.buildProps(tag);
 
       expect(getMeta).to.be.calledWith(tag);
-      expect(props).to.eql({ ui, stylish: false });
+      expect(props).to.eql({ ui, stylish: false, storeSection: StoreSections.DEFAULT });
     });
 
     it('should inherit from parent tag', () => {
       const ui = true;
       const stylish = false;
-      const tag: any = { opts: {}, config: { options: {} }, parent: { props: { ui, stylish } } };
+      const storeSection = 'tessttest';
+      const tag: any = { opts: {}, props: {},
+                         config: { options: {} }, parent: { props: { ui, stylish, storeSection } } };
       const getMeta = stub(Tag, 'getMeta').returns({ defaults: {} });
       stub(utils, 'globalConfiguration');
 
       const props = utils.buildProps(tag);
 
       expect(getMeta).to.be.calledWith(tag);
-      expect(props).to.eql({ ui, stylish });
+      expect(props).to.eql({ ui, stylish, storeSection });
+    });
+
+    it('should overwrite inherited storeSection with own storeSection', () => {
+      const ui = true;
+      const stylish = false;
+      const storeSection = 'tessttest';
+      const tag: any = { opts: {}, props: { storeSection },
+                         config: { options: {} }, parent: { props: { ui, stylish, storeSection: 'teeeeest' } } };
+      const getMeta = stub(Tag, 'getMeta').returns({ defaults: {} });
+      stub(utils, 'globalConfiguration');
+
+      const props = utils.buildProps(tag);
+
+      expect(getMeta).to.be.calledWith(tag);
+      expect(props).to.eql({ ui, stylish, storeSection });
     });
 
     it('should stack configuration', () => {
@@ -85,7 +104,7 @@ suite('TagUtils', ({ expect, spy, stub }) => {
       const defaults = { a: 'b', c: 'd', e: 'f', g: 'h' };
       const globals = { c: 'd1', e: 'f1', g: 'h1' };
       const opts = { g: 'h3', __proto__: { e: 'f2', g: 'h2' } };
-      const tag: any = { opts, config: { options: { ui, stylish } } };
+      const tag: any = { opts, props: {}, config: { options: { ui, stylish } } };
       const getMeta = stub(Tag, 'getMeta').returns({ defaults });
       const globalConfiguration = stub(utils, 'globalConfiguration').returns(globals);
 
@@ -93,7 +112,8 @@ suite('TagUtils', ({ expect, spy, stub }) => {
 
       expect(getMeta).to.be.calledWith(tag);
       expect(globalConfiguration).to.be.calledWith(tag);
-      expect(props).to.eql({ ui, stylish, a: 'b', c: 'd1', e: 'f2', g: 'h3' });
+      expect(props).to.eql({ ui, stylish, storeSection: StoreSections.DEFAULT,
+                             a: 'b', c: 'd1', e: 'f2', g: 'h3' });
     });
   });
 

@@ -13,16 +13,14 @@ suite('Recommendations Service', ({ expect, spy, itShouldExtendBaseService }) =>
   });
 
   describe('init()', () => {
-    it('make initial requests', () => {
+    it('make initial request', () => {
       const dispatch = spy();
       const fetchRecommendationsProductsAction = { a: 'b' };
-      const fetchPastPurchasesAction = { c: 'f' };
       const fetchRecommendationsProducts = spy(() => fetchRecommendationsProductsAction);
-      const fetchPastPurchases = spy(() => fetchPastPurchasesAction);
       service['app'] = <any>{
         flux: {
           store: { dispatch },
-          actions: { fetchRecommendationsProducts, fetchPastPurchases }
+          actions: { fetchRecommendationsProducts }
         }
       };
 
@@ -30,8 +28,6 @@ suite('Recommendations Service', ({ expect, spy, itShouldExtendBaseService }) =>
 
       expect(dispatch).to.be.calledWithExactly(fetchRecommendationsProductsAction);
       expect(fetchRecommendationsProducts).to.be.called;
-      expect(dispatch).to.be.calledWithExactly(fetchPastPurchasesAction);
-      expect(fetchPastPurchases).to.be.called;
     });
   });
 });

@@ -1,4 +1,4 @@
-import { Actions } from '@storefront/flux-capacitor';
+import { Actions, StoreSections } from '@storefront/flux-capacitor';
 import * as camelCase from 'lodash.camelcase';
 import * as riot from 'riot';
 import Tag, { TAG_DESC, TAG_META } from '.';
@@ -46,11 +46,13 @@ namespace TagUtils {
     const {
       ui: inheritedStyle = tag.config.options.ui,
       stylish: inheritedStylish = tag.config.options.stylish,
+      storeSection: inheritedStoreSection = StoreSections.DEFAULT,
     } = tag.parent ? (<any>tag.parent).props : {};
 
     return {
       ui: inheritedStyle,
       stylish: inheritedStyle && inheritedStylish,
+      storeSection: tag.props.storeSection || inheritedStoreSection,
       ...Tag.getMeta(tag).defaults,
       ...TagUtils.globalConfiguration(tag),
       ...tag.opts.__proto__,

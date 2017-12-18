@@ -5,6 +5,8 @@ import * as DetailsParser from '../../../../src/core/url-beautifier/details/pars
 import Factory from '../../../../src/core/url-beautifier/factory';
 import * as NavigationGenerator from '../../../../src/core/url-beautifier/navigation/generator';
 import * as NavigationParser from '../../../../src/core/url-beautifier/navigation/parser';
+import * as PastPurchaseGenerator from '../../../../src/core/url-beautifier/pastPurchase/generator';
+import * as PastPurchaseParser from '../../../../src/core/url-beautifier/pastPurchase/parser';
 import * as SearchGenerator from '../../../../src/core/url-beautifier/search/generator';
 import * as SearchParser from '../../../../src/core/url-beautifier/search/parser';
 import suite, { refinement } from '../../_suite';
@@ -23,12 +25,16 @@ suite('BeautifierFactory', ({ expect, stub }) => {
       const navigationParser = { parse: () => null };
       const searchGenerator = { build: () => null };
       const searchParser = { parse: () => null };
+      const pastPurchaseGenerator = { build: () => null };
+      const pastPurchaseParser = { parse: () => null };
       const detailsGeneratorStub = stub(DetailsGenerator, 'default').returns(detailsGenerator);
       const detailsParserStub = stub(DetailsParser, 'default').returns(detailsParser);
       const navigationGeneratorStub = stub(NavigationGenerator, 'default').returns(navigationGenerator);
       const navigationParserStub = stub(NavigationParser, 'default').returns(navigationParser);
       const searchGeneratorStub = stub(SearchGenerator, 'default').returns(searchGenerator);
       const searchParserStub = stub(SearchParser, 'default').returns(searchParser);
+      const pastPurchaseGeneratorStub = stub(PastPurchaseGenerator, 'default').returns(pastPurchaseGenerator);
+      const pastPurchaseParserStub = stub(PastPurchaseParser, 'default').returns(pastPurchaseParser);
 
       const beautifiers = Factory.create(URL_BEAUTIFIER);
 
@@ -44,7 +50,11 @@ suite('BeautifierFactory', ({ expect, stub }) => {
         search: {
           parse: searchParser.parse,
           build: searchGenerator.build,
-        }
+        },
+        pastpurchase: {
+          parse: pastPurchaseParser.parse,
+          build: pastPurchaseGenerator.build,
+        },
       });
       expect(detailsGeneratorStub).to.be.calledWith(URL_BEAUTIFIER);
       expect(detailsParserStub).to.be.calledWith(URL_BEAUTIFIER);
@@ -52,6 +62,8 @@ suite('BeautifierFactory', ({ expect, stub }) => {
       expect(navigationParserStub).to.be.calledWith(URL_BEAUTIFIER);
       expect(searchGeneratorStub).to.be.calledWith(URL_BEAUTIFIER);
       expect(searchParserStub).to.be.calledWith(URL_BEAUTIFIER);
+      expect(pastPurchaseGeneratorStub).to.be.calledWith(URL_BEAUTIFIER);
+      expect(pastPurchaseParserStub).to.be.calledWith(URL_BEAUTIFIER);
     });
   });
 
