@@ -25,7 +25,7 @@ namespace ProductTransformer {
     if (variantInfo) {
       // tslint:disable-next-line max-line-length
       const variants = Utils.unpackVariants(variantInfo, transformedProduct, data, baseStructure)
-        .map((variant) => ({ ...data, ...variant }));
+        .map((variant) => Utils.combineData(data, variant));
 
       return { data: variants[0], variants };
     } else {
@@ -50,6 +50,20 @@ namespace Utils {
     } else {
       return [{}];
     }
+  }
+
+  export function combineData(data: object, variant: object) {
+    const newData = {...data};
+
+    // overwrite only if not undefined
+    Object.keys(variant).forEach((key) => {
+      const value = variant[key];
+      if (value !== undefined) {
+        newData[key] = value;
+      }
+    });
+
+    return newData;
   }
 
   export function extendStructure(originalData: object, transformedData: object, structure: Structure.Base) {
