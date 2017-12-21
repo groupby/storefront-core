@@ -45,6 +45,7 @@ const DEFAULTS: Partial<Configuration> = {
       suggestions: {},
       products: {}
     },
+    hoverAutoFill: true,
   },
   recommendations: {
     location: {
