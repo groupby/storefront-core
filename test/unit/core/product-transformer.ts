@@ -68,6 +68,7 @@ suite('Product Transformation', ({ expect, spy, stub }) => {
         const extendStructure = stub(TransformUtils, 'extendStructure').returns({ a: 'b' });
         const unpackVariants = stub(TransformUtils, 'unpackVariants').returns([{ k: 'l' }, { m: 'n' }]);
         stub(TransformUtils, 'remap').returns(remapped);
+        stub(TransformUtils, 'combineData').callsFake((x, y) => ({...x, ...y}));
 
         const result = ProductTransformer.transform(product, <any>{ c: 'd', _variant: variantInfo });
 
@@ -103,6 +104,26 @@ suite('Product Transformation', ({ expect, spy, stub }) => {
         const extended = TransformUtils.extendStructure(original, transformed, structure);
 
         expect(extended).to.eql({ k: 'l', m: 'n', c: 'c', g: 'g' });
+      });
+    });
+
+    describe('combineData()', () => {
+      it('should overwrite values of data with values of variant', () => {
+        const data = { a: 'b', e: 'f', x: 'y' };
+        const variant = { a: 'i', e: 'j' };
+
+        const newData = TransformUtils.combineData(data, variant);
+
+        expect(newData).to.eql({ a: 'i', e: 'j', x: 'y' });
+      });
+
+      it('should not overwrite values of data with undefined values of variant', () => {
+        const data = { a: 'b', e: 'f', x: 'y' };
+        const variant = { a: 'i', e: undefined };
+
+        const newData = TransformUtils.combineData(data, variant);
+
+        expect(newData).to.eql({ a: 'i', e: 'f', x: 'y' });
       });
     });
 
