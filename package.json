@@ -56,7 +56,7 @@
     "@types/sinon": "^4.0.0",
     "@types/sinon-chai": "^2.7.28",
     "chai": "^4.0.0",
-    "condition-circle": "^1.5.0",
+    "condition-circle": "^2.0.0",
     "cz-conventional-changelog": "^2.0.0",
     "husky": "^0.14.1",
     "mocha-suite": "^1.0.11",
