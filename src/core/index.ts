@@ -1,5 +1,6 @@
 import Configuration from './configuration';
 import ProductTransformer from './product-transformer';
+import { TransformUtils } from './product-transformer'
 import CoreSelectors from './selectors';
 import Service from './service';
 import System from './system';
@@ -9,4 +10,4 @@ import * as utils from './utils';
 
 export * from './tag/decorators';
 export * from './types';
-export { Configuration, CoreSelectors, ProductTransformer, Service, System, Tag, UrlBeautifier, utils };
+export { Configuration, CoreSelectors, ProductTransformer, Service, System, Tag, TransformUtils, UrlBeautifier, utils };

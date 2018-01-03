@@ -19,8 +19,11 @@ namespace ProductTransformer {
     const { _variant: variantInfo, ...baseStructure } = structure;
     const userTransform = baseStructure._transform || DEFAULT_TRANSFORM;
     const transformedProduct = { ...product, ...(userTransform(clone(product, false)) || {}) };
+    console.log('trans', transformedProduct);
     const effectiveStructure = Utils.extendStructure(product, transformedProduct, baseStructure);
+    console.log(JSON.stringify(transformedProduct) === JSON.stringify(product))
     const data = Utils.remap(transformedProduct, effectiveStructure);
+    console.log('data after extend structure', data)
 
     if (variantInfo) {
       // tslint:disable-next-line max-line-length
