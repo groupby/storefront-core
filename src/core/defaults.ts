@@ -77,7 +77,7 @@ const DEFAULTS: Partial<Configuration> = {
     }
   },
   cart: {
-    expiry: 1139293
+    structure: null
   },
   network: {
     https: typeof window !== 'undefined' && window.location.protocol === 'https:'
