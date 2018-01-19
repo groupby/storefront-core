@@ -81,6 +81,10 @@ const DEFAULTS: Partial<Configuration> = {
     https: typeof window !== 'undefined' && window.location.protocol === 'https:'
   },
 
+  history: {
+    length: 5
+  },
+
   services: {
     autocomplete: {
       useFirstResult: false,
