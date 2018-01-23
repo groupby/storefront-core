@@ -48,10 +48,7 @@ const DEFAULTS: Partial<Configuration> = {
     hoverAutoFill: true,
   },
   recommendations: {
-    location: {
-      distance: '10km',
-      minSize: 10,
-    },
+    location: false,
     idField: 'productId',
     iNav: {
       navigations: {
