@@ -90,6 +90,7 @@ class UrlService extends BaseService<UrlService.Options> {
 
   listenForHistoryChange = () => {
     this.app.flux.on(Events.HISTORY_SAVE, this.updateHistory);
+    this.app.flux.on(Events.HISTORY_REPLACE, this.buildUrlAndReplaceHistory);
   }
 
   updateHistory = ({ state, route }: { state: Store.State, route: string }) => {
@@ -103,6 +104,11 @@ class UrlService extends BaseService<UrlService.Options> {
       WINDOW().history.pushState({ url, state: this.filterState(state), app: STOREFRONT_APP_ID }, '', url);
       this.app.flux.emit(Events.URL_UPDATED, url);
     }
+  }
+
+  buildUrlAndReplaceHistory = ({ state, route }: { state: Store.State, route: string }) => {
+    const url = this.beautifier.build(route, this.urlState[route](state));
+    this.replaceHistory(url);
   }
 
   replaceHistory(url: string) {
