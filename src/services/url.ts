@@ -98,6 +98,8 @@ class UrlService extends BaseService<UrlService.Options> {
 
     if (typeof this.opts.urlHandler === 'function') {
       this.opts.urlHandler(url);
+    } else if (typeof this.opts.redirects === 'function' && this.opts.redirects(url)) {
+      WINDOW().location.assign(this.opts.redirects(url));
     } else if (this.opts.redirects[url]) {
       WINDOW().location.assign(this.opts.redirects[url]);
     } else {
@@ -121,6 +123,10 @@ class UrlService extends BaseService<UrlService.Options> {
 
   filterState(state: Store.State) {
     const { session: { config, ...session }, ...rootConfig } = state;
+    if (this.app.config.history.length === 0) {
+      const data = { ...rootConfig.data, present: { ...rootConfig.data.present, products: [] } };
+      return { ...rootConfig, session, data };
+    }
     return { ...rootConfig, session };
   }
 
@@ -128,6 +134,9 @@ class UrlService extends BaseService<UrlService.Options> {
     const eventState = event.state;
     if (eventState && event.state.app === STOREFRONT_APP_ID) {
       this.refreshState(eventState.state);
+      if (this.app.config.history.length === 0) {
+        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWithoutHistory());
+      }
       this.app.flux.emit(Events.URL_UPDATED, WINDOW().location.href);
     }
   }
@@ -141,7 +150,7 @@ namespace UrlService {
   export interface Options {
     beautifier?: UrlBeautifier.Configuration | UrlBeautifier.Factory;
     routes?: Routes;
-    redirects?: { [target: string]: string };
+    redirects?: { [target: string]: string } | ((url: string) => any);
     urlHandler?: (url: string) => void;
   }
 

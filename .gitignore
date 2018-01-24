@@ -9,6 +9,7 @@ src/**/*.js
 src/**/*.d.ts
 test/**/*.js
 test/**/*.d.ts
+.DS_Store
 
 *.log
 
