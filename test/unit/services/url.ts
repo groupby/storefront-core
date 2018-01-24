@@ -314,7 +314,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
 
   describe('filterState()', () => {
     it('should filter config from state without modifying state', () => {
-      const config = 'a';
+      const config = { history: { length: 5 } };
       const session = { a: 'b', c: 'd' };
       const sessionWithConfig = { ...session, config };
       const otherData = {
@@ -332,6 +332,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       Object.freeze(state);
       Object.freeze(session);
       Object.freeze(sessionWithConfig);
+      service['app'] = <any>{ config };
 
       const stateWithoutConfig = service.filterState(state);
 
@@ -423,9 +424,10 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const url = 'http://example.com';
       const state = { a: 'b' };
       const emit = spy();
+      const config = { history: { length: 5 } };
       const refreshState = service.refreshState = spy();
       win.location = { href: url };
-      service['app'].flux = <any>{ emit };
+      service['app'] = <any>{ config, flux: { emit } };
 
       service.rewind(<any>{ state: { state, app: STOREFRONT_APP_ID } });
 
