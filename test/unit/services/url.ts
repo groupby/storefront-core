@@ -259,6 +259,34 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
 
       expect(on).to.be.calledWith(Events.HISTORY_SAVE, service.updateHistory);
     });
+
+    it('should listen for HISTORY_REPLACE', () => {
+      const on = spy();
+      service['app'] = <any>{ flux: { on } };
+
+      service.listenForHistoryChange();
+
+      expect(on).to.be.calledWith(Events.HISTORY_REPLACE, service.buildUrlAndReplaceHistory);
+    });
+  });
+
+  describe('buildUrlAndReplaceHistory()', () => {
+    it('should build url and call replaceHistory', () => {
+      const url = 'www.example.com';
+      const search = spy(() => 'hey');
+      const build = spy(() => url);
+      const obj = <any>{ state: { a: 'b' }, route: 'search' };
+      const replaceHistory = service.replaceHistory = spy();
+      service.beautifier = <any>{ build };
+      service.urlState = <any>{
+        search
+      };
+
+      service.buildUrlAndReplaceHistory(obj);
+
+      expect(build).to.be.calledWithExactly('search', search());
+      expect(replaceHistory).to.be.calledWithExactly(url);
+    });
   });
 
   describe('replaceHistory()', () => {
@@ -290,11 +318,11 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const session = { a: 'b', c: 'd' };
       const sessionWithConfig = { ...session, config };
       const otherData = {
-        e : 'f',
+        e: 'f',
         j: {
           h: 1
         },
-        o: [2,3,4],
+        o: [2, 3, 4],
         n: {
           i: 'r',
           k: {}
