@@ -16,9 +16,8 @@ namespace ProductTransformer {
   }
 
   export function transform(product: object, structure: Structure) {
-    const { _variant: variantInfo, ...baseStructure } = structure;
-    const userTransform = baseStructure._transform || DEFAULT_TRANSFORM;
-    const transformedProduct = { ...product, ...(userTransform(clone(product, false)) || {}) };
+    const { _variant: variantInfo, _transform = DEFAULT_TRANSFORM, ...baseStructure } = structure;
+    const transformedProduct = { ...product, ...(_transform(clone(product, false)) || {}) };
     const effectiveStructure = Utils.extendStructure(product, transformedProduct, baseStructure);
     const data = Utils.remap(transformedProduct, effectiveStructure);
 

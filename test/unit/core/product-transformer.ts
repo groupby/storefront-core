@@ -38,7 +38,8 @@ suite('Product Transformation', ({ expect, spy, stub }) => {
         const userTransform = spy(() => ({ e: 'f' }));
         const product: any = { c: 'd' };
         const cloned = { g: 'h' };
-        const structure: any = { a: 'b', _transform: userTransform };
+        const struct = { a: 'b' };
+        const structure: any = { ...struct, _transform: userTransform };
         const extendStructure = stub(TransformUtils, 'extendStructure');
         const clone = stub(utils, 'clone').returns(cloned);
         stub(TransformUtils, 'remap');
@@ -47,18 +48,19 @@ suite('Product Transformation', ({ expect, spy, stub }) => {
 
         expect(clone).to.be.calledWith(product);
         expect(userTransform).to.be.calledWith(cloned);
-        expect(extendStructure).to.be.calledWith(product, { c: 'd', e: 'f' }, structure);
+        expect(extendStructure).to.be.calledWith(product, { c: 'd', e: 'f' }, struct);
       });
 
       it('should use empty object if user transform returns falsy', () => {
         const product: any = { c: 'd' };
-        const structure: any = { a: 'b', _transform: () => null };
+        const struct = { a: 'b' };
+        const structure: any = { ...struct, _transform: () => null };
         const extendStructure = stub(TransformUtils, 'extendStructure');
         stub(TransformUtils, 'remap');
 
         ProductTransformer.transform(product, structure);
 
-        expect(extendStructure).to.be.calledWith(product, product, structure);
+        expect(extendStructure).to.be.calledWith(product, product, struct);
       });
 
       it('should unpack variant data', () => {
