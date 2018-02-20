@@ -10,6 +10,7 @@ class AutocompleteService extends LazyService {
 
   registeredProductTags: Tag[] = [];
   registeredAutocompleteTags: AutocompleteTag[] = [];
+  registeredSearchBoxTags: Tag[] = [];
 
   lazyInit() {
     this.app.flux.on(Events.AUTOCOMPLETE_QUERY_UPDATED, this.updateSearchTerms);
@@ -40,6 +41,15 @@ class AutocompleteService extends LazyService {
     if (this.registeredProductTags.push(tag) === 1) {
       this.lazyInitProducts();
     }
+  }
+
+  registerSearchBox(tag: Tag) {
+    this.registeredSearchBoxTags.push(tag);
+    tag.on('unmount', () => this.registeredSearchBoxTags.splice(this.registeredSearchBoxTags.indexOf(tag), 1));
+  }
+
+  isInSearchBox(el: HTMLElement) {
+    return this.registeredSearchBoxTags.some((tag) => tag.root.contains(el));
   }
 
   hasActiveSuggestion() {

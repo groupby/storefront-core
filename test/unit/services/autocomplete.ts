@@ -99,6 +99,43 @@ suite('Autocomplete Service', ({ expect, spy, stub, itShouldBeCore, itShouldExte
     });
   });
 
+  describe('registerSearchBox()', () => {
+    it('should add tag to registeredSearchBoxTags', () => {
+      const on = spy();
+      const tag: any = { a: 'b', on };
+
+      service.registerSearchBox(tag);
+
+      expect(service.registeredSearchBoxTags).to.eql([tag]);
+      on.args[0][1]();
+      expect(service.registeredSearchBoxTags).to.eql([]);
+    });
+  });
+
+  describe('isInSearchBox()', () => {
+    it('should return true if element is contained within a search box tag', () => {
+      const tag: any = { a: 'b', on: () => null };
+      service.registeredSearchBoxTags = <any[]>[
+        { root: { contains: () => false } },
+        { root: { contains: () => false } },
+        { root: { contains: () => true } },
+      ];
+
+      expect(service.isInSearchBox(tag)).to.be.true;
+    });
+
+    it('should return false if element is not contained within any search box tag', () => {
+      const tag: any = { a: 'b', on: () => null };
+      service.registeredSearchBoxTags = <any[]>[
+        { root: { contains: () => false } },
+        { root: { contains: () => false } },
+        { root: { contains: () => false } },
+      ];
+
+      expect(service.isInSearchBox(tag)).to.be.false;
+    });
+  });
+
   describe('registerProducts()', () => {
     it('should add tag to registeredProductTags and call lazyInitProducts() if first registered', () => {
       const tag: any = { a: 'b' };
