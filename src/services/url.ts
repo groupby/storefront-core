@@ -67,8 +67,8 @@ class UrlService extends BaseService<UrlService.Options> {
   }
 
   augmentHistory(route: string, request: any) {
-    const { pathname, search } = WINDOW().location;
-    const url = pathname + search;
+    const { pathname, search, hash } = WINDOW().location;
+    const url = pathname + search + hash;
 
     this.replaceHistory(url);
     this.app.flux.once(Events.HISTORY_SAVE, () => {

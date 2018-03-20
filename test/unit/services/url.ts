@@ -148,7 +148,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       win.document = { title };
       win.history = { replaceState };
       const replaceHistory = service.replaceHistory = spy();
-      win.location = { pathname: '/thing1', search: '?q=thing2' };
+      win.location = { pathname: '/thing1', search: '?q=thing2', hash: '' };
       service['app'] = <any>{
         flux: {
           actions: { fetchProducts: () => null },
@@ -169,7 +169,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const fetchProductsAction = { a: 'b' };
       const replaceHistory = service.replaceHistory = spy();
       const listenForHistoryChange = service.listenForHistoryChange = spy();
-      win.location = { pathname: '/thing1', search: '?q=thing2' };
+      win.location = { pathname: '/thing1', search: '?q=thing2', hash: '' };
       service['app'] = <any>{
         flux: {
           actions: { fetchProducts: () => fetchProductsAction },
@@ -187,6 +187,22 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
           .and.calledWith('/thing1?q=thing2');
         return expect(listenForHistoryChange).to.be.called;
       }));
+    });
+
+    it('should use hash when provided in the url', () => {
+      const replaceHistory = service.replaceHistory = spy();
+      win.location = { pathname: '/thing1', search: '?q=thing2', hash: '#thing3' };
+      service['app'] = <any>{
+        flux: {
+          actions: { fetchProducts: () => null },
+          store: { dispatch: () => null },
+          once: () => null,
+        }
+      };
+
+      service.augmentHistory('', {});
+
+      expect(replaceHistory).to.be.calledWith('/thing1?q=thing2#thing3');
     });
 
     it('should request products', () => {
