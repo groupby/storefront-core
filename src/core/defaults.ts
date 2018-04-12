@@ -27,6 +27,7 @@ const DEFAULTS: Partial<Configuration> = {
     }
   },
   autocomplete: {
+    searchCharMinLimit: 1,
     navigationCount: 5,
     suggestionCount: 5,
     products: {
