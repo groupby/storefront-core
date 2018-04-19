@@ -34,8 +34,21 @@ class UrlService extends BaseService<UrlService.Options> {
 
   init() {
     try {
-      const { route, request } = this.beautifier.parse<UrlBeautifier.SearchUrlState>(WINDOW().location.href);
-      this.handleUrl(route, request);
+        const retVal = <any>this.beautifier.parse<UrlBeautifier.SearchUrlState>(WINDOW().location.href);
+        if ( typeof retVal.then === 'function' ) {
+            retVal.then( ( resp ) => {
+                if ( resp ) {
+                    const { route, request } = resp;
+                    this.handleUrl(route, request);
+                }
+            })
+            .catch( (e) => {
+                this.app.log.warn('UrlService init promise failed', e);
+            });
+        } else {
+            const { route, request } = retVal;
+            this.handleUrl(route, request);
+        }
     } catch (e) {
       this.app.log.warn('unable to parse state from url', e);
       this.listenForHistoryChange();

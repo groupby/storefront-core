@@ -138,6 +138,51 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       expect(warn).to.be.calledWith('unable to parse state from url');
       expect(listenForHistoryChange).to.be.called;
     });
+
+    it('should accept a route', () => {
+      const resultA = { route: 'ab', request: { c: 'd' } };
+      const handleUrl = service.handleUrl = spy();
+      win.location = { href: 'http://does.not.matter.ca' };
+
+      const parse = spy(() => resultA);
+      service.beautifier = <any>{ parse };
+      service.init();
+
+      expect(handleUrl).to.be.calledWith(resultA.route, resultA.request);
+    });
+
+    it('should accept promise which resolves to a route', (done) => {
+      const resultA = { route: 'ab', request: { c: 'd' } };
+      const resultB = new Promise((resolve,reject) => {
+        resolve(resultA);
+        done();
+      });
+      const handleUrl = service.handleUrl = spy();
+      win.location = { href: 'http://does.not.matter.ca' };
+
+      const parse = spy(() => resultB);
+      service.beautifier = <any>{ parse };
+      service.init();
+
+      expect(handleUrl).to.be.calledWith(resultA.route, resultA.request);
+    });
+
+    it('should reject promise with a warning', (done) => {
+      const resultB = new Promise((resolve,reject) => {
+        reject();
+        done();
+      });
+      const handleUrl = service.handleUrl = spy();
+      win.location = { href: 'http://does.not.matter.ca' };
+      const warn = spy();
+      service['app'] = <any>{ log: { warn } };
+
+      const parse = spy(() => resultB);
+      service.beautifier = <any>{ parse };
+      service.init();
+
+      expect(warn).to.be.calledWith('UrlService init promise failed');
+    });
   });
 
   describe('augmentHistory()', () => {
