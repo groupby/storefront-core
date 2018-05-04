@@ -73,13 +73,14 @@ suite('Tag Alias', ({ expect, spy, stub }) => {
   describe('attach()', () => {
     it('should listen for lifecycle events', () => {
       const on = spy();
+      const one = spy();
       const trigger = spy();
-      alias['tag'] = <any>{ on, trigger };
+      alias['tag'] = <any>{ on, trigger, one };
 
       alias.attach();
 
-      expect(on).to.have.callCount(4)
-        .and.calledWithExactly(Phase.INITIALIZE, alias.onInitialize)
+      expect(one).to.be.calledWithExactly(Phase.INITIALIZE, alias.onInitialize);
+      expect(on).to.have.callCount(3)
         .and.calledWithExactly(Phase.STATE_FINALIZED, alias.onStateFinalized)
         .and.calledWithExactly(Phase.UPDATE, sinon.match((cb) => {
           cb();

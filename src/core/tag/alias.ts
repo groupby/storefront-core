@@ -29,11 +29,13 @@ class Alias {
   }
 
   attach() {
-    this.tag.on(Phase.INITIALIZE, this.onInitialize);
+    this.tag.one(Phase.INITIALIZE, this.onInitialize);
     this.tag.on(Phase.STATE_FINALIZED, this.onStateFinalized);
-    this.tag.on(Phase.UPDATE, () => this.tag.trigger(Phase.RECALCULATE_PROPS));
+    this.tag.on(Phase.UPDATE, this.recalculateProps);
     this.tag.on(Phase.UPDATE, this.onUpdate);
   }
+
+  recalculateProps = () => this.tag.trigger(Phase.RECALCULATE_PROPS);
 
   onInitialize = () => {
     this.oldState = this.tag.state;

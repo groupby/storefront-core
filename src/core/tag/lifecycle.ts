@@ -1,4 +1,5 @@
 import { ActionCreators, Events } from '@storefront/flux-capacitor';
+import moize from 'moize';
 import Tag from '.';
 import { dot } from '../utils';
 import Attribute from './attribute';
@@ -88,7 +89,10 @@ namespace Lifecycle {
   export function onInitialize(this: Tag) {
     Lifecycle.addSugar(this);
     Lifecycle.addMetadata(this);
-    this.actions = Lifecycle.primeTagActions(this);
+    Object.defineProperty(this, 'actions', {
+      configurable: true,
+      get: moize(() => Lifecycle.primeTagActions(this))
+    });
 
     Lifecycle.onRecalculateProps.call(this);
 

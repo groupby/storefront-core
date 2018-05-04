@@ -30,7 +30,7 @@ suite('LazyService', ({ expect, spy }) => {
 
   describe('register()', () => {
     it('should add to registered and initialize', () => {
-      const tag = { a: ' b' };
+      const tag: any = { a: ' b', one: () => null };
       const services = { c: 'd' };
       const lazyInit = lazyService.lazyInit = spy();
       lazyService['app'] = <any>{ services };
@@ -42,7 +42,7 @@ suite('LazyService', ({ expect, spy }) => {
     });
 
     it('should skip initialize', () => {
-      const tag = { a: ' b' };
+      const tag: any = { a: ' b', one: () => null };
       const existingTag = { c: 'd' };
       lazyService.lazyInit = () => expect.fail();
       lazyService.registered = [existingTag];

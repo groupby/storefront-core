@@ -15,9 +15,10 @@ export const ALIAS_DESCRIPTION = Symbol.for('alias_description');
 class Tag<P extends Tag.Props = any, S extends object = any> {
 
   opts: P;
+  aliasing: Alias = new Alias(this);
+  _eventHandlers: [string, () => void][] = [];
   props: P = <any>{};
   state: S = <any>{};
-  aliasing: Alias = new Alias(this);
 
   constructor() {
     this.aliasing.attach();
@@ -30,6 +31,19 @@ class Tag<P extends Tag.Props = any, S extends object = any> {
 
   select(selector: (state: Store.State, ...args: any[]) => any, ...args: any[]) {
     return selector(this.flux.store.getState(), ...args);
+  }
+
+  subscribe<T>(event: string, handler: (data?: T) => void) {
+    this.flux.on(event, handler);
+    if (this._eventHandlers.length === 0) {
+      this.one('unmount', this._removeEventHandlers);
+    }
+
+    this._eventHandlers.push([event, handler as any]);
+  }
+
+  subscribeOnce(event: string, handler: (event: string, data?: any) => void) {
+    this.flux.once(event, handler);
   }
 
   dispatch(action: Actions.Action<string, any>) {
@@ -47,14 +61,16 @@ class Tag<P extends Tag.Props = any, S extends object = any> {
   updateAlias(alias: string, value: any) {
     this.aliasing.updateAlias(alias, value);
   }
+
+  _removeEventHandlers = () => this._eventHandlers.forEach(([event, handler]) => this.flux.off(event, handler));
 }
 
 // tslint:disable-next-line max-line-length
 interface Tag<P extends Tag.Props, S extends object> extends riot.TagInterface, Tag.Lifecycle, Tag.Mixin {
   _riot_id: number;
   root: HTMLElement;
-  isMounted: boolean;
   actions: typeof ActionCreators;
+  isMounted: boolean;
   init(): void;
 }
 namespace Tag {

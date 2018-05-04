@@ -83,6 +83,7 @@
     "lodash.camelcase": "^4.3.0",
     "lodash.merge": "^4.6.0",
     "loglevel": "^1.4.1",
+    "moize": "^5.2.3",
     "riot": "^3.4.4",
     "url-parse": "^1.1.9"
   }
