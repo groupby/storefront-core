@@ -515,3 +515,39 @@ the `_props` prop of the `<gb-list-item>` tags.
   <li>b 3</li>
 </ul>
 ```
+
+### Upgrade to version 1.39.1
+
+In order to address memory usage concerns a new utility method has been added
+to tag instances which automates the cleanup of `flux` event listeners when the
+tag is unmounted.
+
+##### ${version} <= v1.39.0
+
+```ts
+class MyComponent {
+  init() {
+    this.flux.on('some_event', this.eventHandler);
+    // usually no cleanup necessary (only executes once)
+    this.flux.one('some_event', this.eventHandler);
+  }
+
+  onUnmount() {
+    this.flux.off('some_event', this.eventHandler);
+  }
+}
+```
+
+##### ${version} >= v1.39.1
+
+
+```ts
+class MyComponent {
+  init() {
+    // automatically removed on "unmount"
+    this.subscribe('some_event', this.eventHandler);
+    // alias for this.flux.one()
+    this.subscribeOnce('some_event', this.eventHandler);
+  }
+}
+```
