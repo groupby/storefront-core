@@ -201,16 +201,13 @@ yarn <span class="hljs-built_in">test</span>
 						<span>Externals</span>
 					</li>
 					<li class=" tsd-kind-module tsd-is-external">
-						<a href="modules/attribute.html">Attribute</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
 						<a href="modules/beautifierfactory.html">Beautifier<wbr>Factory</a>
 					</li>
 					<li class=" tsd-kind-module tsd-is-external">
 						<a href="modules/globals.html">Globals</a>
 					</li>
 					<li class=" tsd-kind-module tsd-is-external">
-						<a href="modules/lifecycle.html">Lifecycle</a>
+						<a href="modules/phase.html">Phase</a>
 					</li>
 					<li class=" tsd-kind-module tsd-is-external">
 						<a href="modules/service.html">Service</a>
@@ -222,9 +219,6 @@ yarn <span class="hljs-built_in">test</span>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-is-external">
-						<a href="classes/alias.html" class="tsd-kind-icon">Alias</a>
-					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="classes/autocompleteservice.html" class="tsd-kind-icon">Autocomplete<wbr>Service</a>
 					</li>
@@ -233,6 +227,9 @@ yarn <span class="hljs-built_in">test</span>
 					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="classes/collectionsservice.html" class="tsd-kind-icon">Collections<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/consumer.html" class="tsd-kind-icon">Consumer</a>
 					</li>
 					<li class=" tsd-kind-class tsd-is-external">
 						<a href="classes/detailsurlgenerator.html" class="tsd-kind-icon">Details<wbr>Url<wbr>Generator</a>
@@ -260,6 +257,9 @@ yarn <span class="hljs-built_in">test</span>
 					</li>
 					<li class=" tsd-kind-class tsd-is-external">
 						<a href="classes/pastpurchaseurlparser.html" class="tsd-kind-icon">Past<wbr>Purchase<wbr>Url<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/provider.html" class="tsd-kind-icon">Provider</a>
 					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="classes/recommendationsservice.html" class="tsd-kind-icon">Recommendations<wbr>Service</a>
@@ -309,11 +309,17 @@ yarn <span class="hljs-built_in">test</span>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/coreservices.html" class="tsd-kind-icon">Core<wbr>Services</a>
 					</li>
+					<li class=" tsd-kind-interface tsd-is-external">
+						<a href="interfaces/rawopts.html" class="tsd-kind-icon">Raw<wbr>Opts</a>
+					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/serviceconfiguration.html" class="tsd-kind-icon">Service<wbr>Configuration</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#systemservices" class="tsd-kind-icon">System<wbr>Services</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#tagconstructor" class="tsd-kind-icon">Tag<wbr>Constructor</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-external">
 						<a href="globals.html#alias_description" class="tsd-kind-icon">ALIAS_<wbr>DESCRIPTION</a>
@@ -323,6 +329,12 @@ yarn <span class="hljs-built_in">test</span>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#array_to_dot_notation_regex" class="tsd-kind-icon">ARRAY_<wbr>TO_<wbr>DOT_<wbr>NOTATION_<wbr>REGEX</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-external">
+						<a href="globals.html#configurable_key" class="tsd-kind-icon">CONFIGURABLE_<wbr>KEY</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-external">
+						<a href="globals.html#consumes_key" class="tsd-kind-icon">CONSUMES_<wbr>KEY</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-external">
 						<a href="globals.html#core" class="tsd-kind-icon">CORE</a>
@@ -337,10 +349,25 @@ yarn <span class="hljs-built_in">test</span>
 						<a href="globals.html#globals" class="tsd-kind-icon">GLOBALS</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-external">
+						<a href="globals.html#log_phases" class="tsd-kind-icon">LOG_<wbr>PHASES</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-external">
+						<a href="globals.html#log_style" class="tsd-kind-icon">LOG_<wbr>STYLE</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-external">
+						<a href="globals.html#origin_key" class="tsd-kind-icon">ORIGIN_<wbr>KEY</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-external">
 						<a href="globals.html#pair_separator" class="tsd-kind-icon">PAIR_<wbr>SEPARATOR</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-external">
+						<a href="globals.html#provides_key" class="tsd-kind-icon">PROVIDES_<wbr>KEY</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-external">
 						<a href="globals.html#range_separator" class="tsd-kind-icon">RANGE_<wbr>SEPARATOR</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-external">
+						<a href="globals.html#re_render_message" class="tsd-kind-icon">RE_<wbr>RENDER_<wbr>MESSAGE</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-external">
 						<a href="globals.html#riot" class="tsd-kind-icon">RIOT</a>
@@ -353,6 +380,9 @@ yarn <span class="hljs-built_in">test</span>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-external">
 						<a href="globals.html#stylish_class" class="tsd-kind-icon">STYLISH_<wbr>CLASS</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-external">
+						<a href="globals.html#sugar_events" class="tsd-kind-icon">SUGAR_<wbr>EVENTS</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-external">
 						<a href="globals.html#tags" class="tsd-kind-icon">TAGS</a>
@@ -376,19 +406,49 @@ yarn <span class="hljs-built_in">test</span>
 						<a href="globals.html#window" class="tsd-kind-icon">WINDOW</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-external">
-						<a href="globals.html#alias" class="tsd-kind-icon">alias</a>
+						<a href="globals.html#addactions" class="tsd-kind-icon">add<wbr>Actions</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#addmetadata" class="tsd-kind-icon">add<wbr>Metadata</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#addstyles" class="tsd-kind-icon">add<wbr>Styles</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#aliasingmixin" class="tsd-kind-icon">aliasing<wbr>Mixin</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#applymixin" class="tsd-kind-icon">apply<wbr>Mixin</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#arraytodotnotation" class="tsd-kind-icon">array<wbr>ToDot<wbr>Notation</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#augmentaction" class="tsd-kind-icon">augment<wbr>Action</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#augmentmeta" class="tsd-kind-icon">augment<wbr>Meta</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#buildprops" class="tsd-kind-icon">build<wbr>Props</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#composeobject" class="tsd-kind-icon">compose<wbr>Object</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter tsd-is-external">
 						<a href="globals.html#configurable" class="tsd-kind-icon">configurable</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#consume" class="tsd-kind-icon">consume</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-external">
 						<a href="globals.html#core" class="tsd-kind-icon">core</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-external">
 						<a href="globals.html#css" class="tsd-kind-icon">css</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#debugmixin" class="tsd-kind-icon">debug<wbr>Mixin</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-external">
 						<a href="globals.html#decodearray" class="tsd-kind-icon">decode<wbr>Array</a>
@@ -411,26 +471,107 @@ yarn <span class="hljs-built_in">test</span>
 					<li class=" tsd-kind-function tsd-is-external">
 						<a href="globals.html#escapeseparators" class="tsd-kind-icon">escape<wbr>Separators</a>
 					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#extractlocalaliases" class="tsd-kind-icon">extract<wbr>Local<wbr>Aliases</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#filternullundefined" class="tsd-kind-icon">filter<wbr>Null<wbr>Undefined</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#fluxactionsmixin" class="tsd-kind-icon">flux<wbr>Actions<wbr>Mixin</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#globalconfiguration" class="tsd-kind-icon">global<wbr>Configuration</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#lifecyclemixin" class="tsd-kind-icon">lifecycle<wbr>Mixin</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#logdiff" class="tsd-kind-icon">log<wbr>Diff</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#logstyle" class="tsd-kind-icon">log<wbr>Style</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#loggingmixin" class="tsd-kind-icon">logging<wbr>Mixin</a>
+					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#maptosearchactions" class="tsd-kind-icon">map<wbr>ToSearch<wbr>Actions</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#metadatamixin" class="tsd-kind-icon">metadata<wbr>Mixin</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#objectdiff" class="tsd-kind-icon">object<wbr>Diff</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
 						<a href="globals.html#origin" class="tsd-kind-icon">origin</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#primetagactions" class="tsd-kind-icon">prime<wbr>Tag<wbr>Actions</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#propsmixin" class="tsd-kind-icon">props<wbr>Mixin</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter tsd-is-external">
+						<a href="globals.html#provide" class="tsd-kind-icon">provide</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#puremixin" class="tsd-kind-icon">pure<wbr>Mixin</a>
 					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
 						<a href="globals.html#rayify" class="tsd-kind-icon">rayify</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#removealiases" class="tsd-kind-icon">remove<wbr>Aliases</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#resolvealiases" class="tsd-kind-icon">resolve<wbr>Aliases</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#runinitializephase" class="tsd-kind-icon">run<wbr>Initialize<wbr>Phase</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#shallowequals" class="tsd-kind-icon">shallow<wbr>Equals</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#shouldupdate" class="tsd-kind-icon">should<wbr>Update</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#simpleresolve" class="tsd-kind-icon">simple<wbr>Resolve</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
 						<a href="globals.html#splitexceptescaped" class="tsd-kind-icon">split<wbr>Except<wbr>Escaped</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#stringify" class="tsd-kind-icon">stringify</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#stylishmixin" class="tsd-kind-icon">stylish<wbr>Mixin</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#sugarmixin" class="tsd-kind-icon">sugar<wbr>Mixin</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-external">
 						<a href="globals.html#tag" class="tsd-kind-icon">tag</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-external">
-						<a href="globals.html#transform" class="tsd-kind-icon">transform</a>
+						<a href="globals.html#updatealiases" class="tsd-kind-icon">update<wbr>Aliases</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#updateprops" class="tsd-kind-icon">update<wbr>Props</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-external">
 						<a href="globals.html#view" class="tsd-kind-icon">view</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#wrapactioncreator" class="tsd-kind-icon">wrap<wbr>Action<wbr>Creator</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#wrapactioncreators" class="tsd-kind-icon">wrap<wbr>Action<wbr>Creators</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-external">
+						<a href="globals.html#wrapthunk" class="tsd-kind-icon">wrap<wbr>Thunk</a>
 					</li>
 					<li class=" tsd-kind-object-literal">
 						<a href="globals.html#aliasing_colours" class="tsd-kind-icon">ALIASING_<wbr>COLOURS</a>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Attribute | @storefront/core</title>
+	<title>Event | @storefront/core</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,94 +56,54 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="attribute.html">Attribute</a>
+					<a href="../classes/consumer.html">Consumer</a>
+				</li>
+				<li>
+					<a href="../modules/consumer.tag.html">Tag</a>
+				</li>
+				<li>
+					<a href="consumer.tag.event.html">Event</a>
 				</li>
 			</ul>
-			<h1>Module Attribute</h1>
+			<h1>Interface Event</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">Event</span>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-external">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-module tsd-is-external"><a href="attribute.html#default" class="tsd-kind-icon">default</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-module tsd-is-external"><a href="attribute.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-module tsd-is-external"><a href="attribute.html#type" class="tsd-kind-icon">type</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section tsd-is-external">
-							<h3>Functions</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="attribute.html#implytype" class="tsd-kind-icon">imply<wbr>Type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="consumer.tag.event.html#preventupdate" class="tsd-kind-icon">prevent<wbr>Update</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-external">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-module tsd-is-external">
-					<a name="default" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> default</h3>
-					<div class="tsd-signature tsd-kind-icon">default<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="preventupdate" class="tsd-anchor"></a>
+					<h3>prevent<wbr>Update</h3>
+					<div class="tsd-signature tsd-kind-icon">prevent<wbr>Update<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/7daca0e/src/core/tag/attribute.ts#L6">core/tag/attribute.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/75a5fb5/src/core/tag/index.ts#L207">core/tag/index.ts:207</a></li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-module tsd-is-external">
-					<a name="name" class="tsd-anchor"></a>
-					<h3>name</h3>
-					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/7daca0e/src/core/tag/attribute.ts#L4">core/tag/attribute.ts:4</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-module tsd-is-external">
-					<a name="type" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"boolean"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"string"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"number"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"function"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"object"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"symbol"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"undefined"</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/7daca0e/src/core/tag/attribute.ts#L5">core/tag/attribute.ts:5</a></li>
-						</ul>
-					</aside>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-external">
-				<h2>Functions</h2>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-external">
-					<a name="implytype" class="tsd-anchor"></a>
-					<h3>imply<wbr>Type</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-external">
-						<li class="tsd-signature tsd-kind-icon">imply<wbr>Type<span class="tsd-signature-symbol">(</span>attribute<span class="tsd-signature-symbol">: </span><a href="attribute.html" class="tsd-signature-type">Attribute</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="attribute.html" class="tsd-signature-type">Attribute</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/7daca0e/src/core/tag/attribute.ts#L10">core/tag/attribute.ts:10</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>attribute: <a href="attribute.html" class="tsd-signature-type">Attribute</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="attribute.html" class="tsd-signature-type">Attribute</a></h4>
-						</li>
-					</ul>
 				</section>
 			</section>
 		</div>
@@ -153,63 +113,63 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class="label tsd-is-external">
-						<span>Internals</span>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="configuration.html">Configuration</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="producttransformer.html">Product<wbr>Transformer</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="selectors.html">Selectors</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="structure.html">Structure</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="urlutils.html">Url<wbr>Utils</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-not-exported">
-						<a href="utils.html">Utils</a>
-					</li>
-					<li class="label tsd-is-external">
-						<span>Externals</span>
-					</li>
-					<li class="current tsd-kind-module tsd-is-external">
-						<a href="attribute.html">Attribute</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="beautifierfactory.html">Beautifier<wbr>Factory</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="globals.html">Globals</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="lifecycle.html">Lifecycle</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="service.html">Service</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="tagutils.html">Tag<wbr>Utils</a>
-					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-property tsd-parent-kind-module tsd-is-external">
-						<a href="attribute.html#default" class="tsd-kind-icon">default</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="consumer.tag.description.html" class="tsd-kind-icon">Description</a>
 					</li>
-					<li class=" tsd-kind-property tsd-parent-kind-module tsd-is-external">
-						<a href="attribute.html#name" class="tsd-kind-icon">name</a>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
+						<a href="consumer.tag.event.html" class="tsd-kind-icon">Event</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="consumer.tag.event.html#preventupdate" class="tsd-kind-icon">prevent<wbr>Update</a>
+							</li>
+						</ul>
 					</li>
-					<li class=" tsd-kind-property tsd-parent-kind-module tsd-is-external">
-						<a href="attribute.html#type" class="tsd-kind-icon">type</a>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="consumer.tag.lifecycle.html" class="tsd-kind-icon">Lifecycle</a>
 					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
-						<a href="attribute.html#implytype" class="tsd-kind-icon">imply<wbr>Type</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="consumer.tag.metadata.html" class="tsd-kind-icon">Metadata</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="consumer.tag.mixin.html" class="tsd-kind-icon">Mixin</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="consumer.tag.props.html" class="tsd-kind-icon">Props</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/consumer.tag.html#transform" class="tsd-kind-icon">Transform</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/consumer.tag.html#create" class="tsd-kind-icon">create</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/consumer.tag.html#findaliases" class="tsd-kind-icon">find<wbr>Aliases</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/consumer.tag.html#findconsumes" class="tsd-kind-icon">find<wbr>Consumes</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/consumer.tag.html#getdescription" class="tsd-kind-icon">get<wbr>Description</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/consumer.tag.html#getmeta" class="tsd-kind-icon">get<wbr>Meta</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/consumer.tag.html#getname" class="tsd-kind-icon">get<wbr>Name</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/consumer.tag.html#mixin-1" class="tsd-kind-icon">mixin</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/consumer.tag.html#setdescription" class="tsd-kind-icon">set<wbr>Description</a>
 					</li>
 				</ul>
 			</nav>
