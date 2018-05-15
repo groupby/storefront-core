@@ -1,42 +1,42 @@
 import FluxCapacitor, { Actions, ActionCreators, Events, Store } from '@storefront/flux-capacitor';
+import moize from 'moize';
+import * as Riot from 'riot';
 import { SystemServices } from '../../services';
 import StoreFront from '../../storefront';
 import Configuration from '../configuration';
-import { log, riot } from '../utils';
-import Alias from './alias';
-import Attribute from './attribute';
-import Lifecycle from './lifecycle';
+import * as utils from '../utils';
+import * as Mixins from './mixins';
+import Phase from './phase';
 import TagUtils from './utils';
 
 export const TAG_META = Symbol.for('tag_metadata');
 export const TAG_DESC = Symbol.for('tag_description');
 export const ALIAS_DESCRIPTION = Symbol.for('alias_description');
 
-class Tag<P extends Tag.Props = any, S extends object = any> {
-
-  opts: P;
-  aliasing: Alias = new Alias(this);
+class Tag<P extends object = any, S extends object = any, A extends object = any> {
+  _provides: Record<string, ((props: P & Tag.Props, state: S) => (aliases: A) => void)> = {};
+  _consumes: string[] = [];
   _eventHandlers: [string, () => void][] = [];
-  props: P = <any>{};
+  isInitialized: boolean = false;
+  props: P & Tag.Props = <any>{};
   state: S = <any>{};
 
-  constructor() {
-    this.aliasing.attach();
-    Lifecycle.attach(this);
-  }
-
   set(state: Partial<S>) {
-    this.update({ state: { ...<any>this.state, ...<any>state } });
+    this.update({ state: { ...(this.state as any), ...(state as any) } });
   }
 
   select(selector: (state: Store.State, ...args: any[]) => any, ...args: any[]) {
     return selector(this.flux.store.getState(), ...args);
   }
 
+  dispatch(action: Actions.Action<string, any>) {
+    this.flux.store.dispatch(action as any);
+  }
+
   subscribe<T>(event: string, handler: (data?: T) => void) {
     this.flux.on(event, handler);
     if (this._eventHandlers.length === 0) {
-      this.one('unmount', this._removeEventHandlers);
+      this.one(Phase.UNMOUNT, this._removeEventHandlers);
     }
 
     this._eventHandlers.push([event, handler as any]);
@@ -46,40 +46,50 @@ class Tag<P extends Tag.Props = any, S extends object = any> {
     this.flux.once(event, handler);
   }
 
-  dispatch(action: Actions.Action<string, any>) {
-    this.flux.store.dispatch(<any>action);
+  provide(alias: string, resolve: (props: P, state: S, aliases: A) => void = (_, state) => state) {
+    if (this.isInitialized) {
+      throw new Error('cannot provide a new alias after the compontent has been initialized');
+    }
+
+    if (typeof resolve !== 'function') {
+      throw new Error('must provide a callback function to calculate alias value');
+    }
+
+    this._provides[alias] = moize((p: P, s: S) => (a: A) => resolve(p, s, a));
   }
 
-  expose(alias: string, value: any = this.state) {
-    this.aliasing.expose(alias, value);
-  }
+  consume(alias: string) {
+    if (this.isInitialized) {
+      throw new Error('cannot consume a new alias after the compontent has been initialized');
+    }
 
-  unexpose(alias: string) {
-    this.aliasing.unexpose(alias);
-  }
-
-  updateAlias(alias: string, value: any) {
-    this.aliasing.updateAlias(alias, value);
+    if (!this._consumes.includes(alias)) {
+      this._consumes.push(alias);
+    }
   }
 
   _removeEventHandlers = () => this._eventHandlers.forEach(([event, handler]) => this.flux.off(event, handler));
 }
 
-// tslint:disable-next-line max-line-length
-interface Tag<P extends Tag.Props, S extends object> extends riot.TagInterface, Tag.Lifecycle, Tag.Mixin {
+interface Tag<P extends object, S extends object, A extends object>
+  extends Riot.TagInterface,
+    Tag.Lifecycle<P, S>,
+    Tag.Mixin {
   _riot_id: number;
   root: HTMLElement;
+  opts: P;
   actions: typeof ActionCreators;
   isMounted: boolean;
   init(): void;
 }
-namespace Tag {
 
+namespace Tag {
   export function create(_riot: any) {
-    return (clazz: Function) => _riot.tag(...TagUtils.tagDescriptors(clazz), function init() {
-      this[TAG_META] = { ...Tag.getDescription(clazz).metadata };
-      TagUtils.bindController(this, clazz);
-    });
+    return (clazz: { new (): any }) =>
+      _riot.tag(...TagUtils.tagDescriptors(clazz), function init() {
+        this[TAG_META] = { ...Tag.getDescription(clazz).metadata };
+        TagUtils.bindController(this, clazz);
+      });
   }
 
   /**
@@ -92,7 +102,26 @@ namespace Tag {
       services,
       log,
 
-      init: TagUtils.initializer(Tag)
+      init(this: Riot.TagInstance) {
+        Mixins.applyMixin(this, Mixins.lifecycle);
+        Mixins.applyMixin(this, Mixins.metadata);
+        // aliasing mixin
+        Mixins.applyMixin(this, Mixins.props);
+        Mixins.applyMixin(this, Mixins.aliasing);
+        Mixins.applyMixin(this, Mixins.pure);
+
+        // order of these ones shouldn't matter
+        Mixins.applyMixin(this, Mixins.fluxActions);
+        Mixins.applyMixin(this, Mixins.stylish);
+
+        if (TagUtils.isDebug(config)) {
+          Mixins.applyMixin(this, Mixins.logging);
+          Mixins.applyMixin(this, Mixins.debug);
+        }
+
+        Mixins.applyMixin(this, Mixins.sugar);
+        TagUtils.convertToMixin(Tag).call(this);
+      },
     };
   }
 
@@ -103,12 +132,54 @@ namespace Tag {
     return tag[TAG_META] || {};
   }
 
+  export function getName(tag: Tag): string {
+    return (tag.root.dataset.is || tag.root.tagName).toLowerCase();
+  }
+
+  export function findConsumes(tag: Tag & { isConsumer?: boolean }): string[] {
+    const allOpts = { ...tag.opts._props, ...tag.opts };
+
+    return [
+      ...(tag.parent ? TagUtils.findWrappingConsumes(tag.parent as Tag) : []),
+      ...(Tag.getMeta(tag).consumes || []),
+      ...(typeof allOpts._consumes === 'string' ? allOpts._consumes.split(',') : []),
+      ...tag._consumes,
+    ].filter((alias, index, self) => self.indexOf(alias) === index);
+  }
+
+  export function findAliases(
+    tag: Tag,
+    keys: string[] = Tag.findConsumes(tag)
+  ): Record<string, { tag: Tag; value: any }> {
+    const { _provides: provides, parent, props, state } = tag;
+    const providesKeys = Object.keys(provides);
+    const parentAliases =
+      keys.length === 0
+        ? {}
+        : parent &&
+          findAliases(
+            parent as Tag,
+            providesKeys.length === 0 ? keys : keys.filter((key) => !providesKeys.includes(key))
+          );
+
+    return {
+      ...parentAliases,
+      ...providesKeys
+        .filter((key) => keys.includes(key))
+        .reduce(
+          (aliases, key) =>
+            Object.assign(aliases, { [key]: { tag, value: provides[key](props, state)(parentAliases) } }),
+          {}
+        ),
+    };
+  }
+
   export function getDescription(target: any): Description {
     return Tag.setDescription(target, target[TAG_DESC] || { metadata: {} });
   }
 
   export function setDescription(target: any, description: Description) {
-    return target[TAG_DESC] = description;
+    return (target[TAG_DESC] = description);
   }
 
   export interface Description {
@@ -120,11 +191,10 @@ namespace Tag {
   export interface Metadata {
     name: string;
     defaults: object;
-    alias?: string;
+    provides?: Record<string, (props: any, state: any) => (aliases: any) => any>;
+    consumes?: string[];
     origin?: string;
     configurable?: boolean;
-    transform?: Transform;
-    attributes?: Attribute[];
   }
 
   export interface Props {
@@ -137,13 +207,14 @@ namespace Tag {
     preventUpdate: boolean;
   }
 
-  export interface Lifecycle {
+  export interface Lifecycle<P extends object, S extends object> {
     /**
      * aliases are available here
      */
     onBeforeMount(): void;
     onMount(): void;
-    onUpdate(state: any): void;
+    shouldUpdate(stateChange: { state: S }, nextOpts: P): boolean;
+    onUpdate(stateChange?: { state: S }): void;
     onUpdated(): void;
     onBeforeUnmount(): void;
     onUnmount(): void;
@@ -153,8 +224,8 @@ namespace Tag {
     config: Configuration;
     flux: FluxCapacitor;
     services: SystemServices;
-    log: typeof log;
-    init: (this: riot.TagInterface) => void;
+    log: typeof utils.log;
+    init: (this: Riot.TagInterface) => void;
   }
 
   export type Transform = object | string[] | ((obj: object) => object);

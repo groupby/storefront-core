@@ -1,18 +1,17 @@
-import { Actions, StoreSections } from '@storefront/flux-capacitor';
-import * as camelCase from 'lodash.camelcase';
-import * as riot from 'riot';
+import { Actions, Configuration, StoreSections } from '@storefront/flux-capacitor';
+import moize from 'moize';
+import * as Riot from 'riot';
 import Tag, { TAG_DESC, TAG_META } from '.';
 import StoreFront from '../../storefront';
-import Lifecycle from './lifecycle';
+import { camelCase, dot } from '../utils';
+import Phase from './phase';
 
 namespace TagUtils {
-
   /**
    * tag initializer creator
    */
-  export function initializer(clazz: any) {
-    return function init(this: riot.TagInterface & { __proto__: any }) {
-
+  export function convertToMixin(clazz: { new (): any }) {
+    return function initClassMixin(this: Riot.TagInterface & { __proto__: any }) {
       TagUtils.inherit(this, clazz);
 
       const proto = this.__proto__;
@@ -22,42 +21,23 @@ namespace TagUtils {
     };
   }
 
-  export function bindController(tag: Tag, clazz: Function) {
-    TagUtils.initializer(clazz).call(tag);
-
-    tag.trigger(Lifecycle.Phase.INITIALIZE);
+  export function bindController(tag: Tag, clazz: { new (): any }) {
+    TagUtils.convertToMixin(clazz).call(tag);
 
     if (typeof tag.init === 'function') {
-      tag.init();
+      tag.one(Phase.INITIALIZE, () => tag.init());
     }
   }
 
-  export function tagDescriptors(clazz: Function) {
-    const { [TAG_DESC]: { metadata: { name }, view, css } } = clazz;
-    return [name, view, css];
-  }
-
-  export function globalConfiguration(tag: Tag) {
-    const metadata = Tag.getMeta(tag);
-    return metadata.configurable ? tag.config.tags[camelCase(metadata.name.replace(/^gb-/, ''))] : {};
-  }
-
-  export function buildProps(tag: Tag) {
+  export function tagDescriptors(clazz: any) {
     const {
-      ui: inheritedStyle = tag.config.options.ui,
-      stylish: inheritedStylish = tag.config.options.stylish,
-      storeSection: inheritedStoreSection = StoreSections.DEFAULT,
-    } = tag.parent ? (<any>tag.parent).props : {};
-
-    return {
-      ui: inheritedStyle,
-      stylish: inheritedStyle && inheritedStylish,
-      storeSection: tag.props.storeSection || inheritedStoreSection,
-      ...Tag.getMeta(tag).defaults,
-      ...TagUtils.globalConfiguration(tag),
-      ...tag.opts.__proto__,
-      ...tag.opts
-    };
+      [TAG_DESC]: {
+        metadata: { name },
+        view,
+        css,
+      },
+    } = clazz;
+    return [name, view, css];
   }
 
   export function inherit(target: any, superclass: any) {
@@ -66,53 +46,41 @@ namespace TagUtils {
 
       Object.getOwnPropertyNames(superclass.prototype)
         .filter((name) => name !== 'constructor')
-        // tslint:disable-next-line
-        .forEach((name) => Object.defineProperty(target, name, Object.getOwnPropertyDescriptor(superclass.prototype, name)));
+        .forEach((name) =>
+          Object.defineProperty(target, name, Object.getOwnPropertyDescriptor(superclass.prototype, name))
+        );
     }
   }
 
-  export function setMetadata(target: any, key: string, value: any) {
-    const description = Tag.getDescription(target);
+  export function setMetadata(target: any, key: keyof Tag.Metadata, value: any) {
+    const { metadata, ...description } = Tag.getDescription(target);
     Tag.setDescription(target, {
       ...description,
-      metadata: { ...description.metadata, [key]: value }
+      metadata: { ...metadata, [key]: value },
     });
   }
 
-  // tslint:disable-next-line max-line-length
-  export function wrapActionCreators(actionCreators: { [key: string]: Actions.ActionCreator }, metadata: object, dispatch: (action: any) => any) {
-    return Object.keys(actionCreators)
-      .reduce((creators, key) => Object.assign(creators, {
-        [key]: TagUtils.wrapActionCreator(actionCreators[key], metadata, dispatch)
-      }), {});
+  export function getMetadata(target: any, key: keyof Tag.Metadata) {
+    return Tag.getDescription(target).metadata[key];
   }
 
-  // tslint:disable-next-line max-line-length
-  export function wrapActionCreator(actionCreator: Actions.ActionCreator, metadata: object, dispatch: (action: any) => any) {
-    return (...args) => dispatch(TagUtils.augmentAction(actionCreator(...args), metadata));
+  export function findWrappingConsumes(tag: Tag & { isConsumer?: boolean }): string[] {
+    return tag.isConsumer
+      ? [
+          ...(tag.parent ? findWrappingConsumes(tag.parent as Tag) : []),
+          ...(tag.props.alias
+            ? [tag.props.alias]
+            : typeof tag.props.aliases === 'string'
+              ? tag.props.aliases.split(',')
+              : []),
+        ]
+      : [];
   }
 
-  // tslint:disable-next-line max-line-length
-  export function augmentAction(action: Actions.Action | Actions.Action[] | Actions.Thunk<any>, metadata: object) {
-    if (typeof action === 'function') {
-      return TagUtils.wrapThunk(action, metadata);
-    } else if (Array.isArray(action)) {
-      return action.map((subAction) => TagUtils.augmentMeta(subAction, metadata));
-    } else if (action && typeof action === 'object') {
-      return TagUtils.augmentMeta(action, metadata);
-    } else {
-      return action;
-    }
-  }
-
-  // tslint:disable-next-line max-line-length
-  export function wrapThunk(thunk: Actions.Thunk<any>, metadata: object) {
-    return (getState) => TagUtils.augmentAction(thunk(getState), metadata);
-  }
-
-  export function augmentMeta(action: Actions.Action, metadata: object) {
-    return { ...action, meta: { ...action.meta, ...metadata } };
-  }
+  export const isDebug = moize(
+    (config: Configuration) =>
+      dot.get(config, 'services.logging.debug.lifecycle') || dot.get(config, 'services.logging.debug') === true
+  );
 }
 
 export default TagUtils;

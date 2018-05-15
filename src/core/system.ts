@@ -8,8 +8,7 @@ import Tag from './tag';
 import * as utils from './utils';
 
 export default class System {
-
-  constructor(public app: StoreFront) { }
+  constructor(public app: StoreFront) {}
 
   /**
    * start services, fire up the flux-capacitor, initialize riot
@@ -30,11 +29,11 @@ export default class System {
   }
 
   initConfig(config: Configuration) {
-    return this.app.config = Configuration.Transformer.transform(config);
+    return (this.app.config = Configuration.Transformer.transform(config));
   }
 
   initRiot() {
-    const riot = this.app.riot = this.app.config.options.riot || Globals.getRiot();
+    const riot = (this.app.riot = this.app.config.options.riot || Globals.getRiot());
     Globals.set('riot', riot);
     const register = Tag.create(riot);
     this.app.register = (clazz, name) => {
@@ -57,24 +56,24 @@ export default class System {
    * initialize all core and user-defined services
    */
   initServices() {
-    Object.keys(this.app.services)
-      .forEach((key) => {
-        this.app.services[key].init(this.app.services);
-        this.app.log.debug(`[service/${key}] initialized`);
-      });
+    Object.keys(this.app.services).forEach((key) => {
+      this.app.services[key].init(this.app.services);
+      this.app.log.debug(`[service/${key}] initialized`);
+    });
   }
 
   /**
    * initialize the core riot mixin
    */
   initMixin() {
+    const { riot, config } = this.app;
     const mixin = Tag.mixin(this.app);
 
-    if (this.app.config.options.globalMixin) {
-      this.app.riot.mixin(mixin);
+    if (config.options.globalMixin) {
+      riot.mixin(mixin);
     } else {
-      this.app.riot.mixin('storefront', mixin);
-      this.app.riot.mixin('sf', mixin);
+      riot.mixin('storefront', mixin);
+      riot.mixin('sf', mixin);
     }
   }
 
@@ -82,8 +81,7 @@ export default class System {
    * register any tags that were registered before StoreFront started
    */
   registerTags() {
-    Globals.getTags()
-      .forEach((registerTag) => registerTag(this.app.register));
+    Globals.getTags().forEach((registerTag) => registerTag(this.app.register));
   }
 
   static buildServices(app: StoreFront, services: Service.Constructor.Map, config: any) {

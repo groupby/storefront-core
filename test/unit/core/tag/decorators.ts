@@ -1,18 +1,16 @@
 import * as sinon from 'sinon';
 import Tag from '../../../../src/core/tag';
-import Attribute from '../../../../src/core/tag/attribute';
 import * as decorators from '../../../../src/core/tag/decorators';
 import utils from '../../../../src/core/tag/utils';
 import StoreFront from '../../../../src/storefront';
 import suite from '../../_suite';
 
 suite('decorators', ({ expect, spy, stub }) => {
-
   describe('@tag', () => {
     it('should set tag description name and template', () => {
       const name = 'some-tag';
       const template = '<div></div>';
-      const tag = { a: 'b' };
+      const tag: any = { a: 'b' };
       const getDescription = stub(Tag, 'getDescription').returns({ metadata: {} });
       const setDescription = stub(Tag, 'setDescription');
       stub(StoreFront, 'register');
@@ -26,7 +24,7 @@ suite('decorators', ({ expect, spy, stub }) => {
     it('should set tag description css', () => {
       const style = 'label { background-color: red; }';
       const setDescription = stub(Tag, 'setDescription');
-      const tag = { a: 'b' };
+      const tag: any = { a: 'b' };
       stub(Tag, 'getDescription').returns({ metadata: {} });
       stub(StoreFront, 'register');
 
@@ -37,15 +35,15 @@ suite('decorators', ({ expect, spy, stub }) => {
 
     it('should register resulting tag', () => {
       const name = 'some-tag';
-      const tagDef = { a: 'b' };
+      const tag: any = { a: 'b' };
       const internalRegister = spy();
       const register = stub(StoreFront, 'register').callsFake((cb) => cb(internalRegister));
       stub(Tag, 'getDescription').returns({ metadata: {} });
 
-      decorators.tag(name, '')(tagDef);
+      decorators.tag(name, '')(tag);
 
       expect(register.called).to.be.true;
-      expect(internalRegister).to.be.calledWithExactly(tagDef, name);
+      expect(internalRegister).to.be.calledWithExactly(tag, name);
     });
 
     it('should have default view controller', () => {
@@ -56,9 +54,12 @@ suite('decorators', ({ expect, spy, stub }) => {
 
       decorators.tag(name, '')();
 
-      expect(internalRegister).to.be.calledWithExactly(sinon.match((cb) => {
-        return expect(new cb()).to.not.eq(new cb());
-      }), name);
+      expect(internalRegister).to.be.calledWithExactly(
+        sinon.match((cb) => {
+          return expect(new cb()).to.not.eq(new cb());
+        }),
+        name
+      );
     });
   });
 
@@ -88,7 +89,7 @@ suite('decorators', ({ expect, spy, stub }) => {
   describe('@css', () => {
     it('should set css', () => {
       const style = 'label { background-color: red; }';
-      const tag = { a: 'b' };
+      const tag: any = { a: 'b' };
       const getDescription = stub(Tag, 'getDescription').returns({});
       const setDescription = stub(Tag, 'setDescription');
 
@@ -99,22 +100,22 @@ suite('decorators', ({ expect, spy, stub }) => {
     });
   });
 
-  describe('@alias', () => {
+  describe('@provide', () => {
     it('should call setMetadata()', () => {
       const aliasName = 'myAlias';
-      const tag = { a: 'b' };
+      const tag: any = { a: 'b' };
       const setMetadata = stub(utils, 'setMetadata');
 
-      decorators.alias(aliasName)(tag);
+      decorators.provide(aliasName)(tag);
 
-      expect(setMetadata).to.be.calledWithExactly(tag, 'alias', aliasName);
+      expect(setMetadata).to.be.calledWithExactly(tag, 'provides', { [aliasName]: sinon.match.func });
     });
   });
 
   describe('@origin', () => {
     it('should call setMetadata()', () => {
       const origin = 'moreRefinements';
-      const tag = { a: 'b' };
+      const tag: any = { a: 'b' };
       const setMetadata = stub(utils, 'setMetadata');
 
       decorators.origin(origin)(tag);
@@ -125,24 +126,12 @@ suite('decorators', ({ expect, spy, stub }) => {
 
   describe('@configurable', () => {
     it('should set configurable on tag', () => {
-      const tag = { a: 'b' };
+      const tag: any = { a: 'b' };
       const setMetadata = stub(utils, 'setMetadata');
 
       decorators.configurable(tag);
 
       expect(setMetadata).to.be.calledWithExactly(tag, 'configurable', true);
-    });
-  });
-
-  describe('@transform', () => {
-    it('should set transform on tag', () => {
-      const tag = { a: 'b' };
-      const transform = () => null;
-      const setMetadata = stub(utils, 'setMetadata');
-
-      decorators.transform(transform)(tag);
-
-      expect(setMetadata).to.be.calledWithExactly(tag, 'transform', transform);
     });
   });
 });

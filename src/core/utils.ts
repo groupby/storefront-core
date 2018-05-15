@@ -1,11 +1,12 @@
 import FluxCapacitor, { Actions, Store } from '@storefront/flux-capacitor';
 import * as clone from 'clone';
 import * as GbTracker from 'gb-tracker-client/slim';
+import * as camelCase from 'lodash.camelcase';
 import * as deepAssign from 'lodash.merge';
 import * as log from 'loglevel';
 import * as riot from 'riot';
 
-export { clone, deepAssign, log, riot, GbTracker };
+export { camelCase, clone, deepAssign, log, riot, GbTracker };
 
 export const WINDOW = () => window;
 
@@ -20,17 +21,15 @@ export const dot = {
     }
 
     const key = path.substr(0, dotIndex);
-    return key in obj ?
-      dot.get(obj[key], path.substr(dotIndex + 1), defaultValue) :
-      defaultValue;
-  }
+    return key in obj ? dot.get(obj[key], path.substr(dotIndex + 1), defaultValue) : defaultValue;
+  },
 };
 
 export function mapToSearchActions(values: string[], actions: typeof FluxCapacitor.prototype.actions) {
   return values.map((value) => ({ value, onClick: () => actions.search(value) }));
 }
 
-export const rayify = <T>(values: T | T[]): T[] => Array.isArray(values) ? values : [values];
+export const rayify = <T>(values: T | T[]): T[] => (Array.isArray(values) ? values : [values]);
 
 export const arrayToDotNotation = (input: string): string => {
   if (typeof input !== 'string') {

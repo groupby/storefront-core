@@ -1,5 +1,5 @@
 import * as fluxPkg from '@storefront/flux-capacitor';
-import * as riot from 'riot';
+// import * as Riot from 'riot';
 import Configuration from '../../../src/core/configuration';
 import { core } from '../../../src/core/service';
 import System from '../../../src/core/system';
@@ -24,13 +24,13 @@ suite('System', ({ expect, spy, stub }) => {
     it('should call all bootstrap functions', () => {
       const services: any = { a: 'b' };
       const system = new System(<any>{});
-      const initConfig = system.initConfig = spy(() => ({ options: {} }));
-      const initRiot = system.initRiot = spy();
-      const initFlux = system.initFlux = spy();
-      const createServices = system.createServices = spy();
-      const initServices = system.initServices = spy();
-      const initMixin = system.initMixin = spy();
-      const registerTags = system.registerTags = spy();
+      const initConfig = (system.initConfig = spy(() => ({ options: {} })));
+      const initRiot = (system.initRiot = spy());
+      const initFlux = (system.initFlux = spy());
+      const createServices = (system.createServices = spy());
+      const initServices = (system.initServices = spy());
+      const initMixin = (system.initMixin = spy());
+      const registerTags = (system.registerTags = spy());
 
       system.bootstrap(services, CONFIG);
 
@@ -139,7 +139,6 @@ suite('System', ({ expect, spy, stub }) => {
   });
 
   describe('createServices()', () => {
-
     it('should create services', () => {
       const app: any = { config: CONFIG };
       const services: any = { c: 'd' };
@@ -204,7 +203,8 @@ suite('System', ({ expect, spy, stub }) => {
       const mixinCore = stub(Tag, 'mixin').returns(tagMixin);
       const app: any = {
         riot: { mixin },
-        services: {}, config: { options: {} }
+        services: {},
+        config: { options: {} },
       };
       const system = new System(app);
 
@@ -221,7 +221,8 @@ suite('System', ({ expect, spy, stub }) => {
       const mixinCore = stub(Tag, 'mixin').returns(tagMixin);
       const app: any = {
         riot: { mixin },
-        services: {}, config: { options: { globalMixin: true } }
+        services: {},
+        config: { options: { globalMixin: true } },
       };
       const system = new System(app);
 
@@ -253,7 +254,9 @@ suite('System', ({ expect, spy, stub }) => {
         const app: any = {};
         const constructor = spy();
         class MockService {
-          constructor(...args: any[]) { constructor(...args); }
+          constructor(...args: any[]) {
+            constructor(...args);
+          }
         }
 
         const services = System.buildServices(app, <any>{ mockService: MockService }, {});
@@ -265,7 +268,11 @@ suite('System', ({ expect, spy, stub }) => {
       it('should remove disabled services', () => {
         const app: any = {};
         const constructor = spy();
-        class MockService { constructor(...args: any[]) { constructor(...args); } }
+        class MockService {
+          constructor(...args: any[]) {
+            constructor(...args);
+          }
+        }
 
         const services = System.buildServices(app, <any>{ mockService: MockService }, { mockService: false });
 
@@ -276,7 +283,7 @@ suite('System', ({ expect, spy, stub }) => {
       it('should not disable core services', () => {
         const app: any = {};
         @core
-        class MockService { }
+        class MockService {}
 
         const services = System.buildServices(app, <any>{ mockService: MockService }, { mockService: false });
 
@@ -287,7 +294,11 @@ suite('System', ({ expect, spy, stub }) => {
         const mockService = { a: 'b' };
         const constructor = spy();
         const app: any = {};
-        class MockService { constructor(...args: any[]) { constructor(...args); } }
+        class MockService {
+          constructor(...args: any[]) {
+            constructor(...args);
+          }
+        }
 
         System.buildServices(app, <any>{ mockService: MockService }, { mockService });
 

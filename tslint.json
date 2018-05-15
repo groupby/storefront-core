@@ -1,3 +1,6 @@
 {
-  "extends": "tslint-config-groupby"
+  "extends": [
+    "tslint-config-groupby",
+    "tslint-config-prettier"
+  ]
 }
