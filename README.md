@@ -154,18 +154,18 @@ and the language has been changed to match (both for future clarity and to ensur
 with the previous inefficient alias system).
 
 Summary:
-`@alias(aliasName: string)` -> `@provide(aliasName: string, resolver?: (props, state, aliases) => any)`
-`tag.expose(aliasName: string)` -> `tag.provide(aliasName: string, resolver?: (props, state, aliases) => any)`
-**(new!)** `@consume(aliasName: string)`
-**(new!)** `tag.consume(aliasName: string)`
-**(new!)** `_consumes` custom component attribute
-**(new!)** `_props` custom component attribute
-**(new!)** `<consume>` custom component
-**(new!)** `<provide>` custom component
-**(new!)** `item-props` <gb-list> prop
-**(removed!)** `"state-finalized"` tag lifecycle event
-**(removed!)** `"recalculate-props"` tag lifecycle event
-**(removed!)** `"props-updated"` tag lifecycle event
+- `@alias(aliasName: string)` -> `@provide(aliasName: string, resolver?: (props, state, aliases) => any)`
+- `tag.expose(aliasName: string)` -> `tag.provide(aliasName: string, resolver?: (props, state, aliases) => any)`
+- **(new!)** `@consume(aliasName: string)`
+- **(new!)** `tag.consume(aliasName: string)`
+- **(new!)** `_consumes` custom component attribute
+- **(new!)** `_props` custom component attribute
+- **(new!)** `<consume>` custom component
+- **(new!)** `<provide>` custom component
+- **(new!)** `item-props` \<gb-list\> prop
+- **(removed!)** `"state-finalized"` tag lifecycle event
+- **(removed!)** `"recalculate-props"` tag lifecycle event
+- **(removed!)** `"props-updated"` tag lifecycle event
 
 #### `@provide` decorator
 
