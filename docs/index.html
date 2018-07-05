@@ -168,6 +168,336 @@ yarn tdd
 <span class="hljs-comment"># or</span>
 yarn <span class="hljs-built_in">test</span>
 </code></pre>
+				<h2 id="upgrade">Upgrade</h2>
+				<h3 id="upgrade-to-version-1-40-0">Upgrade to version 1.40.0</h3>
+				<p>In order to address issues with performance stemming from using aliases to render
+					deeply nested and complex components, a number of changes have been made to that
+				system and components which use it.</p>
+				<p>The major conceptual change to the way the system works brings it more inline
+					with the <code>&lt;Provider&gt;</code> / <code>&lt;Consumer&gt;</code> pattern used in <code>React</code>&#39;s <a href="https://reactjs.org/docs/context.html">Context API</a>
+					and the language has been changed to match (both for future clarity and to ensure incompatibility
+				with the previous inefficient alias system).</p>
+				<p>Summary:</p>
+				<ul>
+					<li><code>@alias(aliasName: string)</code> -&gt; <code>@provide(aliasName: string, resolver?: (props, state, aliases) =&gt; any)</code></li>
+					<li><code>tag.expose(aliasName: string)</code> -&gt; <code>tag.provide(aliasName: string, resolver?: (props, state, aliases) =&gt; any)</code></li>
+					<li><strong>(new!)</strong> <code>@consume(aliasName: string)</code></li>
+					<li><strong>(new!)</strong> <code>tag.consume(aliasName: string)</code></li>
+					<li><strong>(new!)</strong> <code>_consumes</code> custom component attribute</li>
+					<li><strong>(new!)</strong> <code>_props</code> custom component attribute</li>
+					<li><strong>(new!)</strong> <code>&lt;consume&gt;</code> custom component</li>
+					<li><strong>(new!)</strong> <code>&lt;provide&gt;</code> custom component</li>
+					<li><strong>(new!)</strong> <code>item-props</code> \<gb-list\> prop</li>
+					<li><strong>(removed!)</strong> <code>&quot;state-finalized&quot;</code> tag lifecycle event</li>
+					<li><strong>(removed!)</strong> <code>&quot;recalculate-props&quot;</code> tag lifecycle event</li>
+					<li><strong>(removed!)</strong> <code>&quot;props-updated&quot;</code> tag lifecycle event</li>
+				</ul>
+				<h4 id="-provide-decorator"><code>@provide</code> decorator</h4>
+				<p>The <code>@alias</code> decorator has been removed in preference for the new <code>@provide</code> decorator.</p>
+				<p>By default, both decorators will register an alias under the name provided
+				and the value will be the <code>state</code> of the component.</p>
+				<h5 id="-version-v1-39-x">${version} &lt;= v1.39.X</h5>
+				<pre><code class="lang-ts"><span class="hljs-keyword">import</span> { alias } <span class="hljs-keyword">from</span> <span class="hljs-string">'@storefront/core'</span>;
+
+<span class="hljs-comment">// in TypeScript</span>
+<span class="hljs-meta">@alias</span>(<span class="hljs-string">'myComponent'</span>)
+<span class="hljs-keyword">class</span> MyComponent {
+  state = { myValue: <span class="hljs-string">'Hello, world!'</span> };
+}
+</code></pre>
+				<pre><code class="lang-js"><span class="hljs-comment">// or in ES6</span>
+@alias(<span class="hljs-string">'myComponent'</span>)
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.state = { <span class="hljs-attr">myValue</span>: <span class="hljs-string">'Hello, world!'</span> };
+  }
+}
+</code></pre>
+				<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- in a child component --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>{ $myComponent.myValue }<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- or --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">custom-component</span>&gt;</span>
+  { $myComponent.myValue }
+<span class="hljs-tag">&lt;/<span class="hljs-name">custom-component</span>&gt;</span>
+</code></pre>
+				<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- rendered --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>Hello, world!<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+</code></pre>
+				<h5 id="-version-v1-40-0">${version} &gt;= v1.40.0</h5>
+				<pre><code class="lang-ts"><span class="hljs-keyword">import</span> { provide } <span class="hljs-keyword">from</span> <span class="hljs-string">'@storefront/core'</span>;
+
+<span class="hljs-comment">// in TypeScript</span>
+<span class="hljs-meta">@provide</span>(<span class="hljs-string">'myComponent'</span>)
+<span class="hljs-keyword">class</span> MyComponent {
+  state = { myValue: <span class="hljs-string">'Hello, world!'</span> };
+}
+</code></pre>
+				<pre><code class="lang-js"><span class="hljs-comment">// or in ES6</span>
+@provide(<span class="hljs-string">'myComponent'</span>)
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.state = { <span class="hljs-attr">myValue</span>: <span class="hljs-string">'Hello, world!'</span> };
+  }
+}
+</code></pre>
+				<p>Notice that the <code>@alias</code> decorator has been replaced with a <code>@provide</code> decorator
+					which, when provided only a single parameter, works the exact same way as
+				the <code>@alias</code> decorator.</p>
+				<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- in a child component --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">data-is</span>=<span class="hljs-string">"gb-container"</span> <span class="hljs-attr">_consumes</span>=<span class="hljs-string">"myComponent"</span>&gt;</span>
+  { $myComponent.myValue }
+<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- or --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">custom-component</span> <span class="hljs-attr">_consumes</span>=<span class="hljs-string">"myComponent"</span>&gt;</span>
+  { $myComponent.myValue }
+<span class="hljs-tag">&lt;/<span class="hljs-name">custom-component</span>&gt;</span>
+</code></pre>
+				<p>Two changes are made to the &quot;consuming&quot; component:</p>
+				<ol>
+					<li>if it&#39;s not already wrapped in a custom component, any element
+					can be turned into a simple component with <code>data-is=&quot;gb-container&quot;</code></li>
+					<li>a <code>_consumes</code> attribute is added which declares the alias dependencies of
+					the associated component scope</li>
+				</ol>
+				<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- rendered --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>Hello, world!<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+</code></pre>
+				<h5 id="alias-resolver">alias resolver</h5>
+				<p>In order to allow aliases to change based on the state of the providing component,
+					the passed either using the <code>@provide</code> decorator or the <code>tag.provide()</code> method must
+				be a function with the following signature:</p>
+				<pre><code class="lang-ts"><span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">props: object, state: object, aliases: object</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-string">'my value'</span>;
+}
+</code></pre>
+				<p>This function is called with the <code>props</code>, <code>state</code> and <code>aliases</code> of the providing
+				component every time a new value is required by a consuming component.</p>
+				<h4 id="-consume-decorator"><code>@consume()</code> decorator</h4>
+				<p>When creating components using a class, the <code>@consume()</code> decorator can be used
+					to statically declare a dependency on an alias. This is similar to using the <code>_consumes</code>
+					attribute on that component within a template or calling <code>this.consume()</code> within
+				that component&#39;s <code>init()</code> method.</p>
+				<h5 id="-version-v1-39-0">${version} &lt;= v1.39.0</h5>
+				<pre><code class="lang-ts"><span class="hljs-keyword">class</span> CustomComponent {}
+</code></pre>
+				<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- in the component's template --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>{ $myAlias }<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+</code></pre>
+				<h5 id="-version-v1-40-0">${version} &gt;= v1.40.0</h5>
+				<pre><code class="lang-ts"><span class="hljs-meta">@consumes</span>(<span class="hljs-string">'myAlias'</span>)
+<span class="hljs-keyword">class</span> CustomComponent {}
+</code></pre>
+				<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- in the component's template --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>{ $myAlias }<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+</code></pre>
+				<p><strong>Note:</strong> The important change here is that only components that explicitly
+					&quot;consume&quot; an alias will be able to access the alias value within their template.
+					Because riot&#39;s scope is tied only to the direct ancestor component this may mean that a complex
+					component with multiple accesses to an alias may need to be re-thought so that only a single &quot;consumer&quot;
+					is used and then distributed by passing to child components as props or accessing from nested templates
+				using <code>tag.parent</code> (also sparingly).</p>
+				<h5 id="-version-v1-39-0">${version} &lt;= v1.39.0</h5>
+				<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- inner-component.tag.html --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">inner-component</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">yield</span>/&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">inner-component</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- inner-component.tag.html --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">inner-component</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">yield</span>/&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">inner-component</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- app.tag.html --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">app</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">some-component</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">inner-component</span> <span class="hljs-attr">someProp</span>=<span class="hljs-string">"{ $x }"</span>&gt;</span>
+      This is my innermost content: "{ $y }"
+    <span class="hljs-tag">&lt;/<span class="hljs-name">inner-component</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">some-component</span>&gt;</span>
+
+  <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="actionscript">
+    <span class="hljs-keyword">this</span>.expose(<span class="hljs-string">'x'</span>, <span class="hljs-string">'outer value'</span>);
+    <span class="hljs-keyword">this</span>.expose(<span class="hljs-string">'y'</span>, <span class="hljs-string">'inner value'</span>);
+  </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">app</span>&gt;</span>
+</code></pre>
+				<h5 id="-version-v1-40-0">${version} &gt;= v1.40.0</h5>
+				<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- inner-component.tag.html --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">inner-component</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">yield</span>/&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">inner-component</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- inner-component.tag.html --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">inner-component</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>{ props.someProp }<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">yield</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">inner-component</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- app.tag.html --&gt;</span>
+
+<span class="hljs-comment">&lt;!-- broken implementation --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">app</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">some-component</span> <span class="hljs-attr">_consumes</span>=<span class="hljs-string">"x,y"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">inner-component</span> <span class="hljs-attr">some-prop</span>=<span class="hljs-string">"{ $x }"</span>&gt;</span>
+      <span class="hljs-comment">&lt;!-- <span class="hljs-doctag">NOTE:</span> $y is unavailable in this context --&gt;</span>
+      This is my innermost content: "{ $y }"
+    <span class="hljs-tag">&lt;/<span class="hljs-name">inner-component</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- although it IS available in this context --&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">some-component</span>&gt;</span>
+
+  <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="actionscript">
+    <span class="hljs-keyword">this</span>.provide(<span class="hljs-string">'x'</span>, () =&gt; <span class="hljs-string">'outer value'</span>);
+    <span class="hljs-keyword">this</span>.provide(<span class="hljs-string">'y'</span>, () =&gt; <span class="hljs-string">'inner value'</span>);
+  </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">app</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- working implementation --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">app</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">some-component</span> <span class="hljs-attr">_consumes</span>=<span class="hljs-string">"x"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">inner-component</span> <span class="hljs-attr">some-prop</span>=<span class="hljs-string">"{ $x }"</span> <span class="hljs-attr">_consumes</span>=<span class="hljs-string">"y"</span>&gt;</span>
+      This is my innermost content: "{ $y }"
+    <span class="hljs-tag">&lt;/<span class="hljs-name">inner-component</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">some-component</span>&gt;</span>
+
+  <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="actionscript">
+    <span class="hljs-keyword">this</span>.provide(<span class="hljs-string">'x'</span>, () =&gt; <span class="hljs-string">'outer value'</span>);
+    <span class="hljs-keyword">this</span>.provide(<span class="hljs-string">'y'</span>, () =&gt; <span class="hljs-string">'inner value'</span>);
+  </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">app</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- alternative implementation --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">app</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">some-component</span> <span class="hljs-attr">_consumes</span>=<span class="hljs-string">"x,y"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">inner-component</span> <span class="hljs-attr">some-prop</span>=<span class="hljs-string">"{ $x }"</span>&gt;</span>
+      This is my innermost content: "{ parent.$y }"
+    <span class="hljs-tag">&lt;/<span class="hljs-name">inner-component</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">some-component</span>&gt;</span>
+
+  <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="actionscript">
+    <span class="hljs-keyword">this</span>.provide(<span class="hljs-string">'x'</span>, () =&gt; <span class="hljs-string">'outer value'</span>);
+    <span class="hljs-keyword">this</span>.provide(<span class="hljs-string">'y'</span>, () =&gt; <span class="hljs-string">'inner value'</span>);
+  </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">app</span>&gt;</span>
+</code></pre>
+				<h4 id="-tag-provide-and-tag-consume-"><code>tag.provide()</code> and <code>tag.consume()</code></h4>
+				<p>These methods can be called from within the component&#39;s <code>init()</code> method only
+				to provide and consume aliases.</p>
+				<pre><code class="lang-ts"><span class="hljs-keyword">class</span> MyComponent {
+  init() {
+    <span class="hljs-keyword">this</span>.consume(<span class="hljs-string">'parentAlias'</span>);
+    <span class="hljs-keyword">this</span>.provide(<span class="hljs-string">'myAlias'</span>, <span class="hljs-function">(<span class="hljs-params">{ label }, { currentValue }</span>) =&gt;</span> ({ label, currentValue }));
+    <span class="hljs-comment">// note that aliases passed to the resolver do not include the dollar sign ($) prefix</span>
+    <span class="hljs-keyword">this</span>.provide(<span class="hljs-string">'other'</span>, <span class="hljs-function">(<span class="hljs-params">props, state, { parentAlias }</span>) =&gt;</span> ({ label, currentValue, ...parentAlias }));
+  }
+
+  onBeforeMount() {
+    <span class="hljs-comment">// this will throw an exception if called outside of the `init()` method</span>
+    <span class="hljs-keyword">this</span>.provide(<span class="hljs-string">'myAlias'</span>, <span class="hljs-function">(<span class="hljs-params">{ label }, { currentValue }</span>) =&gt;</span> ({ label, currentValue }));
+  }
+}
+</code></pre>
+				<pre><code class="lang-ts"><span class="hljs-keyword">class</span> NestedComponent {
+  init() {
+    <span class="hljs-keyword">this</span>.consume(<span class="hljs-string">'myAlias'</span>);
+  }
+
+  onBeforeMount() {
+    <span class="hljs-comment">// this will throw an exception if called outside of the `init()` method</span>
+    <span class="hljs-keyword">this</span>.consume(<span class="hljs-string">'myAlias'</span>);
+  }
+}
+</code></pre>
+				<h4 id="-_consumes-custom-component-attribute"><code>_consumes</code> custom component attribute</h4>
+				<p>This attribute marks a component as a consumer of one or multiple aliases.</p>
+				<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- consume a single alias --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">gb-button</span> <span class="hljs-attr">_consumes</span>=<span class="hljs-string">"someAlias"</span>&gt;</span>{ $someAlias }<span class="hljs-tag">&lt;/<span class="hljs-name">gb-button</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- consume multiple aliases --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">gb-button</span> <span class="hljs-attr">_consumes</span>=<span class="hljs-string">"someAlias,otherAlias"</span>&gt;</span>{ $someAlias } and { $otherAlias }<span class="hljs-tag">&lt;/<span class="hljs-name">gb-button</span>&gt;</span>
+</code></pre>
+				<h4 id="-_props-custom-component-attribute"><code>_props</code> custom component attribute</h4>
+				<p>In lieu of being able to spread props onto a component (such as in JSX) the <code>_props</code>
+					attribute has been added. The object passed will be spread as the props of the component
+				and are overridden by any explicitly passed props.</p>
+				<pre><code class="lang-html"><span class="hljs-comment">&lt;!-- spread props --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">simple-tag</span> <span class="hljs-attr">_props</span>=<span class="hljs-string">"{{ a: 'b', c: 'd', e: 'f' }}"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">simple-tag</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- spread props and override --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">simple-tag</span> <span class="hljs-attr">c</span>=<span class="hljs-string">"d2"</span> <span class="hljs-attr">_props</span>=<span class="hljs-string">"{{ a: 'b', c: 'd', e: 'f' }}"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">simple-tag</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- results in props: { a: 'b', c: 'd2', e: 'f' } --&gt;</span>
+</code></pre>
+				<h4 id="-consume-and-provide-"><code>&lt;consume&gt;</code> and <code>&lt;provide&gt;</code></h4>
+				<p>These components have been added to allow for declarative aliasing but are still rough
+				around the edges as they still introduce a scope and a custom tag into the DOM.</p>
+				<p>For now, the most useful pattern is to use the <code>data-is</code> property on a <code>&lt;virtual&gt;</code> tag
+				in order to avoid the additional DOM node.</p>
+				<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">outer-component</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">virtual</span> <span class="hljs-attr">data-is</span>=<span class="hljs-string">"provide"</span> <span class="hljs-attr">data</span>=<span class="hljs-string">"{ someData }"</span> <span class="hljs-attr">as</span>=<span class="hljs-string">"someAlias"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">inner-component</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">virtual</span> <span class="hljs-attr">data-is</span>=<span class="hljs-string">"consume"</span> <span class="hljs-attr">alias</span>=<span class="hljs-string">"someAlias"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">child-component</span>&gt;</span>{ $someAlias }<span class="hljs-tag">&lt;/<span class="hljs-name">child-component</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">virtual</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">inner-component</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">virtual</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">outer-component</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- alternative syntax --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">outer-component</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">virtual</span> <span class="hljs-attr">data-is</span>=<span class="hljs-string">"provide"</span> <span class="hljs-attr">data</span>=<span class="hljs-string">"{ someData }"</span> <span class="hljs-attr">as</span>=<span class="hljs-string">"someAlias"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">inner-component</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">child-component</span> <span class="hljs-attr">_consumes</span>=<span class="hljs-string">"someAlias"</span>&gt;</span>{ $someAlias }<span class="hljs-tag">&lt;/<span class="hljs-name">child-component</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">inner-component</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">virtual</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">outer-component</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- consume multiple --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">virtual</span> <span class="hljs-attr">data-is</span>=<span class="hljs-string">"consume"</span> <span class="hljs-attr">aliases</span>=<span class="hljs-string">"firstAlias,secondAlias"</span>&gt;</span>
+  { ... }
+<span class="hljs-tag">&lt;/<span class="hljs-name">virtual</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- provide multiple --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">virtual</span> <span class="hljs-attr">data-is</span>=<span class="hljs-string">"provide"</span> <span class="hljs-attr">data</span>=<span class="hljs-string">"{ someData }"</span> <span class="hljs-attr">as</span>=<span class="hljs-string">"firstAlias"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">virtual</span> <span class="hljs-attr">data-is</span>=<span class="hljs-string">"provide"</span> <span class="hljs-attr">data</span>=<span class="hljs-string">"{ otherData }"</span> <span class="hljs-attr">as</span>=<span class="hljs-string">"secondAlias"</span>&gt;</span>
+    { ... }
+  <span class="hljs-tag">&lt;/<span class="hljs-name">virtual</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">virtual</span>&gt;</span>
+</code></pre>
+				<h4 id="-gb-list-item-props-attribute"><code>&lt;gb-list&gt;</code> <code>item-props</code> attribute</h4>
+				<p>In order to provide props directly to the <code>&lt;gb-list-item&gt;</code> components within
+					<code>&lt;gb-list&gt;</code> the <code>item-props</code> attribute has been added. This props is passed into
+				the <code>_props</code> prop of the <code>&lt;gb-list-item&gt;</code> tags.</p>
+				<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">gb-list</span> <span class="hljs-attr">items</span>=<span class="hljs-string">"{ [1, 2, 3] }"</span> <span class="hljs-attr">item-props</span>=<span class="hljs-string">"{{ a: 'b' }}"</span>&gt;</span>
+  { props.a } { item }
+<span class="hljs-tag">&lt;/<span class="hljs-name">gb-list</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- rendered --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>b 1<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>b 2<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>b 3<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+</code></pre>
+				<h3 id="upgrade-to-version-1-39-1">Upgrade to version 1.39.1</h3>
+				<p>In order to address memory usage concerns a new utility method has been added
+					to tag instances which automates the cleanup of <code>flux</code> event listeners when the
+				tag is unmounted.</p>
+				<h5 id="-version-v1-39-0">${version} &lt;= v1.39.0</h5>
+				<pre><code class="lang-ts"><span class="hljs-keyword">class</span> MyComponent {
+  init() {
+    <span class="hljs-keyword">this</span>.flux.on(<span class="hljs-string">'some_event'</span>, <span class="hljs-keyword">this</span>.eventHandler);
+    <span class="hljs-comment">// usually no cleanup necessary (only executes once)</span>
+    <span class="hljs-keyword">this</span>.flux.one(<span class="hljs-string">'some_event'</span>, <span class="hljs-keyword">this</span>.eventHandler);
+  }
+
+  onUnmount() {
+    <span class="hljs-keyword">this</span>.flux.off(<span class="hljs-string">'some_event'</span>, <span class="hljs-keyword">this</span>.eventHandler);
+  }
+}
+</code></pre>
+				<h5 id="-version-v1-39-1">${version} &gt;= v1.39.1</h5>
+				<pre><code class="lang-ts"><span class="hljs-keyword">class</span> MyComponent {
+  init() {
+    <span class="hljs-comment">// automatically removed on "unmount"</span>
+    <span class="hljs-keyword">this</span>.subscribe(<span class="hljs-string">'some_event'</span>, <span class="hljs-keyword">this</span>.eventHandler);
+    <span class="hljs-comment">// alias for this.flux.one()</span>
+    <span class="hljs-keyword">this</span>.subscribeOnce(<span class="hljs-string">'some_event'</span>, <span class="hljs-keyword">this</span>.eventHandler);
+  }
+}
+</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
