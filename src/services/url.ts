@@ -34,24 +34,35 @@ class UrlService extends BaseService<UrlService.Options> {
 
   init() {
     try {
-        const retVal = <any>this.beautifier.parse<UrlBeautifier.SearchUrlState>(WINDOW().location.href);
-        if ( typeof retVal.then === 'function' ) {
-            retVal.then( ( resp ) => {
-                if ( resp ) {
-                    const { route, request } = resp;
-                    this.handleUrl(route, request);
-                }
-            })
-            .catch( (e) => {
-                this.app.log.warn('UrlService init promise failed', e);
-            });
-        } else {
-            const { route, request } = retVal;
-            this.handleUrl(route, request);
-        }
+      this.handleCurrentLocation(this.handleUrl.bind(this));
     } catch (e) {
       this.app.log.warn('unable to parse state from url', e);
       this.listenForHistoryChange();
+    }
+  }
+
+  handleUrlWithoutListeners() {
+    try {
+      this.handleCurrentLocation(this.handleUrlWithoutAugment.bind(this));
+    } catch (e) {
+      this.app.log.warn('unable to parse state from url', e);
+    }
+  }
+
+  handleCurrentLocation(handleReq: (route: string, request: UrlBeautifier.SearchUrlState) => void) {
+    const parsed = <any>this.beautifier.parse<UrlBeautifier.SearchUrlState>(WINDOW().location.href);
+    if (typeof parsed.then === 'function') {
+      parsed.then((resp) => {
+        if (resp) {
+          const { route, request } = resp;
+          handleReq(route, request);
+        }
+      }).catch((e) => {
+        this.app.log.warn('UrlService parse promise failed', e);
+      });
+    } else {
+      const { route, request } = parsed;
+      handleReq(route, request);
     }
   }
 
@@ -67,6 +78,25 @@ class UrlService extends BaseService<UrlService.Options> {
       this.refreshState(newState);
     } else {
       this.augmentHistory(route, request);
+    }
+  }
+
+  handleUrlWithoutAugment(route: string, request: any) {
+    let newState;
+    switch (route) {
+      case Routes.SEARCH:
+        newState = Utils.mergeSearchState(this.app.flux.store.getState(), request);
+        this.refreshState(newState);
+        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated());
+        break;
+      case Routes.PAST_PURCHASE:
+        newState = Utils.mergePastPurchaseState(this.app.flux.store.getState(), request);
+        this.refreshState(newState);
+        this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchPastPurchaseProducts());
+        break;
+      case Routes.DETAILS:
+        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductDetails(request.id));
+        break;
     }
   }
 

@@ -1,4 +1,4 @@
-import { Events, Selectors } from '@storefront/flux-capacitor';
+import { Events, Routes, Selectors } from '@storefront/flux-capacitor';
 import * as sinon from 'sinon';
 import CoreSelectors from '../../../src/core/selectors';
 import { BaseService, CORE } from '../../../src/core/service';
@@ -185,6 +185,70 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
     });
   });
 
+  describe('handleUrlWithoutAugment()', () => {
+    describe('SEARCH', () => {
+      it('should merge and refresh state', () => {
+        const FETCH_PRODUCTS_WHEN_HYDRATED = 'FETCH_PRODUCTS_WHEN_HYDRATED';
+        const state = { a: 'b' };
+        const request = '/req';
+        const newState = { c: 'd' };
+        const mergeSearchState = stub(Utils, 'mergeSearchState').returns(newState);
+        const refreshState = service.refreshState = spy();
+        const dispatch = spy();
+        service['app'] = <any>{ flux: {
+          store: { dispatch, getState: () => state },
+          actions: { fetchProductsWhenHydrated: () => FETCH_PRODUCTS_WHEN_HYDRATED }
+        } };
+
+        service.handleUrlWithoutAugment(Routes.SEARCH, request);
+
+        expect(mergeSearchState).to.be.calledWith(state, request);
+        expect(refreshState).to.be.calledWith(newState);
+        expect(dispatch).to.be.calledWith(FETCH_PRODUCTS_WHEN_HYDRATED);
+      });
+    });
+
+    describe('PAST_PURCHASE', () => {
+      it('should merge and refresh state', () => {
+        const FETCH_PAST_PURCHASE_PRODUCTS = 'FETCH_PAST_PURCHASE_PRODUCTS';
+        const state = { a: 'b' };
+        const request = '/req';
+        const newState = { c: 'd' };
+        const mergePastPurchaseState = stub(Utils, 'mergePastPurchaseState').returns(newState);
+        const refreshState = service.refreshState = spy();
+        const dispatch = spy();
+        service['app'] = <any>{ flux: {
+          store: { dispatch, getState: () => state },
+          actions: { fetchPastPurchaseProducts: () => FETCH_PAST_PURCHASE_PRODUCTS }
+        } };
+
+        service.handleUrlWithoutAugment(Routes.PAST_PURCHASE, request);
+
+        expect(mergePastPurchaseState).to.be.calledWith(state, request);
+        expect(refreshState).to.be.calledWith(newState);
+        expect(dispatch).to.be.calledWith(FETCH_PAST_PURCHASE_PRODUCTS);
+      });
+    });
+
+    describe('DETAILS', () => {
+      it('should fetch product details', () => {
+        const FETCH_PRODUCT_DETAILS = 'FETCH_PRODUCT_DETAILS';
+        const request = { id: 'e' };
+        const refreshState = service.refreshState = spy();
+        const dispatch = spy();
+        service['app'] = <any>{ flux: {
+          store: { dispatch },
+          actions: { fetchProductDetails: () => FETCH_PRODUCT_DETAILS }
+        } };
+
+        service.handleUrlWithoutAugment(Routes.DETAILS, request);
+
+        expect(refreshState).not.to.be.called;
+        expect(dispatch).to.be.calledWith(FETCH_PRODUCT_DETAILS);
+      });
+    });
+  });
+
   describe('augmentHistory()', () => {
     it('should replace current window history', () => {
       const data = { a: 'b' };
@@ -308,6 +372,76 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
 
       expect(fetchPastPurchaseProducts).to.be.calledWithExactly();
       expect(dispatch).to.be.calledWith(fetchPastPurchaseProducts());
+    });
+  });
+
+  describe('handleUrlWithoutListeners()', () => {
+    it('should call handleUrlWithoutAugment()', () => {
+      const href = 'https://example.com/route';
+      const route = '/route';
+      const request = 'request';
+      const handleUrlWithoutAugment = service.handleUrlWithoutAugment = spy();
+      const parse = spy(() => ({ route, request }));
+      win.location = { href };
+      service.beautifier = <any>{ parse };
+
+      service.handleUrlWithoutListeners();
+
+      expect(parse).to.be.calledWith(href);
+      expect(handleUrlWithoutAugment).to.be.calledWith(route, request);
+    });
+
+    it('should call handleUrlWithoutAugment() asynchronously', (done) => {
+      const href = 'https://example.com/route';
+      const route = '/route';
+      const request = 'request';
+      const handleUrlWithoutAugment = service.handleUrlWithoutAugment = spy(() => {
+        expect(handleUrlWithoutAugment).to.be.calledWith(route, request);
+        done();
+      });
+      const parse = stub().resolves({ route, request });
+      win.location = { href };
+      service.beautifier = <any>{ parse };
+
+      service.handleUrlWithoutListeners();
+
+      expect(parse).to.be.calledWith(href);
+    });
+
+    it('should warn on error', () => {
+      const href = 'https://example.com/route';
+      const route = '/route';
+      const request = 'request';
+      const handleUrlWithoutAugment = service.handleUrlWithoutAugment = spy();
+      const parse = stub().throws();
+      const warn = spy();
+      win.location = { href };
+      service.beautifier = <any>{ parse };
+      service['app'] = <any>{ log: { warn } };
+
+      service.handleUrlWithoutListeners();
+
+      expect(parse).to.be.calledWith(href);
+      expect(warn).to.be.called;
+      expect(handleUrlWithoutAugment).not.to.be.called;
+    });
+
+    it('should warn on error asynchronously', (done) => {
+      const href = 'https://example.com/route';
+      const route = '/route';
+      const request = 'request';
+      const handleUrlWithoutAugment = service.handleUrlWithoutAugment = spy();
+      const parse = stub().rejects();
+      win.location = { href };
+      service.beautifier = <any>{ parse };
+      service['app'] = <any>{ log: { warn: () => {
+        expect(handleUrlWithoutAugment).not.to.be.called;
+        done();
+      } } };
+
+      service.handleUrlWithoutListeners();
+
+      expect(parse).to.be.calledWith(href);
     });
   });
 
