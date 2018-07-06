@@ -8,7 +8,7 @@ const DEFAULTS: Partial<Configuration> = {
   structure: {
     id: 'id',
     title: 'title',
-    price: 'price'
+    price: 'price',
   },
 
   tags: {},
@@ -23,8 +23,8 @@ const DEFAULTS: Partial<Configuration> = {
       strength: 'Medium_Increase',
       maxBiases: 25,
       attributeMaxBiases: 3,
-      expiry: 14
-    }
+      expiry: 14,
+    },
   },
   autocomplete: {
     searchCharMinLimit: 1,
@@ -40,11 +40,11 @@ const DEFAULTS: Partial<Configuration> = {
     navigations: {},
     defaults: {
       suggestions: {},
-      products: {}
+      products: {},
     },
     overrides: {
       suggestions: {},
-      products: {}
+      products: {},
     },
     hoverAutoFill: true,
   },
@@ -63,7 +63,7 @@ const DEFAULTS: Partial<Configuration> = {
     },
     productSuggestions: {
       productCount: 0,
-      mode: 'trending'
+      mode: 'trending',
     },
     pastPurchases: {
       enabled: false,
@@ -72,15 +72,15 @@ const DEFAULTS: Partial<Configuration> = {
       biasStrength: 'Medium_Increase',
       biasInfluence: 5,
       securedPayload: null,
-      navigations: {}
-    }
+      navigations: {},
+    },
   },
   network: {
-    https: typeof window !== 'undefined' && window.location.protocol === 'https:'
+    https: typeof window !== 'undefined' && window.location.protocol === 'https:',
   },
 
   history: {
-    length: 5
+    length: 5,
   },
 
   services: {
@@ -88,7 +88,7 @@ const DEFAULTS: Partial<Configuration> = {
       useFirstResult: false,
     },
     logging: {
-      level: 'debug'
+      level: 'debug',
     },
     url: {
       beautifier: {
@@ -99,24 +99,24 @@ const DEFAULTS: Partial<Configuration> = {
           page: 'page',
           pageSize: 'page_size',
           sort: 'sort',
-          collection: 'collection'
+          collection: 'collection',
         },
         queryToken: 'q',
         suffix: '',
         useReferenceKeys: true,
-        navigations: {}
+        navigations: {},
       },
       redirects: {},
       routes: {
         [Routes.SEARCH]: `/${Routes.SEARCH}`,
         [Routes.DETAILS]: `/${Routes.DETAILS}`,
         [Routes.NAVIGATION]: `/${Routes.NAVIGATION}`,
-        [Routes.PAST_PURCHASE]: `/${Routes.PAST_PURCHASE}`
-      }
+        [Routes.PAST_PURCHASE]: `/${Routes.PAST_PURCHASE}`,
+      },
     },
     tracker: {
-      warnings: true
-    }
+      warnings: true,
+    },
   },
 
   options: {
@@ -124,8 +124,15 @@ const DEFAULTS: Partial<Configuration> = {
     stylish: false,
     initialSearch: false,
     simpleAttach: true,
-    globalMixin: true
-  }
+    globalMixin: true,
+  },
+
+  mixins: {
+    global: {
+      shouldUpdate: false,
+    },
+    custom: {},
+  },
 };
 
 export default DEFAULTS;

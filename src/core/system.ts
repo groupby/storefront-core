@@ -26,6 +26,7 @@ export default class System {
     this.initServices();
     this.initMixin();
     this.registerTags();
+    this.initUserMixins();
   }
 
   initConfig(config: Configuration) {
@@ -75,6 +76,17 @@ export default class System {
       riot.mixin('storefront', mixin);
       riot.mixin('sf', mixin);
     }
+  }
+
+  /**
+   * initialize the user-supplied mixins
+   */
+  initUserMixins() {
+    const { riot, config } = this.app;
+    riot.mixin(config.mixins.global);
+    Object.keys(config.mixins.custom).forEach((mixin) => {
+      riot.mixin(mixin, config.mixins.custom[mixin]);
+    });
   }
 
   /**

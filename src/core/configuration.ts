@@ -1,8 +1,9 @@
 import { Configuration as FluxConfiguration } from '@storefront/flux-capacitor';
+import { TagMixin } from 'riot';
 import { ServiceConfiguration } from '../services';
 import StoreFront from '../storefront';
 import DEFAULTS from './defaults';
-import { Structure } from './types';
+import { CustomMixins, GlobalMixin, Structure } from './types';
 import * as utils from './utils';
 
 interface Configuration extends FluxConfiguration {
@@ -22,11 +23,15 @@ interface Configuration extends FluxConfiguration {
     globalMixin?: boolean;
     riot?: any;
   };
+
+  mixins?: {
+    global?: GlobalMixin;
+    custom?: CustomMixins;
+  };
 }
 
 namespace Configuration {
   export namespace Transformer {
-
     /**
      * transform and validate raw configuration
      */

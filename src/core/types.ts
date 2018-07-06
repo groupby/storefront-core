@@ -1,3 +1,4 @@
+import { TagMixin } from 'riot';
 import StoreFront from '../storefront';
 
 export namespace Structure {
@@ -21,4 +22,12 @@ export namespace Structure {
 
 export interface Structure extends Structure.Tranformable<(data: any) => any> {
   _variant?: Partial<Structure.Variant>;
+}
+
+export type GlobalMixin = TagMixin & {
+  shouldUpdate?: boolean | ((data: object, nextOpts: object) => boolean);
+};
+
+export interface CustomMixins {
+  [key: string]: TagMixin;
 }

@@ -1,6 +1,6 @@
 import * as fluxPkg from '@storefront/flux-capacitor';
-// import * as Riot from 'riot';
 import Configuration from '../../../src/core/configuration';
+import DEFAULTS from '../../../src/core/defaults';
 import { core } from '../../../src/core/service';
 import System from '../../../src/core/system';
 import Tag from '../../../src/core/tag';
@@ -10,7 +10,7 @@ import suite from '../_suite';
 
 const CONFIG: any = { y: 'z' };
 
-suite('System', ({ expect, spy, stub }) => {
+suite('System', ({ expect, sinon, spy, stub }) => {
   describe('constructor()', () => {
     it('should set app', () => {
       const app: any = { a: 'b' };
@@ -24,13 +24,14 @@ suite('System', ({ expect, spy, stub }) => {
     it('should call all bootstrap functions', () => {
       const services: any = { a: 'b' };
       const system = new System(<any>{});
-      const initConfig = (system.initConfig = spy(() => ({ options: {} })));
+      const initConfig = (system.initConfig = spy(() => DEFAULTS));
       const initRiot = (system.initRiot = spy());
       const initFlux = (system.initFlux = spy());
       const createServices = (system.createServices = spy());
       const initServices = (system.initServices = spy());
       const initMixin = (system.initMixin = spy());
       const registerTags = (system.registerTags = spy());
+      const initUserMixins = (system.initUserMixins = spy());
 
       system.bootstrap(services, CONFIG);
 
@@ -41,13 +42,24 @@ suite('System', ({ expect, spy, stub }) => {
       expect(initServices).to.be.called;
       expect(initMixin).to.be.called;
       expect(registerTags).to.be.called;
+      expect(initUserMixins).to.be.called;
+      sinon.assert.callOrder(
+        initConfig,
+        initRiot,
+        initFlux,
+        createServices,
+        initServices,
+        initMixin,
+        registerTags,
+        initUserMixins
+      );
     });
 
     it('should call user bootstrap function if provided', () => {
       const bootstrap = spy();
       const app: any = {};
       const system = new System(app);
-      stub(Configuration.Transformer, 'transform').returns({ bootstrap, options: {} });
+      stub(Configuration.Transformer, 'transform').returns({ ...DEFAULTS, bootstrap });
       stub(fluxPkg, 'default');
 
       system.bootstrap({}, CONFIG);
@@ -230,6 +242,52 @@ suite('System', ({ expect, spy, stub }) => {
 
       expect(mixinCore).to.be.calledWith(app);
       expect(mixin).to.be.calledWith(tagMixin);
+    });
+  });
+
+  describe('initUserMixins()', () => {
+    it('should apply global mixin globally', () => {
+      const mixin = spy();
+      const globalMixin = { a: 'b', c: 'd' };
+      const app: any = {
+        riot: { mixin },
+        config: {
+          mixins: {
+            global: globalMixin,
+            custom: {},
+          },
+        },
+      };
+      const system = new System(app);
+
+      system.initUserMixins();
+
+      expect(mixin).to.be.calledWith(globalMixin);
+    });
+
+    it('should make custom mixins available', () => {
+      const mixin = spy();
+      const globalMixin = { a: 'b', c: 'd' };
+      const mixinA = { a: 'b' };
+      const mixinB = { c: 'd' };
+      const app: any = {
+        riot: { mixin },
+        config: {
+          mixins: {
+            global: globalMixin,
+            custom: {
+              mixinA,
+              mixinB,
+            },
+          },
+        },
+      };
+      const system = new System(app);
+
+      system.initUserMixins();
+
+      expect(mixin).to.be.calledWith('mixinA', mixinA);
+      expect(mixin).to.be.calledWith('mixinB', mixinB);
     });
   });
 

@@ -4,6 +4,7 @@ import * as sinon from 'sinon';
 import UrlBeautifier from '../../src/core/url-beautifier';
 
 export interface Utils {
+  sinon: sinon.SinonStatic;
   expect: Chai.ExpectStatic;
   spy: sinon.SinonSpyStatic;
   stub: sinon.SinonStubStatic;
@@ -13,14 +14,17 @@ export const extendable = <T extends Utils>(extendUtils: (utils: Utils) => T) =>
   suite<T, any>((tests) => {
     let sandbox: sinon.SinonSandbox;
 
-    beforeEach(() => sandbox = sinon.sandbox.create());
+    beforeEach(() => (sandbox = sinon.sandbox.create()));
     afterEach(() => sandbox.restore());
 
-    tests(extendUtils({
-      expect,
-      spy: (...args) => (<any>sandbox.spy)(...args),
-      stub: (...args) => (<any>sandbox.stub)(...args),
-    }));
+    tests(
+      extendUtils({
+        sinon,
+        expect,
+        spy: (...args) => (<any>sandbox.spy)(...args),
+        stub: (...args) => (<any>sandbox.stub)(...args),
+      })
+    );
   });
 
 export default extendable((_) => _);
