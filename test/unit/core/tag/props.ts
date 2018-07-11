@@ -2,7 +2,7 @@ import { StoreSections } from '@storefront/flux-capacitor';
 import * as sinon from 'sinon';
 import Tag, { TAG_DESC } from '../../../../src/core/tag';
 import Phase from '../../../../src/core/tag/phase';
-import buildProps, * as Props from '../../../../src/core/tag/props';
+import Props from '../../../../src/core/tag/props';
 import suite from '../../_suite';
 
 suite('Tag Props', ({ expect, spy, stub }) => {
@@ -38,7 +38,7 @@ suite('Tag Props', ({ expect, spy, stub }) => {
       const getMeta = stub(Tag, 'getMeta').returns({ defaults: {} });
       stub(Props, 'globalConfiguration');
 
-      const props = buildProps(tag, tag.opts);
+      const props = Props.buildProps(tag, tag.opts);
 
       expect(getMeta).to.be.calledWith(tag);
       expect(props).to.eql({ ui, stylish: false, storeSection: StoreSections.DEFAULT });
@@ -57,7 +57,7 @@ suite('Tag Props', ({ expect, spy, stub }) => {
       const getMeta = stub(Tag, 'getMeta').returns({ defaults: {} });
       stub(Props, 'globalConfiguration');
 
-      const props = buildProps(tag, tag.opts);
+      const props = Props.buildProps(tag, tag.opts);
 
       expect(getMeta).to.be.calledWith(tag);
       expect(props).to.eql({ ui, stylish, storeSection });
@@ -76,7 +76,7 @@ suite('Tag Props', ({ expect, spy, stub }) => {
       const getMeta = stub(Tag, 'getMeta').returns({ defaults: {} });
       stub(Props, 'globalConfiguration');
 
-      const props = buildProps(tag, tag.opts);
+      const props = Props.buildProps(tag, tag.opts);
 
       expect(getMeta).to.be.calledWith(tag);
       expect(props).to.eql({ ui, stylish, storeSection });
@@ -92,7 +92,7 @@ suite('Tag Props', ({ expect, spy, stub }) => {
       const getMeta = stub(Tag, 'getMeta').returns({ defaults });
       const globalConfiguration = stub(Props, 'globalConfiguration').returns(globals);
 
-      const props = buildProps(tag, opts);
+      const props = Props.buildProps(tag, opts);
 
       expect(getMeta).to.be.calledWith(tag);
       expect(globalConfiguration).to.be.calledWith(tag);

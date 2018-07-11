@@ -31,7 +31,7 @@ suite('System', ({ expect, sinon, spy, stub }) => {
       const initServices = (system.initServices = spy());
       const initMixin = (system.initMixin = spy());
       const registerTags = (system.registerTags = spy());
-      const initUserMixins = (system.initUserMixins = spy());
+      const initConfigMixins = (system.initConfigMixins = spy());
 
       system.bootstrap(services, CONFIG);
 
@@ -42,7 +42,7 @@ suite('System', ({ expect, sinon, spy, stub }) => {
       expect(initServices).to.be.called;
       expect(initMixin).to.be.called;
       expect(registerTags).to.be.called;
-      expect(initUserMixins).to.be.called;
+      expect(initConfigMixins).to.be.called;
       sinon.assert.callOrder(
         initConfig,
         initRiot,
@@ -51,7 +51,7 @@ suite('System', ({ expect, sinon, spy, stub }) => {
         initServices,
         initMixin,
         registerTags,
-        initUserMixins
+        initConfigMixins
       );
     });
 
@@ -245,7 +245,7 @@ suite('System', ({ expect, sinon, spy, stub }) => {
     });
   });
 
-  describe('initUserMixins()', () => {
+  describe('initConfigMixins()', () => {
     it('should apply global mixin globally', () => {
       const mixin = spy();
       const globalMixin = { a: 'b', c: 'd' };
@@ -260,9 +260,69 @@ suite('System', ({ expect, sinon, spy, stub }) => {
       };
       const system = new System(app);
 
-      system.initUserMixins();
+      system.initConfigMixins();
 
       expect(mixin).to.be.calledWith(globalMixin);
+    });
+
+    it('should not replace shouldUpdate of type function', () => {
+      const mixin = spy();
+      const globalMixin = { a: 'b', c: 'd', shouldUpdate: () => false };
+      const app: any = {
+        riot: { mixin },
+        config: {
+          mixins: {
+            global: globalMixin,
+            custom: {},
+          },
+        },
+      };
+      const system = new System(app);
+
+      system.initConfigMixins();
+
+      expect(mixin).to.be.calledWith(globalMixin);
+    });
+
+    it('should remove shouldUpdate when it has value true', () => {
+      const mixin = spy();
+      const globalMixin = { a: 'b', c: 'd', shouldUpdate: true };
+      const processedGlobalMixin = { a: 'b', c: 'd' };
+      const app: any = {
+        riot: { mixin },
+        config: {
+          mixins: {
+            global: globalMixin,
+            custom: {},
+          },
+        },
+      };
+      const system = new System(app);
+
+      system.initConfigMixins();
+
+      expect(mixin).to.be.calledWith(processedGlobalMixin);
+    });
+
+    it('should replace shouldUpdate with a function that returns true when it has value false', () => {
+      const mixin = spy();
+      const globalMixin = { a: 'b', c: 'd', shouldUpdate: false };
+      const processedGlobalMixin = { a: 'b', c: 'd' };
+      const app: any = {
+        riot: { mixin },
+        config: {
+          mixins: {
+            global: globalMixin,
+            custom: {},
+          },
+        },
+      };
+      const system = new System(app);
+
+      system.initConfigMixins();
+
+      expect(mixin).to.be.calledWithMatch(processedGlobalMixin);
+      expect(mixin.firstCall.args[0].shouldUpdate()).to.be.true;
     });
 
     it('should make custom mixins available', () => {
@@ -284,7 +344,7 @@ suite('System', ({ expect, sinon, spy, stub }) => {
       };
       const system = new System(app);
 
-      system.initUserMixins();
+      system.initConfigMixins();
 
       expect(mixin).to.be.calledWith('mixinA', mixinA);
       expect(mixin).to.be.calledWith('mixinB', mixinB);

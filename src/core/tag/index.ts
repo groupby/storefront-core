@@ -21,8 +21,12 @@ class Tag<P extends object = any, S extends object = any, A extends object = any
   props: P & Tag.Props = <any>{};
   state: S = <any>{};
 
-  set(state: Partial<S>) {
-    this.update({ state: { ...(this.state as any), ...(state as any) } });
+  set(state: Partial<S> | true) {
+    if (state === true) {
+      this.update(state);
+    } else {
+      this.update({ state: { ...(this.state as any), ...(state as any) } });
+    }
   }
 
   select(selector: (state: Store.State, ...args: any[]) => any, ...args: any[]) {
@@ -108,7 +112,7 @@ namespace Tag {
         // aliasing mixin
         Mixins.applyMixin(this, Mixins.props);
         Mixins.applyMixin(this, Mixins.aliasing);
-        Mixins.applyMixin(this, Mixins.pure);
+        Mixins.applyMixin(this, Mixins.Pure.pureMixin);
 
         // order of these ones shouldn't matter
         Mixins.applyMixin(this, Mixins.fluxActions);

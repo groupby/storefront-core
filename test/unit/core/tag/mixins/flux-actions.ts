@@ -1,8 +1,4 @@
-import { StoreSections } from '@storefront/flux-capacitor';
-import * as sinon from 'sinon';
-import Tag, { TAG_DESC } from '../../../../../src/core/tag';
 import * as FluxActionsMixin from '../../../../../src/core/tag/mixins/flux-actions';
-import Phase from '../../../../../src/core/tag/phase';
 import suite from '../../../_suite';
 
 suite('Flux Actions Mixin', ({ expect, spy, stub }) => {

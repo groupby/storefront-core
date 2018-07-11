@@ -2,6 +2,7 @@ import FluxCapacitor from '@storefront/flux-capacitor';
 import Globals from '../globals';
 import { SystemServices } from '../services';
 import StoreFront from '../storefront';
+import { GlobalMixin } from './types';
 import Configuration from './configuration';
 import Service from './service';
 import Tag from './tag';
@@ -26,7 +27,7 @@ export default class System {
     this.initServices();
     this.initMixin();
     this.registerTags();
-    this.initUserMixins();
+    this.initConfigMixins();
   }
 
   initConfig(config: Configuration) {
@@ -79,13 +80,22 @@ export default class System {
   }
 
   /**
-   * initialize the user-supplied mixins
+   * initialize the mixins supplied in the config
    */
-  initUserMixins() {
-    const { riot, config } = this.app;
-    riot.mixin(config.mixins.global);
-    Object.keys(config.mixins.custom).forEach((mixin) => {
-      riot.mixin(mixin, config.mixins.custom[mixin]);
+  initConfigMixins() {
+    const { riot, config: { mixins: { global: globalMixin, custom } } } = this.app;
+    const processedGlobalMixin: GlobalMixin = { ...globalMixin };
+
+    if (globalMixin.shouldUpdate === true) {
+      delete processedGlobalMixin.shouldUpdate;
+    } else if (globalMixin.shouldUpdate === false) {
+      processedGlobalMixin.shouldUpdate = () => true;
+    } // else shouldUpdate is a function and should be left alone
+
+    riot.mixin(processedGlobalMixin);
+
+    Object.keys(custom).forEach((mixin) => {
+      riot.mixin(mixin, custom[mixin]);
     });
   }
 

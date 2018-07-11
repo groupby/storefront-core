@@ -23,13 +23,21 @@ suite('Tag', ({ expect, spy, stub }) => {
     });
 
     describe('set()', () => {
+      it('should call update with state directly if state is true', () => {
+        const update = (tag.update = spy());
+
+        tag.set(true);
+
+        expect(update).to.be.calledWithExactly(true);
+      });
+
       it('should update the state', () => {
         const update = (tag.update = spy());
         tag.state = { a: 'b' };
 
         tag.set({ c: 'd' });
 
-        expect(update).to.be.calledWith({ state: { a: 'b', c: 'd' } });
+        expect(update).to.be.calledWithExactly({ state: { a: 'b', c: 'd' } });
       });
     });
 
@@ -54,7 +62,7 @@ suite('Tag', ({ expect, spy, stub }) => {
 
         tag.dispatch(action);
 
-        expect(dispatch).to.be.calledWith(action);
+        expect(dispatch).to.be.calledWithExactly(action);
       });
     });
 
@@ -68,31 +76,6 @@ suite('Tag', ({ expect, spy, stub }) => {
         expect(Object.keys(tag._provides)).to.include(name);
       });
     });
-
-    // describe('unexpose()', () => {
-    //   it('should call aliasing.unexpose()', () => {
-    //     const name = 'thing1';
-    //     const unexpose = spy();
-    //     tag.aliasing = <any>{ unexpose };
-    //
-    //     tag.unexpose(name);
-    //
-    //     expect(unexpose).to.be.calledWith(name);
-    //   });
-    // });
-
-    // describe('updateAlias()', () => {
-    //   it('should call aliasing.updateAlias()', () => {
-    //     const name = 'thing1';
-    //     const value = 'thing2';
-    //     const updateAlias = spy();
-    //     tag.aliasing = <any>{ updateAlias };
-    //
-    //     tag.updateAlias(name, value);
-    //
-    //     expect(updateAlias).to.be.calledWith(name, value);
-    //   });
-    // });
   });
 
   describe('create()', () => {
@@ -106,16 +89,16 @@ suite('Tag', ({ expect, spy, stub }) => {
 
       Tag.create({ tag })(clazz);
 
-      expect(readClassDecorators).to.be.calledWith(clazz);
-      expect(tag).to.be.calledWith(
+      expect(readClassDecorators).to.be.calledWithExactly(clazz);
+      expect(tag).to.be.calledWithExactly(
         'a',
         'b',
         sinon.match((cb) => {
           const instance = new cb();
 
           expect(instance[TAG_META]).to.eql(metadata);
-          expect(getDescription).to.be.calledWith(clazz);
-          return expect(bindController).to.be.calledWith(sinon.match.any, clazz);
+          expect(getDescription).to.be.calledWithExactly(clazz);
+          return expect(bindController).to.be.calledWithExactly(sinon.match.any, clazz);
         })
       );
     });
@@ -137,7 +120,7 @@ suite('Tag', ({ expect, spy, stub }) => {
     //   const convertToMixin = stub(TagUtils, 'convertToMixin');
     //   const mixin = Tag.mixin(<any>{});
     //
-    //   expect(convertToMixin).to.be.calledWith(Tag);
+    //   expect(convertToMixin).to.be.calledWithExactly(Tag);
     // });
   });
 
@@ -164,7 +147,7 @@ suite('Tag', ({ expect, spy, stub }) => {
       const description = Tag.getDescription(clazz);
 
       expect(description).to.eq(updatedDescription);
-      expect(setDescription).to.be.calledWith(clazz, oldDescription);
+      expect(setDescription).to.be.calledWithExactly(clazz, oldDescription);
     });
 
     it('should have and set a default value', () => {
@@ -175,7 +158,7 @@ suite('Tag', ({ expect, spy, stub }) => {
       const description = Tag.getDescription(clazz);
 
       expect(description).to.eq(updatedDescription);
-      expect(setDescription).to.be.calledWith(clazz, { metadata: {} });
+      expect(setDescription).to.be.calledWithExactly(clazz, { metadata: {} });
     });
   });
 
