@@ -18,6 +18,7 @@ interface Configuration extends FluxConfiguration {
   options?: {
     ui?: boolean;
     stylish?: boolean;
+    legacyAliasing?: boolean;
     initialSearch?: boolean;
     simpleAttach?: boolean;
     globalMixin?: boolean;

@@ -85,6 +85,12 @@ interface Tag<P extends object, S extends object, A extends object>
   actions: typeof ActionCreators;
   isMounted: boolean;
   init(): void;
+  // legacy aliasing
+  _aliases?: object; // tslint:disable-line member-ordering
+  expose(alias: string, value?: any): void;
+  unexpose(alias: string): void;
+  updateAlias(alias: string, value: any): void;
+  // end legacy aliasing
 }
 
 namespace Tag {
@@ -111,8 +117,8 @@ namespace Tag {
         Mixins.applyMixin(this, Mixins.metadata);
         // aliasing mixin
         Mixins.applyMixin(this, Mixins.props);
-        Mixins.applyMixin(this, Mixins.aliasing);
-        Mixins.applyMixin(this, Mixins.Pure.pureMixin);
+        Mixins.applyMixin(this, config.options.legacyAliasing ? Mixins.aliasing : Mixins.provideConsume);
+        Mixins.applyMixin(this, Mixins.Pure.pureMixin(config.options.legacyAliasing));
 
         // order of these ones shouldn't matter
         Mixins.applyMixin(this, Mixins.fluxActions);
@@ -154,17 +160,15 @@ namespace Tag {
   export function findAliases(
     tag: Tag,
     keys: string[] = Tag.findConsumes(tag)
-  ): Record<string, { tag: Tag; value: any }> {
+  ): Record<string, { tag: Tag; resolve: () => any }> {
     const { _provides: provides, parent, props, state } = tag;
     const providesKeys = Object.keys(provides);
-    const parentAliases =
-      keys.length === 0
-        ? {}
-        : parent &&
-          findAliases(
-            parent as Tag,
-            providesKeys.length === 0 ? keys : keys.filter((key) => !providesKeys.includes(key))
-          );
+
+    let parentAliases = {};
+    if (keys.length !== 0) {
+      const unresolvedKeys = providesKeys.length === 0 ? keys : keys.filter((key) => !providesKeys.includes(key));
+      parentAliases = parent && findAliases(parent as Tag, unresolvedKeys);
+    }
 
     return {
       ...parentAliases,
@@ -172,10 +176,35 @@ namespace Tag {
         .filter((key) => keys.includes(key))
         .reduce(
           (aliases, key) =>
-            Object.assign(aliases, { [key]: { tag, value: provides[key](props, state)(parentAliases) } }),
+            Object.assign(aliases, { [key]: { tag, resolve: () => provides[key](props, state)(parentAliases) } }),
           {}
         ),
     };
+  }
+
+  export function findAllAliases(tag: Tag): Record<string, { tag: Tag; resolve: () => any }> {
+    const { _provides: provides, parent } = tag;
+    const providesKeys = Object.keys(provides);
+
+    let parentAliases = {};
+    if (parent) {
+      parentAliases = parent._aliases;
+    }
+
+    const finalAliases = {
+      ...parentAliases,
+      ...providesKeys.reduce(
+        (aliases, key) =>
+          Object.assign(aliases, {
+            [key]: {
+              resolve: () => provides[key](tag.props, tag.state)(parentAliases),
+            },
+          }),
+        {}
+      ),
+    };
+
+    return finalAliases;
   }
 
   export function getDescription(target: any): Description {

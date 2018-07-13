@@ -13,7 +13,7 @@ suite('Pure Mixin', ({ expect, spy, stub }) => {
       const shouldUpdate = () => false;
       stub(Pure, 'shouldUpdate').returns(shouldUpdate);
 
-      Pure.pureMixin.call(that);
+      Pure.pureMixin(false).bind(that)();
 
       expect(that).to.eql({ ...initialThis, shouldUpdate });
     });
@@ -27,7 +27,7 @@ suite('Pure Mixin', ({ expect, spy, stub }) => {
       const tag = <any>{ state: { a: 'b' }, props: { c: 'd' }, one, on };
       stub(Pure, 'extractLocalAliases').returns(prevAliases);
 
-      Pure.shouldUpdate(tag);
+      Pure.shouldUpdate(tag, false);
 
       expect(tag.one).calledWith(Phase.MOUNT);
       expect(tag.on).calledWith(Phase.UPDATED);
@@ -43,7 +43,7 @@ suite('Pure Mixin', ({ expect, spy, stub }) => {
       stub(Pure, 'resolveAliases').returns(prevAliases);
       stub(Props, 'buildProps').returns(props);
 
-      const shouldUpdate = Pure.shouldUpdate(tag);
+      const shouldUpdate = Pure.shouldUpdate(tag, false);
       const updatePrev = on.firstCall.args[1];
       updatePrev();
       const shouldBeUpdated = shouldUpdate(null, null);
@@ -62,13 +62,34 @@ suite('Pure Mixin', ({ expect, spy, stub }) => {
       stub(Props, 'buildProps').returns(props);
       stub(TagUtils, 'isDebug').returns(false);
 
-      const shouldUpdate = Pure.shouldUpdate(tag);
+      const shouldUpdate = Pure.shouldUpdate(tag, false);
       const updatePrev = on.firstCall.args[1];
       updatePrev();
       const shouldBeUpdated = shouldUpdate(null, null);
 
       expect(extractLocalAliases).to.be.calledWith(tag);
       expect(resolveAliases).to.be.calledWith(tag);
+      expect(shouldBeUpdated).to.be.true;
+    });
+
+    it('should update when aliases have updated using legacy aliasing', () => {
+      const on = spy();
+      const one = spy();
+      const props = { c: 'd' };
+      const prevAliases = { e: 'f' };
+      const tag = <any>{ state: { a: 'b' }, props, one, on };
+      const extractLocalAliases = stub(Pure, 'extractLocalAliases').returns(prevAliases);
+      const resolveAllAliases = stub(Pure, 'resolveAllAliases').returns({ g: 'h' });
+      stub(Props, 'buildProps').returns(props);
+      stub(TagUtils, 'isDebug').returns(false);
+
+      const shouldUpdate = Pure.shouldUpdate(tag, true);
+      const updatePrev = on.firstCall.args[1];
+      updatePrev();
+      const shouldBeUpdated = shouldUpdate(null, null);
+
+      expect(extractLocalAliases).to.be.calledWith(tag);
+      expect(resolveAllAliases).to.be.calledWith(tag);
       expect(shouldBeUpdated).to.be.true;
     });
 
@@ -83,7 +104,7 @@ suite('Pure Mixin', ({ expect, spy, stub }) => {
       stub(Props, 'buildProps').returns(props);
       stub(TagUtils, 'isDebug').returns(false);
 
-      const shouldUpdate = Pure.shouldUpdate(tag);
+      const shouldUpdate = Pure.shouldUpdate(tag, false);
       const updatePrev = on.firstCall.args[1];
       updatePrev();
       const shouldBeUpdated = shouldUpdate(true, null);
@@ -102,7 +123,7 @@ suite('Pure Mixin', ({ expect, spy, stub }) => {
       stub(Props, 'buildProps').returns(props);
       stub(TagUtils, 'isDebug').returns(false);
 
-      const shouldUpdate = Pure.shouldUpdate(tag);
+      const shouldUpdate = Pure.shouldUpdate(tag, false);
       const updatePrev = on.firstCall.args[1];
       updatePrev();
       const shouldBeUpdated = shouldUpdate({ state: { i: 'j' } }, null);
@@ -123,7 +144,7 @@ suite('Pure Mixin', ({ expect, spy, stub }) => {
       stub(Pure, 'resolveAliases').returns(prevAliases);
       stub(TagUtils, 'isDebug').returns(false);
 
-      const shouldUpdate = Pure.shouldUpdate(tag);
+      const shouldUpdate = Pure.shouldUpdate(tag, false);
       const updatePrev = on.firstCall.args[1];
       updatePrev();
       const shouldBeUpdated = shouldUpdate(null, nextOpts);
@@ -199,13 +220,28 @@ suite('Pure Mixin', ({ expect, spy, stub }) => {
 
   describe('resolveAliases()', () => {
     it('should add a $ to all alias keys and return key value paired object', () => {
-      const alias1 = { value: 'b' };
-      const alias2 = { value: 'd' };
+      const alias1 = { resolve: () => 'b' };
+      const alias2 = { resolve: () => 'd' };
       const tag = <any>{};
       const aliases = { alias1, alias2 };
       stub(Tag, 'findAliases').returns(aliases);
 
-      expect(Pure.resolveAliases(tag)).to.eql({ $alias1: alias1.value, $alias2: alias2.value });
+      expect(Pure.resolveAliases(tag)).to.eql({ $alias1: alias1.resolve(), $alias2: alias2.resolve() });
+    });
+  });
+
+  describe('resolveAllAliases()', () => {
+    it('should return aliases', () => {
+      const aliases = { a: 'b', c: 'd' };
+      const tag = <any>{ _aliases: aliases };
+
+      expect(Pure.resolveAllAliases(tag)).to.eql(aliases);
+    });
+
+    it('should return an empty object when no aliases are found', () => {
+      const tag = <any>{};
+
+      expect(Pure.resolveAllAliases(tag)).to.eql({});
     });
   });
 });

@@ -7,11 +7,13 @@ import TagUtils from '../utils';
 export const RE_RENDER_MESSAGE = '%ctag is preparing to re-render:';
 
 namespace Pure {
-  export function pureMixin(this: Tag) {
-    this.shouldUpdate = Pure.shouldUpdate(this);
+  export function pureMixin(isLegacyAliasing: boolean) {
+    return function(this: Tag) {
+      this.shouldUpdate = Pure.shouldUpdate(this, isLegacyAliasing);
+    };
   }
 
-  export function shouldUpdate(tag: Tag) {
+  export function shouldUpdate(tag: Tag, isLegacyAliasing: boolean) {
     let prevState = null;
     let prevProps = null;
     let prevAliases = null;
@@ -28,7 +30,7 @@ namespace Pure {
       const nextProps = Props.buildProps(tag, nextOpts);
       const forceUpdate = stateChange === true;
       const nextState = stateChange != null ? { ...tag.state, ...stateChange['state'] } : tag.state;
-      const nextAliases = Pure.resolveAliases(tag);
+      const nextAliases = isLegacyAliasing ? Pure.resolveAllAliases(tag) : Pure.resolveAliases(tag);
       const propsUpdated = !Pure.shallowEquals(prevProps, nextProps);
       const stateUpdated = !Pure.shallowEquals(prevState, nextState);
       const aliasesUpdated = !Pure.shallowEquals(prevAliases, nextAliases);
@@ -152,9 +154,13 @@ namespace Pure {
   export function resolveAliases(tag: Tag) {
     const aliases = Tag.findAliases(tag);
     return Object.keys(aliases).reduce(
-      (resolved, key) => Object.assign(resolved, { [`$${key}`]: aliases[key].value }),
+      (resolved, key) => Object.assign(resolved, { [`$${key}`]: aliases[key].resolve() }),
       {}
     );
+  }
+
+  export function resolveAllAliases(tag: Tag) {
+    return tag._aliases || {};
   }
 }
 

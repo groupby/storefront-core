@@ -45,6 +45,15 @@ export function css(style: string) {
   };
 }
 
+export function alias<P extends object = any, S extends object = any, A extends object = any>(name: string) {
+  return (target: TagConstructor) => {
+    utils.setMetadata(target, PROVIDES_KEY, {
+      ...(utils.getMetadata(target, PROVIDES_KEY) as any),
+      [name]: (_, state: S) => () => state,
+    });
+  };
+}
+
 export function provide<P extends object = any, S extends object = any, A extends object = any>(
   name: string,
   resolver: (props: P, state: S, aliases: A) => any = (_, state) => state
