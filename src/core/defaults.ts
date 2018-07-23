@@ -24,6 +24,7 @@ const DEFAULTS: Partial<Configuration> = {
       maxBiases: 25,
       attributeMaxBiases: 3,
       expiry: 14,
+      autocomplete: true,
     },
   },
   autocomplete: {

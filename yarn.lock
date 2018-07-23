@@ -65,16 +65,16 @@
   version "1.4.0-alpha.82914663"
   resolved "https://registry.yarnpkg.com/@simple-dom/void-map/-/void-map-1.4.0-alpha.82914663.tgz#0669dd8d3a1cb3a391e548a139a3cdc327e07e09"
 
-"@storefront/flux-capacitor@1.45.0":
-  version "1.45.0"
-  resolved "https://registry.yarnpkg.com/@storefront/flux-capacitor/-/flux-capacitor-1.45.0.tgz#e6ba251afbf42cafde79278316cc337dbed92347"
+"@storefront/flux-capacitor@1.48.0":
+  version "1.48.0"
+  resolved "https://registry.yarnpkg.com/@storefront/flux-capacitor/-/flux-capacitor-1.48.0.tgz#690f47ff43da3d168021a76df8e4688cc0e1b180"
   dependencies:
     "@manaflair/redux-batch" "^0.1.0"
     "@types/redux-logger" "^3.0.0"
     cuid "^1.3.8"
     eventemitter3 "^3.0.0"
     fetch-ponyfill "^4.1.0"
-    groupby-api "2.4.0"
+    groupby-api "2.5.0"
     redux "^3.7.0"
     redux-logger "^3.0.6"
     redux-persist "^5.1.0"
@@ -1791,9 +1791,9 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.5, graceful-fs@^4.1.6:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-groupby-api@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/groupby-api/-/groupby-api-2.4.0.tgz#c7d0bf6e59edab8c86f80b3427edf47d34f455a0"
+groupby-api@2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/groupby-api/-/groupby-api-2.5.0.tgz#520468dcbb83ff4e45ffd7f9f9e70b291cc07551"
   dependencies:
     "@types/clone" "^0.1.30"
     "@types/deep-equal" "^0.0.30"
