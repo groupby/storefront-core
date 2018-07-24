@@ -50,7 +50,7 @@ suite('URL Service', ({ expect, spy, stub }) => {
         const details = stub(CoreSelectors, 'transformedDetailsProduct').returns(ret);
         expect(Utils.detailsUrlState(state)).to.eql({
           data: ret.data,
-          variants: []
+          variants: [],
         });
         expect(details).to.be.calledWithExactly(state);
       });
@@ -70,7 +70,10 @@ suite('URL Service', ({ expect, spy, stub }) => {
         const query = 'q';
         const page = 'p';
         const pageSize = 's';
-        const selected = [{ navigationName: 'f', value: 'c' }, { navigationName: 'r', value: 'j' }];
+        const selected = [
+          { navigationName: 'f', value: 'c', type: 'Value' },
+          { navigationName: 'r', value: 'j', type: 'Value' },
+        ];
         const refinements = [{ field: 'f', value: 'c' }, { field: 'r', value: 'j' }];
         const pastPurchaseSort = stub(Selectors, 'pastPurchaseSort').returns(sorts);
         const pastPurchaseQuery = stub(Selectors, 'pastPurchaseQuery').returns(query);
@@ -96,10 +99,10 @@ suite('URL Service', ({ expect, spy, stub }) => {
     describe('getNavigations()', () => {
       it('should return correct allIds and byId', () => {
         const refinements = [
-          { field: 'colors', value: 'blue', },
-          { field: 'brand', value: 'nike', },
-          { field: 'colors', value: 'red', },
-          { field: 'price', low: '1', high: '3', },
+          { field: 'colors', value: 'blue' },
+          { field: 'brand', value: 'nike' },
+          { field: 'colors', value: 'red' },
+          { field: 'price', low: '1', high: '3' },
         ];
         const request: any = { refinements };
         const expectedAllIds = ['colors', 'brand', 'price'];
@@ -109,22 +112,22 @@ suite('URL Service', ({ expect, spy, stub }) => {
             label: 'colors',
             range: false,
             refinements: [{ value: 'blue' }, { value: 'red' }],
-            selected: [0, 1]
+            selected: [0, 1],
           },
           brand: {
             field: 'brand',
             label: 'brand',
             range: false,
             refinements: [{ value: 'nike' }],
-            selected: [0]
+            selected: [0],
           },
           price: {
             field: 'price',
             label: 'price',
             range: true,
             refinements: [{ low: '1', high: '3' }],
-            selected: [0]
-          }
+            selected: [0],
+          },
         };
 
         const { allIds, byId } = Utils.getNavigations(request);
@@ -146,11 +149,11 @@ suite('URL Service', ({ expect, spy, stub }) => {
                 navigations: {},
                 sort: {
                   items: [{ field: 'price' }, { field: 'price', descending: true }],
-                  selected: 0
-                }
-              }
-            }
-          }
+                  selected: 0,
+                },
+              },
+            },
+          },
         };
         const request: any = {
           page: 14,
@@ -161,7 +164,7 @@ suite('URL Service', ({ expect, spy, stub }) => {
             { type: 'Value', field: 'colour', value: 'orange' },
             { type: 'Range', field: 'price', low: 20, high: 40 },
           ],
-          sort: { field: 'price', descending: true }
+          sort: { field: 'price', descending: true },
         };
         const searchId = 12;
         const nav = { allIds: ['a'], byId: { a: '1' } };
@@ -178,13 +181,13 @@ suite('URL Service', ({ expect, spy, stub }) => {
                 page: {
                   e: 'f',
                   current: 14,
-                  sizes: { g: 'h', items: [10, 20, 50], selected: 1 }
+                  sizes: { g: 'h', items: [10, 20, 50], selected: 1 },
                 },
                 navigations: nav,
                 sort: { items: [{ field: 'price' }, { field: 'price', descending: true }], selected: 0 },
-              }
-            }
-          }
+              },
+            },
+          },
         });
       });
 
@@ -192,7 +195,7 @@ suite('URL Service', ({ expect, spy, stub }) => {
         const searchId = 13;
         const state: any = {
           session: {
-            searchId
+            searchId,
           },
           data: {
             present: {
@@ -203,12 +206,12 @@ suite('URL Service', ({ expect, spy, stub }) => {
                 navigations: { i: 'j', allIds: ['brand', 'format'], byId: { brand: {}, format: {} } },
                 sort: {
                   items: [{ field: 'price' }, { field: 'price', descending: true }],
-                  selected: 0
+                  selected: 0,
                 },
               },
-              collections: { selected: 0 }
-            }
-          }
+              collections: { selected: 0 },
+            },
+          },
         };
         const request: any = { refinements: [] };
 
@@ -229,11 +232,11 @@ suite('URL Service', ({ expect, spy, stub }) => {
               navigations: { i: 'j' },
               sorts: {
                 items: [{ field: 'price' }, { field: 'price', descending: true }],
-                selected: 0
+                selected: 0,
               },
-              collections: { selected: 0 }
-            }
-          }
+              collections: { selected: 0 },
+            },
+          },
         };
         const request: any = {
           page: 14,
@@ -244,7 +247,7 @@ suite('URL Service', ({ expect, spy, stub }) => {
             { type: 'Value', field: 'colour', value: 'orange' },
             { type: 'Range', field: 'price', low: 20, high: 40 },
           ],
-          sort: { field: 'price', descending: true }
+          sort: { field: 'price', descending: true },
         };
         const searchId = 12;
 
@@ -256,28 +259,46 @@ suite('URL Service', ({ expect, spy, stub }) => {
               a: 'b',
               query: {
                 c: 'd',
-                original: 'grape ape'
+                original: 'grape ape',
               },
               page: {
                 e: 'f',
                 current: 14,
-                sizes: { g: 'h', items: [10, 20, 50], selected: 1 }
+                sizes: { g: 'h', items: [10, 20, 50], selected: 1 },
               },
               navigations: {
                 i: 'j',
                 allIds: ['brand', 'colour', 'price'],
                 byId: {
                   // tslint:disable-next-line max-line-length
-                  brand: { field: 'brand', label: 'brand', range: false, refinements: [{ value: 'nike' }], selected: [0] },
+                  brand: {
+                    field: 'brand',
+                    label: 'brand',
+                    range: false,
+                    refinements: [{ value: 'nike' }],
+                    selected: [0],
+                  },
                   // tslint:disable-next-line max-line-length
-                  colour: { field: 'colour', label: 'colour', range: false, refinements: [{ value: 'orange' }], selected: [0] },
-                  price: { field: 'price', label: 'price', range: true, refinements: [{ low: 20, high: 40 }], selected: [0] },
-                }
+                  colour: {
+                    field: 'colour',
+                    label: 'colour',
+                    range: false,
+                    refinements: [{ value: 'orange' }],
+                    selected: [0],
+                  },
+                  price: {
+                    field: 'price',
+                    label: 'price',
+                    range: true,
+                    refinements: [{ low: 20, high: 40 }],
+                    selected: [0],
+                  },
+                },
               },
               sorts: { items: [{ field: 'price' }, { field: 'price', descending: true }], selected: 1 },
-              collections: { selected: 0 }
-            }
-          }
+              collections: { selected: 0 },
+            },
+          },
         });
       });
 
@@ -285,7 +306,7 @@ suite('URL Service', ({ expect, spy, stub }) => {
         const searchId = 13;
         const state: any = {
           session: {
-            searchId
+            searchId,
           },
           data: {
             present: {
@@ -295,11 +316,11 @@ suite('URL Service', ({ expect, spy, stub }) => {
               navigations: { i: 'j', allIds: ['brand', 'format'], byId: { brand: {}, format: {} } },
               sorts: {
                 items: [{ field: 'price' }, { field: 'price', descending: true }],
-                selected: 0
+                selected: 0,
               },
-              collections: { selected: 0 }
-            }
-          }
+              collections: { selected: 0 },
+            },
+          },
         };
         const request: any = { refinements: [] };
 

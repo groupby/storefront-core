@@ -62,7 +62,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       expect(service.generateRoutes()).to.eql({
         a: `${basePath}/b`,
         c: `${basePath}/d`,
-        e: `${basePath}/f`
+        e: `${basePath}/f`,
       });
     });
   });
@@ -75,7 +75,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const newState = { e: 'f' };
       const getState = spy(() => state);
       const parse = spy(() => obj);
-      const refreshState = service.refreshState = spy();
+      const refreshState = (service.refreshState = spy());
       const merge = stub(Utils, 'mergeSearchState').returns(newState);
       win.location = { href };
       service.beautifier = <any>{ parse };
@@ -94,7 +94,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const getState = () => state;
       const unsubscribe = spy();
       const subscribe = spy(() => unsubscribe);
-      const augmentHistory = service.augmentHistory = spy();
+      const augmentHistory = (service.augmentHistory = spy());
       const merge = stub(Utils, 'mergePastPurchaseState').returns(null);
       win.location = {};
       service.refreshState = () => null;
@@ -103,18 +103,20 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
 
       service.init();
 
-      expect(subscribe).to.be.calledWith(sinon.match((cb) => {
-        cb();
+      expect(subscribe).to.be.calledWith(
+        sinon.match((cb) => {
+          cb();
 
-        expect(unsubscribe).to.be.called;
-        return expect(augmentHistory).to.be.called;
-      }));
+          expect(unsubscribe).to.be.called;
+          return expect(augmentHistory).to.be.called;
+        })
+      );
       expect(merge).to.be.calledWithExactly(state, obj.request);
     });
 
     it('should just call augmentHistory if invalid route', () => {
       const obj = { route: 'asdfasdfasdf', request: { c: 'd' } };
-      const augmentHistory = service.augmentHistory = spy();
+      const augmentHistory = (service.augmentHistory = spy());
       win.location = {};
       service.refreshState = () => null;
       service.beautifier = <any>{ parse: () => obj };
@@ -128,9 +130,13 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
 
     it('should listen for any future change on failure', () => {
       const warn = spy();
-      const listenForHistoryChange = service.listenForHistoryChange = spy();
+      const listenForHistoryChange = (service.listenForHistoryChange = spy());
       win.location = { href: 'idk' };
-      service.beautifier = <any>{ parse: () => { throw 'Error'; } };
+      service.beautifier = <any>{
+        parse: () => {
+          throw 'Error';
+        },
+      };
       service['app'] = <any>{ log: { warn } };
 
       service.init();
@@ -141,7 +147,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
 
     it('should accept a route', () => {
       const resultA = { route: 'ab', request: { c: 'd' } };
-      const handleUrl = service.handleUrl = spy();
+      const handleUrl = (service.handleUrl = spy());
       win.location = { href: 'http://does.not.matter.ca' };
 
       const parse = spy(() => resultA);
@@ -153,11 +159,11 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
 
     it('should accept promise which resolves to a route', (done) => {
       const resultA = { route: 'ab', request: { c: 'd' } };
-      const resultB = new Promise((resolve,reject) => {
+      const resultB = new Promise((resolve, reject) => {
         resolve(resultA);
         done();
       });
-      const handleUrl = service.handleUrl = spy();
+      const handleUrl = (service.handleUrl = spy());
       win.location = { href: 'http://does.not.matter.ca' };
 
       const parse = spy(() => resultB);
@@ -168,11 +174,11 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
     });
 
     it('should reject promise with a warning', (done) => {
-      const resultB = new Promise((resolve,reject) => {
+      const resultB = new Promise((resolve, reject) => {
         reject();
         done();
       });
-      const handleUrl = service.handleUrl = spy();
+      const handleUrl = (service.handleUrl = spy());
       win.location = { href: 'http://does.not.matter.ca' };
       const warn = spy();
       service['app'] = <any>{ log: { warn } };
@@ -193,12 +199,14 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
         const request = '/req';
         const newState = { c: 'd' };
         const mergeSearchState = stub(Utils, 'mergeSearchState').returns(newState);
-        const refreshState = service.refreshState = spy();
+        const refreshState = (service.refreshState = spy());
         const dispatch = spy();
-        service['app'] = <any>{ flux: {
-          store: { dispatch, getState: () => state },
-          actions: { fetchProductsWhenHydrated: () => FETCH_PRODUCTS_WHEN_HYDRATED }
-        } };
+        service['app'] = <any>{
+          flux: {
+            store: { dispatch, getState: () => state },
+            actions: { fetchProductsWhenHydrated: () => FETCH_PRODUCTS_WHEN_HYDRATED },
+          },
+        };
 
         service.handleUrlWithoutAugment(Routes.SEARCH, request);
 
@@ -215,12 +223,14 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
         const request = '/req';
         const newState = { c: 'd' };
         const mergePastPurchaseState = stub(Utils, 'mergePastPurchaseState').returns(newState);
-        const refreshState = service.refreshState = spy();
+        const refreshState = (service.refreshState = spy());
         const dispatch = spy();
-        service['app'] = <any>{ flux: {
-          store: { dispatch, getState: () => state },
-          actions: { fetchPastPurchaseProducts: () => FETCH_PAST_PURCHASE_PRODUCTS }
-        } };
+        service['app'] = <any>{
+          flux: {
+            store: { dispatch, getState: () => state },
+            actions: { fetchPastPurchaseProducts: () => FETCH_PAST_PURCHASE_PRODUCTS },
+          },
+        };
 
         service.handleUrlWithoutAugment(Routes.PAST_PURCHASE, request);
 
@@ -234,12 +244,14 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       it('should fetch product details', () => {
         const FETCH_PRODUCT_DETAILS = 'FETCH_PRODUCT_DETAILS';
         const request = { id: 'e' };
-        const refreshState = service.refreshState = spy();
+        const refreshState = (service.refreshState = spy());
         const dispatch = spy();
-        service['app'] = <any>{ flux: {
-          store: { dispatch },
-          actions: { fetchProductDetails: () => FETCH_PRODUCT_DETAILS }
-        } };
+        service['app'] = <any>{
+          flux: {
+            store: { dispatch },
+            actions: { fetchProductDetails: () => FETCH_PRODUCT_DETAILS },
+          },
+        };
 
         service.handleUrlWithoutAugment(Routes.DETAILS, request);
 
@@ -256,57 +268,58 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const replaceState = spy();
       win.document = { title };
       win.history = { replaceState };
-      const replaceHistory = service.replaceHistory = spy();
+      const replaceHistory = (service.replaceHistory = spy());
       win.location = { pathname: '/thing1', search: '?q=thing2', hash: '' };
       service['app'] = <any>{
         flux: {
           actions: { fetchProducts: () => null },
           store: { dispatch: () => null },
           once: () => null,
-        }
+        },
       };
 
       service.augmentHistory('', {});
 
-      expect(replaceHistory).to.be.calledOnce
-        .and.calledWith('/thing1?q=thing2');
+      expect(replaceHistory).to.be.calledOnce.and.calledWith('/thing1?q=thing2');
     });
 
     it('should update products and wait for after first state change', () => {
       const once = spy();
       const dispatch = spy();
       const fetchProductsAction = { a: 'b' };
-      const replaceHistory = service.replaceHistory = spy();
-      const listenForHistoryChange = service.listenForHistoryChange = spy();
+      const replaceHistory = (service.replaceHistory = spy());
+      const listenForHistoryChange = (service.listenForHistoryChange = spy());
       win.location = { pathname: '/thing1', search: '?q=thing2', hash: '' };
       service['app'] = <any>{
         flux: {
           actions: { fetchProducts: () => fetchProductsAction },
           store: { getState: () => ({}), dispatch },
           once,
-        }
+        },
       };
 
       service.augmentHistory('', {});
 
-      expect(once).to.be.calledWith(Events.HISTORY_SAVE, sinon.match((cb) => {
-        cb();
+      expect(once).to.be.calledWith(
+        Events.HISTORY_SAVE,
+        sinon.match((cb) => {
+          cb();
 
-        expect(replaceHistory).to.be.calledTwice
-          .and.calledWith('/thing1?q=thing2');
-        return expect(listenForHistoryChange).to.be.called;
-      }));
+          expect(replaceHistory).to.be.calledTwice.and.calledWith('/thing1?q=thing2');
+          return expect(listenForHistoryChange).to.be.called;
+        })
+      );
     });
 
     it('should use hash when provided in the url', () => {
-      const replaceHistory = service.replaceHistory = spy();
+      const replaceHistory = (service.replaceHistory = spy());
       win.location = { pathname: '/thing1', search: '?q=thing2', hash: '#thing3' };
       service['app'] = <any>{
         flux: {
           actions: { fetchProducts: () => null },
           store: { dispatch: () => null },
           once: () => null,
-        }
+        },
       };
 
       service.augmentHistory('', {});
@@ -325,7 +338,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
           actions: { fetchProductsWhenHydrated },
           store: { getState: () => ({}), dispatch },
           once: () => null,
-        }
+        },
       };
 
       service.augmentHistory('search', {});
@@ -345,7 +358,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
           actions: { fetchProductDetails },
           store: { getState: () => ({}), dispatch },
           once: () => null,
-        }
+        },
       };
 
       service.augmentHistory('details', request);
@@ -365,7 +378,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
           actions: { fetchPastPurchaseProducts },
           store: { getState: () => ({}), dispatch },
           once: () => null,
-        }
+        },
       };
 
       service.augmentHistory('pastpurchase', request);
@@ -380,7 +393,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const href = 'https://example.com/route';
       const route = '/route';
       const request = 'request';
-      const handleUrlWithoutAugment = service.handleUrlWithoutAugment = spy();
+      const handleUrlWithoutAugment = (service.handleUrlWithoutAugment = spy());
       const parse = spy(() => ({ route, request }));
       win.location = { href };
       service.beautifier = <any>{ parse };
@@ -395,10 +408,10 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const href = 'https://example.com/route';
       const route = '/route';
       const request = 'request';
-      const handleUrlWithoutAugment = service.handleUrlWithoutAugment = spy(() => {
+      const handleUrlWithoutAugment = (service.handleUrlWithoutAugment = spy(() => {
         expect(handleUrlWithoutAugment).to.be.calledWith(route, request);
         done();
-      });
+      }));
       const parse = stub().resolves({ route, request });
       win.location = { href };
       service.beautifier = <any>{ parse };
@@ -412,7 +425,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const href = 'https://example.com/route';
       const route = '/route';
       const request = 'request';
-      const handleUrlWithoutAugment = service.handleUrlWithoutAugment = spy();
+      const handleUrlWithoutAugment = (service.handleUrlWithoutAugment = spy());
       const parse = stub().throws();
       const warn = spy();
       win.location = { href };
@@ -430,14 +443,18 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const href = 'https://example.com/route';
       const route = '/route';
       const request = 'request';
-      const handleUrlWithoutAugment = service.handleUrlWithoutAugment = spy();
+      const handleUrlWithoutAugment = (service.handleUrlWithoutAugment = spy());
       const parse = stub().rejects();
       win.location = { href };
       service.beautifier = <any>{ parse };
-      service['app'] = <any>{ log: { warn: () => {
-        expect(handleUrlWithoutAugment).not.to.be.called;
-        done();
-      } } };
+      service['app'] = <any>{
+        log: {
+          warn: () => {
+            expect(handleUrlWithoutAugment).not.to.be.called;
+            done();
+          },
+        },
+      };
 
       service.handleUrlWithoutListeners();
 
@@ -471,10 +488,10 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const search = spy(() => 'hey');
       const build = spy(() => url);
       const obj = <any>{ state: { a: 'b' }, route: 'search' };
-      const replaceHistory = service.replaceHistory = spy();
+      const replaceHistory = (service.replaceHistory = spy());
       service.beautifier = <any>{ build };
       service.urlState = <any>{
-        search
+        search,
       };
 
       service.buildUrlAndReplaceHistory(obj);
@@ -491,7 +508,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const state = { a: 'b' };
       const replaceState = spy();
       const getState = spy(() => state);
-      const filterState = service.filterState = spy((value) => value);
+      const filterState = (service.filterState = spy((value) => value));
       service['app'] = <any>{ flux: { store: { getState } } };
       win.history = { replaceState };
       win.document = { title };
@@ -499,11 +516,15 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       service.replaceHistory(url);
 
       expect(filterState).to.be.calledWithExactly(state);
-      expect(replaceState).to.be.calledWith({
-        url,
-        state,
-        app: STOREFRONT_APP_ID,
-      }, title, url);
+      expect(replaceState).to.be.calledWith(
+        {
+          url,
+          state,
+          app: STOREFRONT_APP_ID,
+        },
+        title,
+        url
+      );
     });
   });
 
@@ -515,13 +536,13 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const otherData = {
         e: 'f',
         j: {
-          h: 1
+          h: 1,
         },
         o: [2, 3, 4],
         n: {
           i: 'r',
-          k: {}
-        }
+          k: {},
+        },
       };
       const state: any = { ...otherData, session: sessionWithConfig };
       Object.freeze(state);
@@ -533,7 +554,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
 
       expect(stateWithoutConfig).to.eql({
         ...otherData,
-        session
+        session,
       });
     });
   });
@@ -564,7 +585,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       service.beautifier = <any>{ build };
       service['opts'] = { redirects: { [url]: externalUrl } };
       service.urlState = <any>{
-        [route]: () => newState
+        [route]: () => newState,
       };
 
       service.updateHistory(<any>{ state: <any>{ data }, route });
@@ -579,7 +600,10 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const url = '/some/url';
       const query = 'air jordans';
       const route = 'search';
-      const refinements = [{ navigationName: 'a', value: 'b' }, { navigationName: 'price', low: 0, high: 10 }];
+      const refinements = [
+        { navigationName: 'a', value: 'b', type: 'Value' },
+        { navigationName: 'price', low: 0, high: 10, type: 'Range' },
+      ];
       const convertedRefinements = [{ field: 'a', value: 'b' }, { field: 'price', low: 0, high: 10 }];
       const sort = ['c', 'd'];
       const collection = 'All';
@@ -587,7 +611,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const build = spy(() => url);
       const data = { e: 'f' };
       const state = { data };
-      const filterState = service.filterState = spy((value) => value);
+      const filterState = (service.filterState = spy((value) => value));
       win.history = { pushState };
       stub(Selectors, 'query').returns(query);
       stub(Selectors, 'pageSize').returns(pageSize);
@@ -607,7 +631,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
         pageSize,
         refinements: convertedRefinements,
         sort,
-        collection
+        collection,
       });
       expect(filterState).to.be.calledWithExactly(state);
       expect(pushState).to.be.calledWith({ url, state: { data }, app: STOREFRONT_APP_ID }, '', url);
@@ -620,7 +644,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const state = { a: 'b' };
       const emit = spy();
       const config = { history: { length: 5 } };
-      const refreshState = service.refreshState = spy();
+      const refreshState = (service.refreshState = spy());
       win.location = { href: url };
       service['app'] = <any>{ config, flux: { emit } };
 

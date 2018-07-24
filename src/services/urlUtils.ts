@@ -17,7 +17,7 @@ namespace UrlUtils {
       page: Selectors.page(state),
       pageSize: Selectors.pageSize(state),
       refinements: Selectors.selectedRefinements(state).map((refinement) => {
-        if ('value' in refinement) {
+        if (refinement.type === 'Value') {
           return { field: refinement.navigationName, value: refinement.value };
         } else {
           return { field: refinement.navigationName, low: refinement.low, high: refinement.high };
@@ -32,7 +32,7 @@ namespace UrlUtils {
     const details: Store.Product = <any>CoreSelectors.transformedDetailsProduct(state);
     return {
       data: details.data,
-      variants: []
+      variants: [],
     };
   };
 
@@ -49,10 +49,11 @@ namespace UrlUtils {
       page: Selectors.pastPurchasePage(state),
       pageSize: Selectors.pastPurchasePageSize(state),
       sort: sorts.items[selected],
-      refinements: Selectors.pastPurchaseSelectedRefinements(state).map(({ navigationName, value }) => ({
-        field: navigationName,
-        value
-      })),
+      refinements: Selectors.pastPurchaseSelectedRefinements(state).map((nav) => {
+        if (nav.type === 'Value') {
+          return { field: nav.navigationName, value: nav.value };
+        }
+      }),
       collection: null,
     };
   };
@@ -84,9 +85,8 @@ namespace UrlUtils {
   export const getById = (request: UrlBeautifier.SearchUrlState) => {
     return request.refinements.reduce((navigations, refinement) => {
       const field = refinement.field;
-      const transformed = 'low' in refinement
-        ? { low: refinement['low'], high: refinement['high'] }
-        : { value: refinement['value'] };
+      const transformed =
+        'low' in refinement ? { low: refinement['low'], high: refinement['high'] } : { value: refinement['value'] };
       if (field in navigations) {
         const navigation = navigations[field];
         navigation.selected.push(navigation.refinements.push(transformed) - 1);
@@ -96,7 +96,7 @@ namespace UrlUtils {
           label: field,
           range: 'low' in refinement,
           refinements: [transformed],
-          selected: [0]
+          selected: [0],
         };
       }
       return navigations;
@@ -120,10 +120,10 @@ namespace UrlUtils {
             sort: {
               ...presentState.pastPurchases.sort,
               ...Selectors.pastPurchaseSort(state),
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      },
     };
   };
 
@@ -135,8 +135,8 @@ namespace UrlUtils {
       current: request.page || Selectors.pastPurchasePage(state),
       sizes: {
         ...Selectors.pastPurchasePageSizes(state),
-        selected: pageSizeIndex === -1 ? Selectors.pastPurchasePageSizeIndex(state) : pageSizeIndex
-      }
+        selected: pageSizeIndex === -1 ? Selectors.pastPurchasePageSizeIndex(state) : pageSizeIndex,
+      },
     };
   };
 
@@ -145,10 +145,8 @@ namespace UrlUtils {
     const navigations = getNavigations(request);
     return {
       ...presentState.pastPurchases.navigations,
-      allIds: navigations.allIds.length > 0 ?
-        navigations.allIds : presentState.pastPurchases.navigations.allIds,
-      byId: Object.keys(navigations.byId).length > 0 ?
-        navigations.byId : presentState.pastPurchases.navigations.byId,
+      allIds: navigations.allIds.length > 0 ? navigations.allIds : presentState.pastPurchases.navigations.allIds,
+      byId: Object.keys(navigations.byId).length > 0 ? navigations.byId : presentState.pastPurchases.navigations.byId,
     };
   };
 
@@ -164,14 +162,14 @@ namespace UrlUtils {
           collections: mergeSearchCollectionsState(state, request),
           sorts: mergeSearchSortsState(state, request),
           navigations: mergeSearchNavigationsState(state, request),
-        }
-      }
+        },
+      },
     };
   };
 
   export const mergeSearchQueryState = (state: Store.State, request: UrlBeautifier.SearchUrlState) => ({
     ...state.data.present.query,
-    original: request.query || Selectors.query(state)
+    original: request.query || Selectors.query(state),
   });
 
   export const mergeSearchPageState = (state: Store.State, request: UrlBeautifier.SearchUrlState) => {
@@ -181,15 +179,15 @@ namespace UrlUtils {
       current: request.page || Selectors.page(state),
       sizes: {
         ...Selectors.pageSizes(state),
-        selected: pageSizeIndex === -1 ? Selectors.pageSizeIndex(state) : pageSizeIndex
-      }
+        selected: pageSizeIndex === -1 ? Selectors.pageSizeIndex(state) : pageSizeIndex,
+      },
     };
   };
 
   export const mergeSearchCollectionsState = (state: Store.State, request: UrlBeautifier.SearchUrlState) => {
     return {
       ...Selectors.collections(state),
-      selected: request.collection || Selectors.collection(state)
+      selected: request.collection || Selectors.collection(state),
     };
   };
 
@@ -197,7 +195,7 @@ namespace UrlUtils {
     const currentSortIndex = getSortIndex(Selectors.sorts(state).items, request.sort);
     return {
       ...Selectors.sorts(state),
-      selected: currentSortIndex === -1 ? Selectors.sortIndex(state) : currentSortIndex
+      selected: currentSortIndex === -1 ? Selectors.sortIndex(state) : currentSortIndex,
     };
   };
 
@@ -207,7 +205,7 @@ namespace UrlUtils {
     return {
       ...presentState.navigations,
       allIds: allIds.length > 0 ? allIds : presentState.navigations.allIds,
-      byId: Object.keys(byId).length > 0 ? byId : presentState.navigations.byId
+      byId: Object.keys(byId).length > 0 ? byId : presentState.navigations.byId,
     };
   };
 }
