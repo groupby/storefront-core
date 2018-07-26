@@ -131,6 +131,25 @@ suite('Pure Mixin', ({ expect, spy, stub }) => {
       expect(shouldBeUpdated).to.be.true;
     });
 
+    it('should update when tag properties have changed', () => {
+      const on = spy();
+      const one = spy();
+      const props = { c: 'd' };
+      const prevAliases = { e: 'f' };
+      const tag = <any>{ state: { a: 'b' }, props, one, on };
+      stub(Pure, 'extractLocalAliases').returns(prevAliases);
+      stub(Pure, 'resolveAliases').returns(prevAliases);
+      stub(Props, 'buildProps').returns(props);
+      stub(TagUtils, 'isDebug').returns(false);
+
+      const shouldUpdate = Pure.shouldUpdate(tag, false);
+      const updatePrev = on.firstCall.args[1];
+      updatePrev();
+      const shouldBeUpdated = shouldUpdate({ i: 1, item: 'item' }, null);
+
+      expect(shouldBeUpdated).to.be.true;
+    });
+
     it('should update when props have updated', () => {
       const on = spy();
       const one = spy();

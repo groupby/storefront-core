@@ -27,15 +27,20 @@ namespace Pure {
     tag.on(Phase.UPDATED, updatePrev);
 
     return (stateChange: object | true, nextOpts: object) => {
-      const nextProps = Props.buildProps(tag, nextOpts);
       const forceUpdate = stateChange === true;
+      const isRiotUpdate =
+        !forceUpdate
+        && stateChange != null
+        && !('state' in <object>stateChange)
+        && !!Object.keys(stateChange).length;
+      const nextProps = Props.buildProps(tag, nextOpts);
       const nextState = stateChange != null ? { ...tag.state, ...stateChange['state'] } : tag.state;
       const nextAliases = isLegacyAliasing ? Pure.resolveAllAliases(tag) : Pure.resolveAliases(tag);
       const propsUpdated = !Pure.shallowEquals(prevProps, nextProps);
       const stateUpdated = !Pure.shallowEquals(prevState, nextState);
       const aliasesUpdated = !Pure.shallowEquals(prevAliases, nextAliases);
 
-      if (forceUpdate || aliasesUpdated || stateUpdated || propsUpdated) {
+      if (forceUpdate || aliasesUpdated || stateUpdated || propsUpdated || isRiotUpdate) {
         if (TagUtils.isDebug(tag.config)) {
           let message = RE_RENDER_MESSAGE;
           console.dirxml(tag.root);
