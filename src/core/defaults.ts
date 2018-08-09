@@ -77,6 +77,9 @@ const DEFAULTS: Partial<Configuration> = {
       navigations: {},
     },
   },
+  details: {
+    alwaysFetch: false,
+  },
   network: {
     https: typeof window !== 'undefined' && window.location.protocol === 'https:',
   },

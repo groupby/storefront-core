@@ -65,9 +65,9 @@
   version "1.4.0-alpha.82914663"
   resolved "https://registry.yarnpkg.com/@simple-dom/void-map/-/void-map-1.4.0-alpha.82914663.tgz#0669dd8d3a1cb3a391e548a139a3cdc327e07e09"
 
-"@storefront/flux-capacitor@1.51.0":
-  version "1.51.0"
-  resolved "https://registry.yarnpkg.com/@storefront/flux-capacitor/-/flux-capacitor-1.51.0.tgz#2591c30dc9dbc6fa08c60246dd3376b715239502"
+"@storefront/flux-capacitor@1.52.0":
+  version "1.52.0"
+  resolved "https://registry.yarnpkg.com/@storefront/flux-capacitor/-/flux-capacitor-1.52.0.tgz#83d24815539bdd5734a105fd733499fd47172943"
   dependencies:
     "@manaflair/redux-batch" "^0.1.0"
     "@types/redux-logger" "^3.0.0"
