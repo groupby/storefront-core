@@ -55,8 +55,9 @@ suite('Sugar Mixin', ({ expect, spy, sinon }) => {
       testMissingHandler(phase);
 
       it(`should listen on ${phase} and pass the previous props and state`, () => {
-        const handlers = {};
-        const on = spy((p, h) => { handlers[p] = h; });
+        const handlers: any = {};
+        const assignHandler = (p, h) => { handlers[p] = h; };
+        const on = spy(assignHandler);
         const eventListener = spy();
         const camelCaseName = camelCase(`on-${phase}`);
         const prevProps = { a: 'b' };
@@ -66,7 +67,7 @@ suite('Sugar Mixin', ({ expect, spy, sinon }) => {
         const arg = { d: 'e' };
         const tag: any = {
           on,
-          one: () => null,
+          one: assignHandler,
           props: prevProps,
           state: prevState,
           [camelCaseName]: eventListener,
@@ -76,10 +77,12 @@ suite('Sugar Mixin', ({ expect, spy, sinon }) => {
         tag.sugarMixin();
         expect(on).to.be.calledWith(phase, sinon.match.func);
 
+        handlers['before-mount']();
         tag.props = nextProps;
         tag.state = nextState;
         handlers[phase](arg);
         expect(eventListener).to.be.calledWith(prevProps, prevState, arg);
+
         handlers[phase](arg);
         expect(eventListener).to.be.calledWith(nextProps, nextState, arg);
       });
