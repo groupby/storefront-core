@@ -52,9 +52,9 @@ suite('Sugar Mixin', ({ expect, spy, sinon }) => {
     });
 
     [Phase.UPDATE, Phase.UPDATED].forEach((phase) => {
-      testMissingHandler(phase);
+      testMissingHandler(Phase.UPDATE);
 
-      it(`should listen on ${phase} and pass the previous props and state`, () => {
+      it(`should listen on update and pass the previous props and state`, () => {
         const handlers: any = {};
         const assignHandler = (p, h) => { handlers[p] = h; };
         const on = spy(assignHandler);
@@ -82,10 +82,43 @@ suite('Sugar Mixin', ({ expect, spy, sinon }) => {
         tag.state = nextState;
         handlers[phase](arg);
         expect(eventListener).to.be.calledWith(prevProps, prevState, arg);
-
-        handlers[phase](arg);
-        expect(eventListener).to.be.calledWith(nextProps, nextState, arg);
       });
+    });
+
+    it('should save a shallow clone of the previous props and state on before-mount and updated', () => {
+      const phase = Phase.UPDATED;
+      const handlers: any = {};
+      const assignHandler = (p, h) => { handlers[p] = h; };
+      const eventListener = spy();
+      const camelCaseName = camelCase(`on-${phase}`);
+      const prevProps = { a: 'b' };
+      const prevState = { b: 'c' };
+      const nextProps = { a: 'B' };
+      const nextState = { b: 'C' };
+      const arg = { d: 'e' };
+      const tag: any = {
+        on: assignHandler,
+        one: assignHandler,
+        props: prevProps,
+        state: prevState,
+        [camelCaseName]: eventListener,
+        sugarMixin,
+      };
+
+      tag.sugarMixin();
+
+      handlers['before-mount']();
+      tag.props = nextProps;
+      tag.state = nextState;
+      handlers[phase](arg);
+      expect(eventListener).to.be.calledWith(prevProps, prevState, arg);
+      expect(eventListener.firstCall.args[0]).not.to.eq(prevProps);
+      expect(eventListener.firstCall.args[1]).not.to.eq(prevState);
+
+      handlers[phase](arg);
+      expect(eventListener).to.be.calledWith(nextProps, nextState, arg);
+      expect(eventListener.secondCall.args[0]).not.to.eq(nextProps);
+      expect(eventListener.secondCall.args[1]).not.to.eq(nextState);
     });
   });
 });

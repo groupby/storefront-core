@@ -30,19 +30,24 @@ export default function sugarMixin(this: Tag) {
           phase,
           (...args) => {
             callHandler(name, ...args);
-            prevProps = this.props;
-            prevState = this.state;
+            prevProps = { ...this.props };
+            prevState = { ...this.state };
           }
         );
         break;
       case Phase.UPDATE:
+        this.on(
+          phase,
+          (...args) => callHandler(name, prevProps, prevState, ...args)
+        );
+        break;
       case Phase.UPDATED:
         this.on(
           phase,
           (...args) => {
             callHandler(name, prevProps, prevState, ...args);
-            prevProps = this.props;
-            prevState = this.state;
+            prevProps = { ...this.props };
+            prevState = { ...this.state };
           }
         );
         break;
