@@ -12,12 +12,50 @@ export const SUGAR_EVENTS = [
 ];
 
 export default function sugarMixin(this: Tag) {
+  let prevProps: any = {};
+  let prevState: any = {};
+
+  const callHandler = (handlerName, ...args) => {
+    if (typeof this[handlerName] === 'function') {
+      this[handlerName](...args);
+    }
+  };
+
   SUGAR_EVENTS.forEach((phase) => {
     const name = camelCase(`on-${phase}`);
 
-    this[phase === Phase.UPDATE || phase === Phase.UPDATED ? 'on' : 'one'](
-      phase,
-      (...args) => typeof this[name] === 'function' && this[name](...args)
-    );
+    switch (phase) {
+      case Phase.BEFORE_MOUNT:
+        this.one(
+          phase,
+          (...args) => {
+            callHandler(name, ...args);
+            prevProps = { ...this.props };
+            prevState = { ...this.state };
+          }
+        );
+        break;
+      case Phase.UPDATE:
+        this.on(
+          phase,
+          (...args) => callHandler(name, prevProps, prevState, ...args)
+        );
+        break;
+      case Phase.UPDATED:
+        this.on(
+          phase,
+          (...args) => {
+            callHandler(name, prevProps, prevState, ...args);
+            prevProps = { ...this.props };
+            prevState = { ...this.state };
+          }
+        );
+        break;
+      default:
+        this.one(
+          phase,
+          (...args) => callHandler(name, ...args)
+        );
+    }
   });
 }
