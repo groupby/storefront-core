@@ -526,6 +526,24 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
         url
       );
     });
+
+    it('should handle errors thrown by replaceState', () => {
+      const err = new Error('Whoops, something went wrong!');
+      const replaceState = stub().throws(err);
+      const store = { getState: spy() };
+      const warn = spy();
+      win.document = { title: 'Foo' };
+      win.history = { replaceState };
+      stub(service, 'filterState');
+      service['app'] = <any>{
+        log: { warn },
+        flux: { store },
+      };
+
+      service.replaceHistory('/foo');
+
+      expect(warn).to.be.called;
+    });
   });
 
   describe('filterState()', () => {
@@ -635,6 +653,22 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       });
       expect(filterState).to.be.calledWithExactly(state);
       expect(pushState).to.be.calledWith({ url, state: { data }, app: STOREFRONT_APP_ID }, '', url);
+    });
+
+    it('should handle errors thrown by pushState', () => {
+      const err = new Error('Whoops, something went wrong!');
+      const pushState = stub().throws(err);
+      const warn = spy();
+      win.history = { pushState };
+      stub(service, 'filterState');
+      service['app'] = <any>{ log: { warn } };
+      service.beautifier = <any>{ build: () => '/foo' };
+      service['opts'] = <any>{ redirects: {} };
+      service.urlState = <any>{ search: () => '' };
+
+      service.updateHistory(<any>{ state: {}, route: 'search' });
+
+      expect(warn).to.be.called;
     });
   });
 

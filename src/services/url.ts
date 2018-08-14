@@ -146,8 +146,12 @@ class UrlService extends BaseService<UrlService.Options> {
     } else if (this.opts.redirects[url]) {
       WINDOW().location.assign(this.opts.redirects[url]);
     } else {
-      WINDOW().history.pushState({ url, state: this.filterState(state), app: STOREFRONT_APP_ID }, '', url);
-      this.app.flux.emit(Events.URL_UPDATED, url);
+      try {
+        WINDOW().history.pushState({ url, state: this.filterState(state), app: STOREFRONT_APP_ID }, '', url);
+        this.app.flux.emit(Events.URL_UPDATED, url);
+      } catch (e) {
+        this.app.log.warn('unable to push state to browser history', e);
+      }
     }
   }
 
@@ -157,11 +161,15 @@ class UrlService extends BaseService<UrlService.Options> {
   }
 
   replaceHistory(url: string) {
-    WINDOW().history.replaceState({
-      url,
-      state: this.filterState(this.app.flux.store.getState()),
-      app: STOREFRONT_APP_ID
-    }, WINDOW().document.title, url);
+    try {
+      WINDOW().history.replaceState({
+        url,
+        state: this.filterState(this.app.flux.store.getState()),
+        app: STOREFRONT_APP_ID
+      }, WINDOW().document.title, url);
+    } catch (e) {
+      this.app.log.warn('unable to replace browser history', e);
+    }
   }
 
   filterState(state: Store.State) {
