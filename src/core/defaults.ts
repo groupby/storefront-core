@@ -49,6 +49,7 @@ const DEFAULTS: Partial<Configuration> = {
       products: {},
     },
     hoverAutoFill: true,
+    showCategoryValuesForFirstMatch: false,
   },
   recommendations: {
     location: false,
