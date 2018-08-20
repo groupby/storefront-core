@@ -19,8 +19,8 @@ export namespace ProvideConsume {
         Object.keys(aliases).forEach((alias) => {
           let hasUpdated = false;
           const aliasTag = aliases[alias].tag;
-          const markUpdated = () => hasUpdated = true;
-          const resetUpdated = () => hasUpdated = false;
+          const markUpdated = () => (hasUpdated = true);
+          const resetUpdated = () => (hasUpdated = false);
           const softUpdateDependant = () => {
             if (!hasUpdated) {
               this.set(true);
@@ -29,7 +29,10 @@ export namespace ProvideConsume {
           };
 
           this.on(Phase.UPDATE, markUpdated);
-          this.one(Phase.UNMOUNT, () => this.off(Phase.UPDATE, markUpdated));
+          this.one(Phase.UNMOUNT, () => {
+            aliasTag.off(Phase.UPDATE, resetUpdated);
+            aliasTag.off(Phase.UPDATED, softUpdateDependant);
+          });
           aliasTag.on(Phase.UPDATE, resetUpdated);
           aliasTag.on(Phase.UPDATED, softUpdateDependant);
           aliasTag.one(Phase.UNMOUNT, () => aliasTag.off(Phase.UPDATED, softUpdateDependant));
@@ -57,11 +60,7 @@ export namespace ProvideConsume {
 
       Object.assign(
         tag,
-        Object.keys(aliases).reduce(
-          (named, key) =>
-            Object.assign(named, { [`$${key}`]: aliases[key].resolve() }),
-          {}
-        )
+        Object.keys(aliases).reduce((named, key) => Object.assign(named, { [`$${key}`]: aliases[key].resolve() }), {})
       );
 
       return aliases;
