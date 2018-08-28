@@ -130,7 +130,6 @@ const DEFAULTS: Partial<Configuration> = {
     stylish: false,
     legacyAliasing: false,
     initialSearch: false,
-    simpleAttach: true,
     globalMixin: true,
   },
 

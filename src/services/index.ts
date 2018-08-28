@@ -26,14 +26,41 @@ export default SERVICES;
 
 export interface ServiceConfiguration {
   [key: string]: Service.Options<any>;
+  /**
+   * Configuration for the logging service.
+   */
   logging?: Service.Options<logging.Options>;
+  /**
+   * Configuration for the search service.
+   */
   search?: Service.Options<search.Options>;
+  /**
+   * Configuration for the past purchases service.
+   */
   pastPurchases?: Service.Options<pastPurchases.Options>;
+  /**
+   * Configuration for the autocomplete service.
+   */
   autocomplete?: Service.Options<any>;
+  /**
+   * Configuration for the collections service.
+   */
   collections?: Service.Options<any>;
+  /**
+   * Configuration for the URL service.
+   */
   url?: Service.Options<any>;
+  /**
+   * Configuration for the tracker service.
+   */
   tracker?: Service.Options<tracker.Options>;
+  /**
+   * Configuration for the recommendations service.
+   */
   recommendations?: Service.Options<any>;
+  /**
+   * Configuration for the redirect service.
+   */
   redirect?: Service.Options<any>;
 }
 
