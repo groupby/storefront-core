@@ -144,9 +144,20 @@
 					<div class="tsd-signature tsd-kind-icon">bootstrap<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/a0d3e3d/src/core/configuration.ts#L16">core/configuration.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/cf36bfd/src/core/configuration.ts#L41">core/configuration.ts:41</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>An optional initial bootstrap function.
+							This function is run before serivces are initialized.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>param</dt>
+							<dd><p>The StoreFront app instance.</p>
+							</dd>
+						</dl>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -255,17 +266,39 @@
 					<div class="tsd-signature tsd-kind-icon">mixins<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/a0d3e3d/src/core/configuration.ts#L28">core/configuration.ts:28</a></li>
+							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/cf36bfd/src/core/configuration.ts#L79">core/configuration.ts:79</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Configuration for mixins, which are sets of reusable functions
+							and properties that can be shared across tags.</p>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter">
 								<h5><span class="tsd-flag ts-flagOptional">Optional</span> custom<span class="tsd-signature-symbol">?: </span><a href="../interfaces/custommixins.html" class="tsd-signature-type">CustomMixins</a></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Named mixins that are available on-demand to tags.</p>
+									</div>
+									<p>To apply one of these mixins, add this to your tag&#39;s constructor:</p>
+									<pre><code class="lang-js"><span class="hljs-keyword">this</span>.mixin(<span class="hljs-string">'name_of_mixin'</span>);
+</code></pre>
+								</div>
 							</li>
 							<li class="tsd-parameter">
-								<h5><span class="tsd-flag ts-flagOptional">Optional</span> global<span class="tsd-signature-symbol">?: </span><a href="../globals.html#globalmixin" class="tsd-signature-type">GlobalMixin</a></h5>
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> global<span class="tsd-signature-symbol">?: </span><a href="../interfaces/globalmixin.html" class="tsd-signature-type">GlobalMixin</a></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The mixin to apply to all tags. This mixin is automatically applied
+											after all of the standard StoreFront mixins are applied, so it can be
+										used to override StoreFront functionality.</p>
+									</div>
+									<p>The lifecycle function <code>init()</code> cannot be overriden by this global mixin.</p>
+								</div>
 							</li>
 						</ul>
 					</div>
@@ -292,32 +325,66 @@
 					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/a0d3e3d/src/core/configuration.ts#L18">core/configuration.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/cf36bfd/src/core/configuration.ts#L46">core/configuration.ts:46</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Miscellaneous options.</p>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter">
 								<h5><span class="tsd-flag ts-flagOptional">Optional</span> global<wbr>Mixin<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>If <code>true</code>, apply the standard StoreFront Tag mixin.</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5><span class="tsd-flag ts-flagOptional">Optional</span> initial<wbr>Search<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>If <code>true</code>, perform a search on any initial page load.
+										Search pages will perform a search regardless of the value of this option.</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5><span class="tsd-flag ts-flagOptional">Optional</span> legacy<wbr>Aliasing<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>If <code>true</code>, use the legacy aliasing pattern instead of provide/consume.
+										You are encouraged to use the provide/consume pattern for new implementations.</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5><span class="tsd-flag ts-flagOptional">Optional</span> riot<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5><span class="tsd-flag ts-flagOptional">Optional</span> simple<wbr>Attach<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The Riot instance to use instead of creating a new one.</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5><span class="tsd-flag ts-flagOptional">Optional</span> stylish<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>If <code>true</code>, apply the default basic styling.</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5><span class="tsd-flag ts-flagOptional">Optional</span> ui<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>If <code>true</code>, apply the base StoreFront structural styling.</p>
+									</div>
+								</div>
 							</li>
 						</ul>
 					</div>
@@ -371,9 +438,14 @@
 					<div class="tsd-signature tsd-kind-icon">services<span class="tsd-signature-symbol">:</span> <a href="../interfaces/serviceconfiguration.html" class="tsd-signature-type">ServiceConfiguration</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/a0d3e3d/src/core/configuration.ts#L14">core/configuration.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/cf36bfd/src/core/configuration.ts#L33">core/configuration.ts:33</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Configuration for services.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-module tsd-is-inherited">
 					<a name="sessionid" class="tsd-anchor"></a>
@@ -397,9 +469,18 @@
 					<div class="tsd-signature tsd-kind-icon">structure<span class="tsd-signature-symbol">:</span> <a href="structure.html" class="tsd-signature-type">Structure</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/a0d3e3d/src/core/configuration.ts#L10">core/configuration.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/cf36bfd/src/core/configuration.ts#L20">core/configuration.ts:20</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A mapping of variable names to record fields.</p>
+						</div>
+						<p>The property names are variable names that can be used in the markup to
+						display product/article data.</p>
+						<p>The values correspond to record fields available in <code>allMeta</code>.</p>
+						<p>Additional fields can be defined as neeeded.</p>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-module">
 					<a name="tags" class="tsd-anchor"></a>
@@ -407,9 +488,16 @@
 					<div class="tsd-signature tsd-kind-icon">tags<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/a0d3e3d/src/core/configuration.ts#L12">core/configuration.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/groupby/storefront-core/blob/cf36bfd/src/core/configuration.ts#L28">core/configuration.ts:28</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Default props for configurable Tags.</p>
+						</div>
+						<p>The properties are keyed by tag names (without the <code>gb-</code> prefix, if any),
+						and its values are the props to configure for that tag.</p>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
