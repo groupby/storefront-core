@@ -149,6 +149,7 @@ class UrlService extends BaseService<UrlService.Options> {
       try {
         WINDOW().history.pushState({ url, state: this.filterState(state), app: STOREFRONT_APP_ID }, '', url);
         this.app.flux.emit(Events.URL_UPDATED, url);
+        this.handleUrlWithoutListeners();
       } catch (e) {
         this.app.log.warn('unable to push state to browser history', e);
       }

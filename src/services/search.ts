@@ -1,4 +1,4 @@
-import { Events } from '@storefront/flux-capacitor';
+import { Events, Routes } from '@storefront/flux-capacitor';
 import { core, BaseService } from '../core/service';
 import StoreFront from '../storefront';
 
@@ -16,7 +16,7 @@ class SearchService extends BaseService<SearchService.Options> {
 
   fetchProducts = () => {
     this.app.flux.emit('sayt:hide');
-    this.app.flux.products();
+    this.app.flux.saveState(Routes.SEARCH);
   }
 }
 
