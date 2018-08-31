@@ -163,11 +163,13 @@ class UrlService extends BaseService<UrlService.Options> {
 
   replaceHistory(url: string) {
     try {
+      const state = this.app.flux.store.getState();
       WINDOW().history.replaceState({
         url,
-        state: this.filterState(this.app.flux.store.getState()),
+        state: this.filterState(state),
         app: STOREFRONT_APP_ID
       }, WINDOW().document.title, url);
+      this.refreshState(state, true);
     } catch (e) {
       this.app.log.warn('unable to replace browser history', e);
     }
@@ -193,8 +195,8 @@ class UrlService extends BaseService<UrlService.Options> {
     }
   }
 
-  refreshState(state: any): Promise<any> {
-    return <any>this.app.flux.store.dispatch(this.app.flux.actions.refreshState(state));
+  refreshState(state: any, replace: boolean = false): Promise<any> {
+    return <any>this.app.flux.store.dispatch(this.app.flux.actions.refreshState(state, replace));
   }
 }
 
