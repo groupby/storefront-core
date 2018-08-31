@@ -15,7 +15,6 @@ const DEFAULTS: Partial<Configuration> = {
 
   search: {
     redirectSingleResult: false,
-    defaults: {},
     overrides: {},
     useDefaultCollection: false,
   },
@@ -40,10 +39,6 @@ const DEFAULTS: Partial<Configuration> = {
       suggestionMode: 'popular',
     },
     navigations: {},
-    defaults: {
-      suggestions: {},
-      products: {},
-    },
     overrides: {
       suggestions: {},
       products: {},
@@ -80,6 +75,13 @@ const DEFAULTS: Partial<Configuration> = {
   },
   details: {
     alwaysFetch: false,
+    overrides: {},
+  },
+  collections: {
+    overrides: {},
+  },
+  refinements: {
+    overrides: {},
   },
   network: {
     https: typeof window !== 'undefined' && window.location.protocol === 'https:',
