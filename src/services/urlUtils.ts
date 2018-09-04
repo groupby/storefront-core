@@ -12,19 +12,20 @@ namespace UrlUtils {
   };
 
   export const searchUrlState = (state: Store.State): UrlBeautifier.SearchUrlState => {
+    const s: any = { data: { present: Object.keys(state.staging).length ? state.staging : state.data.present } };
     return {
-      query: Selectors.query(state),
-      page: Selectors.page(state),
-      pageSize: Selectors.pageSize(state),
-      refinements: Selectors.selectedRefinements(state).map((refinement) => {
+      query: Selectors.query(s),
+      page: Selectors.page(s),
+      pageSize: Selectors.pageSize(s),
+      refinements: Selectors.selectedRefinements(s).map((refinement) => {
         if (refinement.type === 'Value') {
           return { field: refinement.navigationName, value: refinement.value };
         } else {
           return { field: refinement.navigationName, low: refinement.low, high: refinement.high };
         }
       }),
-      sort: Selectors.sort(state),
-      collection: Selectors.collection(state),
+      sort: Selectors.sort(s),
+      collection: Selectors.collection(s),
     };
   };
 
