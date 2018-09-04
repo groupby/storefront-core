@@ -196,7 +196,7 @@ class UrlService extends BaseService<UrlService.Options> {
   }
 
   refreshState(state: any, replace: boolean = false): Promise<any> {
-    return <any>this.app.flux.store.dispatch(this.app.flux.actions.refreshState(state, replace));
+    return <any>this.app.flux.store.dispatch(this.app.flux.actions.refreshState(state));
   }
 }
 
