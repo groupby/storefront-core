@@ -137,10 +137,10 @@ class UrlService extends BaseService<UrlService.Options> {
   }
 
   listenForHistoryChange = () => {
-    // this.app.flux.on(Events.HISTORY_SAVE, this.updateHistory);
-    this.app.flux.on(Events.STAGING_SEARCH_UPDATED, () => {
+    this.app.flux.on(Events.HISTORY_SAVE, this.updateHistory);
+    this.app.flux.on(Events.STAGING_SEARCH_UPDATED, (state) => {
       this.updateHistory({
-        state: this.app.flux.store.getState(),
+        state: <Store.State>{ data: { present: state } },
         route: Routes.SEARCH,
       });
     });
@@ -158,7 +158,11 @@ class UrlService extends BaseService<UrlService.Options> {
       WINDOW().location.assign(this.opts.redirects[url]);
     } else {
       try {
-        WINDOW().history.pushState({ url, state: this.filterState(state), app: STOREFRONT_APP_ID }, '', url);
+        WINDOW().history.pushState(
+          { url, state: this.filterState(this.app.flux.store.getState()), app: STOREFRONT_APP_ID },
+          '',
+          url
+        );
         this.app.flux.emit(Events.URL_UPDATED, url);
         this.handleUrlWithoutListeners();
       } catch (e) {
@@ -193,7 +197,6 @@ class UrlService extends BaseService<UrlService.Options> {
   filterState(state: Store.State) {
     const {
       session: { config, ...session },
-      staging,
       ...rootConfig
     } = state;
     if (this.app.config.history.length === 0) {
