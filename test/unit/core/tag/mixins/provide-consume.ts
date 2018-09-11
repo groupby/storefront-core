@@ -27,11 +27,21 @@ suite('Provide/Consume Mixin', ({ expect, sinon, spy, stub }) => {
         .withArgs(tag)
         .returns({ provides: { a: 'b' } });
       tag._provides = { c: 'd' };
+      stub(ProvideConsume, 'updateAliases');
 
       tag.provideConsumeMixin();
       handlers[Phase.INITIALIZE]();
 
       expect(tag._provides).to.eql({ a: 'b', c: 'd' });
+    });
+
+    it('should update aliases on initialize', () => {
+      const updateAliases = stub(ProvideConsume, 'updateAliases');
+
+      tag.provideConsumeMixin();
+      handlers[Phase.INITIALIZE]();
+
+      expect(updateAliases).to.be.calledWith(sinon.match.same(tag));
     });
 
     it('should update aliases on update', () => {

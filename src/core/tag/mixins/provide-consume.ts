@@ -11,6 +11,8 @@ export namespace ProvideConsume {
       if (Object.keys(provides).length !== 0) {
         Object.assign(this._provides, provides);
       }
+
+      ProvideConsume.updateAliases(this);
     });
     this.one(Phase.BEFORE_MOUNT, () => {
       const aliases = ProvideConsume.updateAliases(this);
