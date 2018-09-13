@@ -88,17 +88,17 @@ class UrlService extends BaseService<UrlService.Options> {
     let newState;
     switch (route) {
       case Routes.SEARCH:
-        newState = Utils.mergeSearchState(this.app.flux.store.getState(), request);
-        this.refreshState(newState);
-        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated());
+        //newState = Utils.mergeSearchState(this.app.flux.store.getState(), request);
+        //this.refreshState(newState);
+        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated({ request }));
         break;
       case Routes.PAST_PURCHASE:
-        newState = Utils.mergePastPurchaseState(this.app.flux.store.getState(), request);
-        this.refreshState(newState);
-        this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchPastPurchaseProducts());
+        //newState = Utils.mergePastPurchaseState(this.app.flux.store.getState(), request);
+        //this.refreshState(newState);
+        this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchPastPurchaseProducts({ request }));
         break;
       case Routes.DETAILS:
-        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductDetails(request.id));
+        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductDetails({ id: request.id, request }));
         break;
     }
   }
@@ -125,13 +125,13 @@ class UrlService extends BaseService<UrlService.Options> {
     this.listenForHistoryChange();
     switch (route) {
       case Routes.SEARCH:
-        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated());
+        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated({ request }));
         break;
       case Routes.DETAILS:
-        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductDetails(request.id));
+        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductDetails({ id: request.id, request }));
         break;
       case Routes.PAST_PURCHASE:
-        this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchPastPurchaseProducts());
+        this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchPastPurchaseProducts({ request }));
         break;
     }
   }
