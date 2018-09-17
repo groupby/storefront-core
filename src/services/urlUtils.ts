@@ -1,4 +1,4 @@
-import { Actions, Events, Routes, Selectors, Store } from '@storefront/flux-capacitor';
+import { Actions, Adapters, Events, Routes, Selectors, Store } from '@storefront/flux-capacitor';
 import { Request } from 'groupby-api';
 import * as UrlParse from 'url-parse';
 import CoreSelectors from '../core/selectors';
@@ -59,8 +59,12 @@ namespace UrlUtils {
     };
   };
 
-  export const searchStateToRequest = (state: UrlBeautifier.SearchUrlState): Request => {
-    return {};
+  export const searchStateToRequest = (state: UrlBeautifier.SearchUrlState): Partial<Request> => {
+    return {
+      query,
+      pageSize: Adapters.Request.clampPageSize(page, pageSize),
+      collection,
+    };
   };
 
   // export const getSortIndex = (stateSort: Store.Sort[], requestSort: Store.Sort) => {
