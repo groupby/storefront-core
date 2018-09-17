@@ -60,10 +60,17 @@ namespace UrlUtils {
   };
 
   export const searchStateToRequest = (state: UrlBeautifier.SearchUrlState): Partial<Request> => {
+    const { collection, page, pageSize, query, refinements, sort } = state;
+
     return {
-      query,
-      pageSize: Adapters.Request.clampPageSize(page, pageSize),
       collection,
+      pageSize: Adapters.Request.clampPageSize(page, pageSize),
+      query,
+      refinements: <any>refinements.map((refinement) =>
+        Adapters.Request.extractRefinement(refinement.field, <any>refinement)
+      ),
+      skip: Adapters.Request.extractSkip(page, pageSize),
+      sort: Adapters.Request.extractSort(sort),
     };
   };
 
