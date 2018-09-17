@@ -33,63 +33,58 @@ class UrlService extends BaseService<UrlService.Options> {
   }
 
   init() {
-    try {
-      this.handleCurrentLocation(this.handleUrl.bind(this));
-    } catch (e) {
-      this.app.log.warn('unable to parse state from url', e);
-      this.listenForHistoryChange();
-    }
+    this.listenForHistoryChange();
+    this.handleUrlWithoutListeners();
   }
 
   handleUrlWithoutListeners() {
     try {
-      this.handleCurrentLocation(this.handleUrlWithoutAugment.bind(this));
+      this.handleCurrentLocation();
     } catch (e) {
       this.app.log.warn('unable to parse state from url', e);
     }
   }
 
-  handleCurrentLocation(handleReq: (route: string, request: UrlBeautifier.SearchUrlState) => void) {
+  handleCurrentLocation() {
     const parsed = <any>this.beautifier.parse<UrlBeautifier.SearchUrlState>(WINDOW().location.href);
-    if (typeof parsed.then === 'function') {
-      parsed
-        .then((resp) => {
-          if (resp) {
-            const { route, request } = resp;
-            handleReq(route, request);
-          }
-        })
-        .catch((e) => {
-          this.app.log.warn('UrlService parse promise failed', e);
-        });
-    } else {
-      const { route, request } = parsed;
-      handleReq(route, request);
-    }
-  }
-
-  handleUrl(route: string, request: UrlBeautifier.SearchUrlState) {
-    if (route === Routes.SEARCH || route === Routes.PAST_PURCHASE) {
-      const newState =
-        route === Routes.SEARCH
-          ? Utils.mergeSearchState(this.app.flux.store.getState(), request)
-          : Utils.mergePastPurchaseState(this.app.flux.store.getState(), request);
-      const unsubscribe = this.app.flux.store.subscribe(() => {
-        unsubscribe();
-        this.augmentHistory(route, request);
+    Promise.resolve(parsed)
+      .then((resp) => {
+        if (resp) {
+          const { route, request: urlState } = resp;
+          this.handleUrlWithoutAugment(route, urlState);
+        }
+      })
+      .catch((e) => {
+        this.app.log.warn('UrlService parse promise failed', e);
       });
-      this.refreshState(newState);
-    } else {
-      this.augmentHistory(route, request);
-    }
   }
 
-  handleUrlWithoutAugment(route: string, request: any) {
-    let newState;
+  // handleUrl(route: string, request: UrlBeautifier.SearchUrlState) {
+  //   if (route === Routes.SEARCH || route === Routes.PAST_PURCHASE) {
+  //     // TODO: can remove merge functions
+  //     const newState =
+  //       route === Routes.SEARCH
+  //         ? Utils.mergeSearchState(this.app.flux.store.getState(), request)
+  //         : Utils.mergePastPurchaseState(this.app.flux.store.getState(), request);
+  //     // TODO: can probably remove this too
+  //     const unsubscribe = this.app.flux.store.subscribe(() => {
+  //       unsubscribe();
+  //       this.augmentHistory(route, request);
+  //     });
+  //     // TODO: can remove refreshState
+  //     this.refreshState(newState);
+  //   } else {
+  //     this.augmentHistory(route, request);
+  //   }
+  // }
+
+  handleUrlWithoutAugment(route: string, urlState: UrlBeautifier.SearchUrlState | UrlBeautifier.DetailsUrlState) {
+    let request;
     switch (route) {
       case Routes.SEARCH:
         //newState = Utils.mergeSearchState(this.app.flux.store.getState(), request);
         //this.refreshState(newState);
+        request = Utils.searchStateToRequest(<UrlBeautifier.SearchUrlState>urlState);
         this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated({ request }));
         break;
       case Routes.PAST_PURCHASE:
@@ -113,28 +108,28 @@ class UrlService extends BaseService<UrlService.Options> {
     );
   }
 
-  augmentHistory(route: string, request: any) {
-    const { pathname, search, hash } = WINDOW().location;
-    const url = pathname + search + hash;
-
-    // this.replaceHistory(url);
-    // this.app.flux.once(Events.HISTORY_SAVE, () => {
-    //   this.replaceHistory(url);
-    //   this.listenForHistoryChange();
-    // });
-    this.listenForHistoryChange();
-    switch (route) {
-      case Routes.SEARCH:
-        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated({ request }));
-        break;
-      case Routes.DETAILS:
-        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductDetails({ id: request.id, request }));
-        break;
-      case Routes.PAST_PURCHASE:
-        this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchPastPurchaseProducts({ request }));
-        break;
-    }
-  }
+  // augmentHistory(route: string, request: any) {
+  //   // const { pathname, search, hash } = WINDOW().location;
+  //   // const url = pathname + search + hash;
+  //
+  //   // this.replaceHistory(url);
+  //   // this.app.flux.once(Events.HISTORY_SAVE, () => {
+  //   //   this.replaceHistory(url);
+  //   //   this.listenForHistoryChange();
+  //   // });
+  //   this.listenForHistoryChange();
+  //   switch (route) {
+  //     case Routes.SEARCH:
+  //       this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated({ request }));
+  //       break;
+  //     case Routes.DETAILS:
+  //       this.app.flux.store.dispatch(this.app.flux.actions.fetchProductDetails({ id: request.id, request }));
+  //       break;
+  //     case Routes.PAST_PURCHASE:
+  //       this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchPastPurchaseProducts({ request }));
+  //       break;
+  //   }
+  // }
 
   listenForHistoryChange = () => {
     this.app.flux.on(Events.HISTORY_SAVE, this.updateHistory);
