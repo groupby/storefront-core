@@ -1,4 +1,5 @@
 import { Actions, Events, Routes, Selectors, Store } from '@storefront/flux-capacitor';
+import { Request } from 'groupby-api';
 import * as UrlParse from 'url-parse';
 import CoreSelectors from '../core/selectors';
 import UrlBeautifier from '../core/url-beautifier';
@@ -58,7 +59,7 @@ namespace UrlUtils {
     };
   };
 
-  export const searchStateToRequest = (state: UrlBeautifier.SearchUrlState): Actions.Payload.Fetch.Search => {
+  export const searchStateToRequest = (state: UrlBeautifier.SearchUrlState): Request => {
     return {};
   };
 
