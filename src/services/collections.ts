@@ -6,7 +6,6 @@ import StoreFront from '../storefront';
 @core
 class CollectionsService extends LazyService {
   lazyInit() {
-    this.fetchCollectionCounts();
     this.app.flux.on(Events.RECALL_CHANGED, this.fetchCollectionCounts);
   }
 

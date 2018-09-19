@@ -59,19 +59,35 @@ namespace UrlUtils {
     };
   };
 
-  export const searchStateToRequest = (state: UrlBeautifier.SearchUrlState): Partial<Request> => {
-    const { collection, page, pageSize, query, refinements, sort } = state;
+  export const searchStateToRequest = (state: UrlBeautifier.SearchUrlState, store: Store.State): Partial<Request> => {
+    const { collection, page, pageSize: urlPageSize, query, refinements, sort } = state;
+    let request: Partial<Request> = {};
 
-    return {
-      collection,
-      pageSize: Adapters.Request.clampPageSize(page, pageSize),
-      query,
-      refinements: <any>refinements.map((refinement) =>
-        Adapters.Request.extractRefinement(refinement.field, <any>refinement)
-      ),
-      skip: Adapters.Request.extractSkip(page, pageSize),
-      sort: Adapters.Request.extractSort(sort),
-    };
+    if (collection) {
+      request.collection = collection;
+    }
+
+    if (page) {
+      const pageSize = urlPageSize || Selectors.pageSize(store);
+      request.pageSize = Adapters.Request.clampPageSize(page, pageSize);
+      request.skip = Adapters.Request.extractSkip(page, pageSize);
+    }
+
+    if (query) {
+      request.query = query;
+    }
+
+    if (refinements) {
+      request.refinements = <any>refinements
+        .map((refinement) => Adapters.Request.extractRefinement(refinement.field, <any>refinement));
+    }
+
+    if (sort) {
+      // TODO: fix type when api-javascript released
+      request.sort = <any>Adapters.Request.extractSort(sort);
+    }
+
+    return request;
   };
 
   // export const getSortIndex = (stateSort: Store.Sort[], requestSort: Store.Sort) => {

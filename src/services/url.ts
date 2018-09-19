@@ -84,7 +84,7 @@ class UrlService extends BaseService<UrlService.Options> {
       case Routes.SEARCH:
         //newState = Utils.mergeSearchState(this.app.flux.store.getState(), request);
         //this.refreshState(newState);
-        request = Utils.searchStateToRequest(<UrlBeautifier.SearchUrlState>urlState);
+        request = Utils.searchStateToRequest(<UrlBeautifier.SearchUrlState>urlState, this.app.flux.store.getState());
         this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated({ request }));
         break;
       case Routes.PAST_PURCHASE:
