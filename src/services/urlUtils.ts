@@ -62,15 +62,12 @@ namespace UrlUtils {
   export const searchStateToRequest = (state: UrlBeautifier.SearchUrlState, store: Store.State): Partial<Request> => {
     const { collection, page, pageSize: urlPageSize, query, refinements, sort } = state;
     let request: Partial<Request> = {};
+    const pageSize = urlPageSize || Selectors.pageSize(store);
+    request.pageSize = Adapters.Request.clampPageSize(page || 1, pageSize);
+    request.skip = Adapters.Request.extractSkip(page || 1, pageSize);
 
     if (collection) {
       request.collection = collection;
-    }
-
-    if (page) {
-      const pageSize = urlPageSize || Selectors.pageSize(store);
-      request.pageSize = Adapters.Request.clampPageSize(page, pageSize);
-      request.skip = Adapters.Request.extractSkip(page, pageSize);
     }
 
     if (query) {
