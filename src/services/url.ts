@@ -85,7 +85,7 @@ class UrlService extends BaseService<UrlService.Options> {
         //newState = Utils.mergeSearchState(this.app.flux.store.getState(), request);
         //this.refreshState(newState);
         request = Utils.searchStateToRequest(<UrlBeautifier.SearchUrlState>urlState, this.app.flux.store.getState());
-        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated({ request }));
+        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated(<any>{ request, fetch: true }));
         break;
       case Routes.PAST_PURCHASE:
         //newState = Utils.mergePastPurchaseState(this.app.flux.store.getState(), request);
@@ -133,12 +133,6 @@ class UrlService extends BaseService<UrlService.Options> {
 
   listenForHistoryChange = () => {
     this.app.flux.on(Events.HISTORY_SAVE, this.updateHistory);
-    this.app.flux.on(Events.STAGING_SEARCH_UPDATED, (state) => {
-      this.updateHistory({
-        state: <Store.State>{ data: { present: state } },
-        route: Routes.SEARCH,
-      });
-    });
     this.app.flux.on(Events.HISTORY_REPLACE, this.buildUrlAndReplaceHistory);
   };
 

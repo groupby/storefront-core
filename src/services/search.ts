@@ -6,17 +6,17 @@ import StoreFront from '../storefront';
 class SearchService extends BaseService<SearchService.Options> {
   constructor(app: StoreFront, opts: any) {
     super(app, opts);
-    // this.app.flux.on(Events.SEARCH_CHANGED, this.fetchProducts);
+    this.app.flux.on(Events.SEARCH_CHANGED, this.fetchProducts);
   }
 
   init() {
     // no-op
   }
 
-  // fetchProducts = () => {
-  //   this.app.flux.emit('sayt:hide');
-  //   this.app.flux.saveState(Routes.SEARCH);
-  // }
+  fetchProducts = () => {
+    this.app.flux.emit('sayt:hide');
+    this.app.flux.products();
+  };
 }
 
 namespace SearchService {
