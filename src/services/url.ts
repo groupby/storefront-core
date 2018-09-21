@@ -190,9 +190,9 @@ class UrlService extends BaseService<UrlService.Options> {
     } = state;
     if (this.app.config.history.length === 0) {
       const data = { ...rootConfig.data, present: { ...rootConfig.data.present, products: [] } };
-      return { ...rootConfig, session, data, staging: {} };
+      return { ...rootConfig, session, data };
     }
-    return { ...rootConfig, session, staging: {} };
+    return { ...rootConfig, session };
   }
 
   rewind = (event: PopStateEvent) => {
