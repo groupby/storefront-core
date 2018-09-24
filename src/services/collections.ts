@@ -6,8 +6,10 @@ import StoreFront from '../storefront';
 @core
 class CollectionsService extends LazyService {
   lazyInit() {
-    this.app.flux.on(Events.RECALL_CHANGED, this.fetchCollectionCounts);
+    this.app.flux.on(Events.RECALL_CHANGED, this.waitForResults);
   }
+
+  waitForResults = () => this.app.flux.once(Events.PRODUCTS_UPDATED, this.fetchCollectionCounts);
 
   fetchCollectionCounts = () => {
     const state = this.app.flux.store.getState();

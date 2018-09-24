@@ -15,7 +15,7 @@ class SearchService extends BaseService<SearchService.Options> {
 
   fetchProducts = () => {
     this.app.flux.emit('sayt:hide');
-    this.app.flux.products();
+    this.app.flux.saveState(Routes.SEARCH);
   };
 }
 

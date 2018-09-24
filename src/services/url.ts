@@ -59,25 +59,6 @@ class UrlService extends BaseService<UrlService.Options> {
       });
   }
 
-  // handleUrl(route: string, request: UrlBeautifier.SearchUrlState) {
-  //   if (route === Routes.SEARCH || route === Routes.PAST_PURCHASE) {
-  //     // TODO: can remove merge functions
-  //     const newState =
-  //       route === Routes.SEARCH
-  //         ? Utils.mergeSearchState(this.app.flux.store.getState(), request)
-  //         : Utils.mergePastPurchaseState(this.app.flux.store.getState(), request);
-  //     // TODO: can probably remove this too
-  //     const unsubscribe = this.app.flux.store.subscribe(() => {
-  //       unsubscribe();
-  //       this.augmentHistory(route, request);
-  //     });
-  //     // TODO: can remove refreshState
-  //     this.refreshState(newState);
-  //   } else {
-  //     this.augmentHistory(route, request);
-  //   }
-  // }
-
   handleUrlWithoutAugment(route: string, urlState: UrlBeautifier.SearchUrlState | UrlBeautifier.DetailsUrlState) {
     let request;
     switch (route) {
@@ -90,10 +71,13 @@ class UrlService extends BaseService<UrlService.Options> {
       case Routes.PAST_PURCHASE:
         //newState = Utils.mergePastPurchaseState(this.app.flux.store.getState(), request);
         //this.refreshState(newState);
+        request = Utils.pastPurchaseStateToRequest(<UrlBeautifier.SearchUrlState>urlState, this.app.flux.store.getState());
         this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchPastPurchaseProducts({ request }));
         break;
       case Routes.DETAILS:
-        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductDetails({ id: request.id, request }));
+        this.app.flux.store.dispatch(
+          this.app.flux.actions.fetchProductDetails({ id: (<UrlBeautifier.DetailsUrlState>urlState).data.id })
+        );
         break;
     }
   }
@@ -107,29 +91,6 @@ class UrlService extends BaseService<UrlService.Options> {
       {}
     );
   }
-
-  // augmentHistory(route: string, request: any) {
-  //   // const { pathname, search, hash } = WINDOW().location;
-  //   // const url = pathname + search + hash;
-  //
-  //   // this.replaceHistory(url);
-  //   // this.app.flux.once(Events.HISTORY_SAVE, () => {
-  //   //   this.replaceHistory(url);
-  //   //   this.listenForHistoryChange();
-  //   // });
-  //   this.listenForHistoryChange();
-  //   switch (route) {
-  //     case Routes.SEARCH:
-  //       this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated({ request }));
-  //       break;
-  //     case Routes.DETAILS:
-  //       this.app.flux.store.dispatch(this.app.flux.actions.fetchProductDetails({ id: request.id, request }));
-  //       break;
-  //     case Routes.PAST_PURCHASE:
-  //       this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchPastPurchaseProducts({ request }));
-  //       break;
-  //   }
-  // }
 
   listenForHistoryChange = () => {
     this.app.flux.on(Events.HISTORY_SAVE, this.updateHistory);

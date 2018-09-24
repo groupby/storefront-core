@@ -66,7 +66,7 @@ namespace UrlUtils {
       pageSize: urlPageSize,
       query: urlQuery,
       refinements: urlRefinements,
-      sort: urlSort
+      sort: urlSort,
     } = state;
     let request: Partial<Request> = {};
     const pageSize = urlPageSize || Selectors.pageSize(store);
@@ -74,7 +74,9 @@ namespace UrlUtils {
     const skip = Adapters.Request.extractSkip(urlPage || 1, pageSize);
     const collection = urlCollection || Selectors.collection(store);
     const query = urlQuery || Selectors.currentQuery(store);
-    const refinements = <any>urlRefinements.map((refinement) => Adapters.Request.extractRefinement(refinement.field, <any>refinement))
+    const refinements = <any>urlRefinements.map((refinement) =>
+      Adapters.Request.extractRefinement(refinement.field, <any>refinement)
+    );
     const sort = <any>Adapters.Request.extractSort(urlSort || Selectors.sort(store));
 
     return {
@@ -86,6 +88,36 @@ namespace UrlUtils {
       sort,
     };
   };
+
+  export const pastPurchaseStateToRequest = (state: UrlBeautifier.SearchUrlState, store: Store.State): Partial<Request> => {
+    const {
+      collection: urlCollection,
+      page: urlPage,
+      pageSize: urlPageSize,
+      query: urlQuery,
+      refinements: urlRefinements,
+      sort: urlSort,
+    } = state;
+    let request: Partial<Request> = {};
+    const pageSize = urlPageSize || Selectors.pastPurchasePageSize(store);
+    const requestPageSize = Adapters.Request.clampPageSize(urlPage || 1, pageSize);
+    const skip = Adapters.Request.extractSkip(urlPage || 1, pageSize);
+    const collection = urlCollection || Selectors.collection(store);
+    const query = urlQuery || Selectors.pastPurchaseQuery(store);
+    const refinements = <any>urlRefinements.map((refinement) =>
+      Adapters.Request.extractRefinement(refinement.field, <any>refinement)
+    );
+    const sort = <any>Adapters.Request.extractSort(urlSort || Selectors.sort(store));
+
+    return {
+      pageSize,
+      skip,
+      collection,
+      query,
+      refinements,
+      sort,
+    };
+  }
 
   // export const getSortIndex = (stateSort: Store.Sort[], requestSort: Store.Sort) => {
   //   return stateSort.findIndex((sort) => {
