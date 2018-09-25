@@ -2,6 +2,7 @@ import Service from '../core/service';
 import StoreFront from '../storefront';
 import autocomplete from './autocomplete';
 import collections from './collections';
+import details from './details';
 import logging from './logging';
 import pastPurchases from './pastPurchases';
 import recommendations from './recommendations';
@@ -13,6 +14,7 @@ import url from './url';
 const SERVICES: Service.Constructor.Map = {
   logging,
   search,
+  details,
   url,
   autocomplete,
   collections,
@@ -34,6 +36,10 @@ export interface ServiceConfiguration {
    * Configuration for the search service.
    */
   search?: Service.Options<search.Options>;
+  /**
+   * Configuration for the details service.
+   */
+  details?: Service.Options<details.Options>;
   /**
    * Configuration for the past purchases service.
    */
@@ -67,6 +73,7 @@ export interface ServiceConfiguration {
 export interface CoreServices {
   logging: logging;
   search: search;
+  details: details;
   pastPurchases: pastPurchases;
   autocomplete: autocomplete;
   collections: collections;
