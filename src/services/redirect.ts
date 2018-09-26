@@ -9,5 +9,5 @@ export default class RedirectService extends BaseService<any> {
     this.app.flux.on(Events.REDIRECT, this.redirect);
   }
 
-  redirect = (url: string) => WINDOW().location.assign(url);
+  redirect = (url: string) => WINDOW().location.replace(url);
 }

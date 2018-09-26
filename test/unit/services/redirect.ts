@@ -28,14 +28,14 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
   });
 
   describe('redirect()', () => {
-    it('should call location.assign() with url', () => {
+    it('should call location.replace() with url', () => {
       const url = 'www.example.com';
-      const assign = spy();
-      stub(utils, 'WINDOW').returns({ location: { assign } });
+      const replace = spy();
+      stub(utils, 'WINDOW').returns({ location: { replace } });
 
       service.redirect(url);
 
-      expect(assign).to.be.calledWithExactly(url);
+      expect(replace).to.be.calledWithExactly(url);
     });
   });
 });
