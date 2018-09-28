@@ -128,6 +128,7 @@ class UrlService extends BaseService<UrlService.Options> {
 
   replaceHistory(url: string) {
     try {
+      const oldUrl = WINDOW().location.href;
       const state = this.app.flux.store.getState();
       WINDOW().history.replaceState(
         {
@@ -139,6 +140,11 @@ class UrlService extends BaseService<UrlService.Options> {
         url
       );
       this.refreshState(state, true);
+
+      const newUrl = WINDOW().location.href;
+      if (oldUrl !== newUrl) {
+        this.app.flux.emit(Events.URL_UPDATED, url);
+      }
     } catch (e) {
       this.app.log.warn('unable to replace browser history', e);
     }
