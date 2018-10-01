@@ -95,7 +95,7 @@ class UrlService extends BaseService<UrlService.Options> {
   listenForHistoryChange = () => {
     this.app.flux.on(Events.HISTORY_SAVE, this.updateHistory);
     this.app.flux.on(Events.HISTORY_REPLACE, this.buildUrlAndReplaceHistory);
-  };
+  }
 
   updateHistory = ({ state, route }: { state: Store.State; route: string }) => {
     const url = this.beautifier.build(route, this.urlState[route](state));
@@ -119,12 +119,12 @@ class UrlService extends BaseService<UrlService.Options> {
         this.app.log.warn('unable to push state to browser history', e);
       }
     }
-  };
+  }
 
   buildUrlAndReplaceHistory = ({ state, route }: { state: Store.State; route: string }) => {
     const url = this.beautifier.build(route, this.urlState[route](state));
     this.replaceHistory(url);
-  };
+  }
 
   replaceHistory(url: string) {
     try {

@@ -15,7 +15,7 @@ class DetailsService extends BaseService<DetailsService.Options> {
 
   fetchDetails = () => {
     this.app.flux.saveState(Routes.DETAILS);
-  };
+  }
 }
 
 namespace DetailsService {

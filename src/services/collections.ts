@@ -17,7 +17,7 @@ class CollectionsService extends LazyService {
     Selectors.collections(state)
       .allIds.filter((collection) => collection !== selected)
       .forEach((collection) => this.app.flux.countRecords(collection));
-  };
+  }
 }
 
 export default CollectionsService;
