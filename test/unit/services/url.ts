@@ -191,6 +191,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
     });
   });
 
+  // TODO: these tests are now for `handleUrl`
   describe('handleUrlWithoutAugment()', () => {
     describe('SEARCH', () => {
       it('should merge and refresh state', () => {

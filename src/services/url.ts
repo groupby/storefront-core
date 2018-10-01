@@ -51,7 +51,7 @@ class UrlService extends BaseService<UrlService.Options> {
       .then((resp) => {
         if (resp) {
           const { route, request: urlState } = resp;
-          this.handleUrlWithoutAugment(route, urlState);
+          this.handleUrl(route, urlState);
         }
       })
       .catch((e) => {
@@ -59,18 +59,15 @@ class UrlService extends BaseService<UrlService.Options> {
       });
   }
 
-  handleUrlWithoutAugment(route: string, urlState: UrlBeautifier.SearchUrlState | UrlBeautifier.DetailsUrlState) {
+  handleUrl(route: string, urlState: UrlBeautifier.SearchUrlState | UrlBeautifier.DetailsUrlState) {
     let request;
     switch (route) {
       case Routes.SEARCH:
-        //newState = Utils.mergeSearchState(this.app.flux.store.getState(), request);
-        //this.refreshState(newState);
         request = Utils.searchStateToRequest(<UrlBeautifier.SearchUrlState>urlState, this.app.flux.store.getState());
         this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated(<any>{ request, fetch: true }));
         break;
       case Routes.PAST_PURCHASE:
-        //newState = Utils.mergePastPurchaseState(this.app.flux.store.getState(), request);
-        //this.refreshState(newState);
+        // tslint:disable-next-line max-line-length
         request = Utils.pastPurchaseStateToRequest(<UrlBeautifier.SearchUrlState>urlState, this.app.flux.store.getState());
         this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchPastPurchaseProducts({ request }));
         break;
@@ -108,12 +105,17 @@ class UrlService extends BaseService<UrlService.Options> {
       WINDOW().location.assign(this.opts.redirects[url]);
     } else {
       try {
+        const oldUrl = WINDOW().location.href;
         WINDOW().history.pushState(
           { url, state: this.filterState(this.app.flux.store.getState()), app: STOREFRONT_APP_ID },
           '',
           url
         );
-        this.app.flux.emit(Events.URL_UPDATED, url);
+
+        const newUrl = WINDOW().location.href;
+        if (oldUrl !== newUrl) {
+          this.app.flux.emit(Events.URL_UPDATED, url);
+        }
         this.handleUrlWithoutListeners();
       } catch (e) {
         this.app.log.warn('unable to push state to browser history', e);
@@ -139,7 +141,7 @@ class UrlService extends BaseService<UrlService.Options> {
         WINDOW().document.title,
         url
       );
-      this.refreshState(state, true);
+      this.refreshState(state);
 
       const newUrl = WINDOW().location.href;
       if (oldUrl !== newUrl) {
@@ -173,7 +175,7 @@ class UrlService extends BaseService<UrlService.Options> {
     }
   }
 
-  refreshState(state: any, replace: boolean = false): Promise<any> {
+  refreshState(state: any): Promise<any> {
     return <any>this.app.flux.store.dispatch(this.app.flux.actions.refreshState(state));
   }
 }
