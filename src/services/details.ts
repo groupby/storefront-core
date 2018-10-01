@@ -6,14 +6,15 @@ import StoreFront from '../storefront';
 class DetailsService extends BaseService<DetailsService.Options> {
   constructor(app: StoreFront, opts: any) {
     super(app, opts);
-    this.app.flux.on(Events.DETAILS_CHANGED, this.fetchDetails);
+
+    this.app.flux.on(Events.DETAILS_CHANGED, this.fetchDetails, this);
   }
 
   init() {
     // no-op
   }
 
-  fetchDetails = () => {
+  fetchDetails() {
     this.app.flux.saveState(Routes.DETAILS);
   }
 }

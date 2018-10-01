@@ -97,7 +97,7 @@ class UrlService extends BaseService<UrlService.Options> {
     this.app.flux.on(Events.HISTORY_REPLACE, this.buildUrlAndReplaceHistory);
   }
 
-  updateHistory = ({ state, route }: { state: Store.State; route: string }) => {
+  updateHistory = ({ state, route }: { state: Store.State, route: string }) => {
     const url = this.beautifier.build(route, this.urlState[route](state));
 
     if (typeof this.opts.urlHandler === 'function') {
@@ -121,7 +121,7 @@ class UrlService extends BaseService<UrlService.Options> {
     }
   }
 
-  buildUrlAndReplaceHistory = ({ state, route }: { state: Store.State; route: string }) => {
+  buildUrlAndReplaceHistory = ({ state, route }: { state: Store.State, route: string }) => {
     const url = this.beautifier.build(route, this.urlState[route](state));
     this.replaceHistory(url);
   }
@@ -171,7 +171,7 @@ class UrlService extends BaseService<UrlService.Options> {
       }
       this.app.flux.emit(Events.URL_UPDATED, WINDOW().location.href);
     }
-  };
+  }
 
   refreshState(state: any, replace: boolean = false): Promise<any> {
     return <any>this.app.flux.store.dispatch(this.app.flux.actions.refreshState(state));
