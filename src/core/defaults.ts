@@ -74,7 +74,6 @@ const DEFAULTS: Partial<Configuration> = {
     },
   },
   details: {
-    alwaysFetch: false,
     overrides: {},
   },
   collections: {
