@@ -69,8 +69,8 @@ namespace UrlUtils {
       sort: urlSort,
     } = state;
     let request: Partial<Request> = {};
-    const pageSize = urlPageSize || Selectors.pageSize(store);
-    const requestPageSize = Adapters.Request.clampPageSize(urlPage || 1, pageSize);
+    const size = urlPageSize || Selectors.pageSize(store);
+    const pageSize = Adapters.Request.clampPageSize(urlPage || 1, size);
     const skip = Adapters.Request.extractSkip(urlPage || 1, pageSize);
     const collection = urlCollection || Selectors.collection(store);
     const query = urlQuery || Selectors.currentQuery(store);
@@ -100,8 +100,8 @@ namespace UrlUtils {
       sort: urlSort,
     } = state;
     let request: Partial<Request> = {};
-    const pageSize = urlPageSize || Selectors.pastPurchasePageSize(store);
-    const requestPageSize = Adapters.Request.clampPageSize(urlPage || 1, pageSize);
+    const size = urlPageSize || Selectors.pastPurchasePageSize(store);
+    const pageSize = Adapters.Request.clampPageSize(urlPage || 1, size);
     const skip = Adapters.Request.extractSkip(urlPage || 1, pageSize);
     const collection = urlCollection || Selectors.collection(store);
     const query = urlQuery || Selectors.pastPurchaseQuery(store);

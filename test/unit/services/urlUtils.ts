@@ -1,4 +1,4 @@
-import { Events, Selectors } from '@storefront/flux-capacitor';
+import { Adapters, Events, Selectors } from '@storefront/flux-capacitor';
 import * as sinon from 'sinon';
 import CoreSelectors from '../../../src/core/selectors';
 import { BaseService, CORE } from '../../../src/core/service';
@@ -40,6 +40,39 @@ suite('URL Service', ({ expect, spy, stub }) => {
         win.location = { pathname: '/not/base/path' };
 
         expect(Utils.getBasePath()).to.eq('/base/path');
+      });
+    });
+
+    describe('searchUrlState()', () => {
+      it('should return search url state', () => {
+        const state: any = { a: 'b' };
+        const query = 'hi';
+        const page = 2;
+        const pageSize = 30;
+        const refinements = [
+          { type: 'Value', navigationName: 'first', value: 'one' },
+          { type: 'Range', navigationName: 'second', low: 1, high: 2 }
+        ];
+        const sort = { c: 'd' };
+        const collection = 'a collection';
+        stub(Selectors, 'query').withArgs(state).returns(query);
+        stub(Selectors, 'page').withArgs(state).returns(page);
+        stub(Selectors, 'pageSize').withArgs(state).returns(pageSize);
+        stub(Selectors, 'selectedRefinements').withArgs(state).returns(refinements);
+        stub(Selectors, 'sort').withArgs(state).returns(sort);
+        stub(Selectors, 'collection').withArgs(state).returns(collection);
+
+        expect(Utils.searchUrlState(state)).to.eql({
+          query,
+          page,
+          pageSize,
+          refinements: [
+            { field: 'first', value: 'one' },
+            { field: 'second', low: 1, high: 2 }
+          ],
+          sort,
+          collection
+        });
       });
     });
 
@@ -93,6 +126,128 @@ suite('URL Service', ({ expect, spy, stub }) => {
         expect(pastPurchasePage).to.be.calledWithExactly(state);
         expect(pastPurchasePageSize).to.be.calledWithExactly(state);
         expect(pastPurchaseSelectedRefinements).to.be.calledWithExactly(state);
+      });
+    });
+
+    describe('searchStateToRequest()', () => {
+      it('should return search request based off given state', () => {
+        const collection = 'a collection';
+        const page = 324;
+        const pageSize = 25;
+        const query = 'dress';
+        const refinements = [1,2,3,4,5];
+        const sort = { a: 'b' };
+        const state: any = {
+          collection,
+          page,
+          pageSize,
+          query,
+          refinements,
+          sort
+        };
+        const store: any = { c: 'd' };
+        const skip = 30;
+        stub(Adapters.Request, 'extractRefinement').returnsArg(1);
+        stub(Adapters.Request, 'extractSkip').withArgs(page).returns(skip);
+        stub(Adapters.Request, 'extractSort').withArgs(sort).returns(sort);
+
+        expect(Utils.searchStateToRequest(state, store)).to.eql({
+          pageSize,
+          skip,
+          collection,
+          query,
+          refinements,
+          sort,
+        });
+      });
+
+      it('should return search request based off store', () => {
+        const collection = 'a collection';
+        const page = 324;
+        const pageSize = 25;
+        const query = 'dress';
+        const sort = { a: 'b' };
+        const state: any = { refinements: [] };
+        const store: any = { c: 'd' };
+        const skip = 30;
+        stub(Selectors, 'pageSize').withArgs(store).returns(pageSize);
+        stub(Adapters.Request, 'clampPageSize').withArgs(1, pageSize).returns(pageSize);
+        stub(Selectors, 'collection').withArgs(store).returns(collection);
+        stub(Selectors, 'currentQuery').withArgs(store).returns(query);
+        stub(Adapters.Request, 'extractRefinement').returnsArg(1);
+        stub(Adapters.Request, 'extractSkip').withArgs(1).returns(skip);
+        stub(Selectors, 'sort').withArgs(store).returns(sort);
+        stub(Adapters.Request, 'extractSort').withArgs(sort).returns(sort);
+
+        expect(Utils.searchStateToRequest(state, store)).to.eql({
+          pageSize,
+          skip,
+          collection,
+          query,
+          refinements: [],
+          sort,
+        });
+      });
+    });
+
+    describe('pastPurchaseStateToRequest()', () => {
+      it('should return past purchase request based off given state', () => {
+        const collection = 'a collection';
+        const page = 324;
+        const pageSize = 25;
+        const query = 'dress';
+        const refinements = [1,2,3,4,5];
+        const sort = { a: 'b' };
+        const state: any = {
+          collection,
+          page,
+          pageSize,
+          query,
+          refinements,
+          sort
+        };
+        const store: any = { c: 'd' };
+        const skip = 30;
+        stub(Adapters.Request, 'extractRefinement').returnsArg(1);
+        stub(Adapters.Request, 'extractSkip').withArgs(page).returns(skip);
+        stub(Adapters.Request, 'extractSort').withArgs(sort).returns(sort);
+
+        expect(Utils.pastPurchaseStateToRequest(state, store)).to.eql({
+          pageSize,
+          skip,
+          collection,
+          query,
+          refinements,
+          sort,
+        });
+      });
+
+      it('should return past purchase request based off store', () => {
+        const collection = 'a collection';
+        const page = 324;
+        const pageSize = 25;
+        const query = 'dress';
+        const sort = { a: 'b' };
+        const state: any = { refinements: [] };
+        const store: any = { c: 'd' };
+        const skip = 30;
+        stub(Selectors, 'pastPurchasePageSize').withArgs(store).returns(pageSize);
+        stub(Adapters.Request, 'clampPageSize').withArgs(1, pageSize).returns(pageSize);
+        stub(Selectors, 'collection').withArgs(store).returns(collection);
+        stub(Selectors, 'pastPurchaseQuery').withArgs(store).returns(query);
+        stub(Adapters.Request, 'extractRefinement').returnsArg(1);
+        stub(Adapters.Request, 'extractSkip').withArgs(1).returns(skip);
+        stub(Selectors, 'sort').withArgs(store).returns(sort);
+        stub(Adapters.Request, 'extractSort').withArgs(sort).returns(sort);
+
+        expect(Utils.pastPurchaseStateToRequest(state, store)).to.eql({
+          pageSize,
+          skip,
+          collection,
+          query,
+          refinements: [],
+          sort,
+        });
       });
     });
   });
