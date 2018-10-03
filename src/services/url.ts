@@ -151,10 +151,7 @@ class UrlService extends BaseService<UrlService.Options> {
   }
 
   filterState(state: Store.State) {
-    const {
-      session: { config, ...session },
-      ...rootConfig
-    } = state;
+    const { session: { config, ...session }, ...rootConfig } = state;
     if (this.app.config.history.length === 0) {
       const data = { ...rootConfig.data, present: { ...rootConfig.data.present, products: [] } };
       return { ...rootConfig, session, data };

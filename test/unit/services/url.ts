@@ -428,6 +428,37 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
   });
 
   describe('filterState()', () => {
+    it('should filter config from state and remove products when history length is 0', () => {
+      const data = { a: 'b', present: { products: [1,2,3,4,5] } };
+      const config = { history: { length: 0 } };
+      const session = { a: 'b', c: 'd' };
+      const sessionWithConfig = { ...session, config };
+      const otherData = {
+        e: 'f',
+        j: {
+          h: 1,
+        },
+        o: [2, 3, 4],
+        n: {
+          i: 'r',
+          k: {},
+        },
+      };
+      const state: any = { ...otherData, session: sessionWithConfig, data };
+      Object.freeze(state);
+      Object.freeze(session);
+      Object.freeze(sessionWithConfig);
+      service['app'] = <any>{ config };
+
+      const stateWithoutConfig = service.filterState(state);
+
+      expect(stateWithoutConfig).to.eql({
+        ...otherData,
+        session,
+        data: { ...data, present: { products: [] } }
+      });
+    });
+
     it('should filter config from state without modifying state', () => {
       const config = { history: { length: 5 } };
       const session = { a: 'b', c: 'd' };
@@ -472,6 +503,25 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
 
       expect(refreshState).to.be.calledWith(state);
       expect(emit).to.be.calledWith(Events.URL_UPDATED, url);
+    });
+
+    it('should refresh state from history and fetchProductsWithoutHistory when history length is 0', () => {
+      const FETCH = 'FETCH';
+      const url = 'http://example.com';
+      const state = { a: 'b' };
+      const emit = spy();
+      const config = { history: { length: 0 } };
+      const refreshState = (service.refreshState = spy());
+      const dispatch = spy();
+      const fetchProductsWithoutHistory = stub().returns(FETCH);
+      win.location = { href: url };
+      service['app'] = <any>{ config, flux: { emit, store: { dispatch }, actions: { fetchProductsWithoutHistory } } };
+
+      service.rewind(<any>{ state: { state, app: STOREFRONT_APP_ID } });
+
+      expect(refreshState).to.be.calledWith(state);
+      expect(emit).to.be.calledWith(Events.URL_UPDATED, url);
+      expect(dispatch).to.be.calledWithExactly(FETCH);
     });
 
     it('should not refresh state from history if no stored state', () => {
