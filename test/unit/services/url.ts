@@ -250,6 +250,27 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       expect(urlHandler).to.be.calledWithExactly(url);
     });
 
+    it('should redirect to another location using opts redirect as a function', () => {
+      const url = '/some/url';
+      const externalUrl = 'whatever.com';
+      const route = 'search';
+      const assign = spy();
+      const build = spy(() => url);
+      const data = { e: 'f' };
+      const newState = { g: 'h' };
+      win.location = { assign };
+      service.beautifier = <any>{ build };
+      service['opts'] = { redirects: (URL) => externalUrl };
+      service.urlState = <any>{
+        [route]: () => newState,
+      };
+
+      service.updateHistory(<any>{ state: <any>{ data }, route });
+
+      expect(build).to.be.calledWith(route, newState);
+      expect(assign).to.be.calledWithExactly(externalUrl);
+    });
+
     it('should redirect to another location', () => {
       const url = '/some/url';
       const externalUrl = 'whatever.com';
