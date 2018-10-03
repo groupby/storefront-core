@@ -51,7 +51,7 @@ class UrlService extends BaseService<UrlService.Options> {
       .then((resp) => {
         if (resp) {
           const { route, request: urlState } = resp;
-          this.handleUrl(route, urlState);
+          this.triggerRequestFromUrl(route, urlState);
         }
       })
       .catch((e) => {
@@ -59,12 +59,12 @@ class UrlService extends BaseService<UrlService.Options> {
       });
   }
 
-  handleUrl(route: string, urlState: UrlBeautifier.SearchUrlState | UrlBeautifier.DetailsUrlState) {
+  triggerRequestFromUrl(route: string, urlState: UrlBeautifier.SearchUrlState | UrlBeautifier.DetailsUrlState) {
     let request;
     switch (route) {
       case Routes.SEARCH:
         request = Utils.searchStateToRequest(<UrlBeautifier.SearchUrlState>urlState, this.app.flux.store.getState());
-        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated(<any>{ request, fetch: true }));
+        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated(<any>{ request }));
         break;
       case Routes.PAST_PURCHASE:
         // tslint:disable-next-line max-line-length
