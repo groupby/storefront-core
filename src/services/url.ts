@@ -49,10 +49,8 @@ class UrlService extends BaseService<UrlService.Options> {
     const parsed = <any>this.beautifier.parse<UrlBeautifier.SearchUrlState>(WINDOW().location.href);
     Promise.resolve(parsed)
       .then((resp) => {
-        if (resp) {
-          const { route, request: urlState } = resp;
-          this.triggerRequestFromUrl(route, urlState);
-        }
+        const { route, request: urlState } = resp;
+        this.triggerRequestFromUrl(route, urlState);
       })
       .catch((e) => {
         this.app.log.warn('UrlService parse promise failed', e);
