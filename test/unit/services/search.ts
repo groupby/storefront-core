@@ -19,7 +19,7 @@ suite('Search Service', ({ expect, spy, itShouldExtendBaseService }) => {
     itShouldExtendBaseService(() => service);
 
     it('should listen for SEARCH_CHANGED', () => {
-      expect(on).to.be.calledWithExactly(Events.SEARCH_CHANGED, service.fetchProducts);
+      expect(on).to.be.calledWithExactly(Events.SEARCH_CHANGED, service.fetchProducts, service);
     });
   });
 

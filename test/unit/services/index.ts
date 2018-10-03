@@ -1,6 +1,7 @@
 import Services from '../../../src/services';
 import autocomplete from '../../../src/services/autocomplete';
 import collections from '../../../src/services/collections';
+import details from '../../../src/services/details';
 import logging from '../../../src/services/logging';
 import pastPurchases from '../../../src/services/pastPurchases';
 import recommendations from '../../../src/services/recommendations';
@@ -22,6 +23,7 @@ suite('Services', ({ expect }) => {
         recommendations,
         redirect,
         search,
+        details,
         tracker,
         url
       });

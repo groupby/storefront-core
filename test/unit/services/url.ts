@@ -8,7 +8,7 @@ import Service, { STOREFRONT_APP_ID } from '../../../src/services/url';
 import Utils from '../../../src/services/urlUtils';
 import suite from './_suite';
 
-suite.only('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseService }) => {
+suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseService }) => {
   const routes = { a: 'b' };
   const routesWithBase = { a: '/base/b' };
   const beautifier = { refinementMapping: [], queryToken: 'q' };

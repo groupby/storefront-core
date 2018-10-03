@@ -19,7 +19,7 @@ suite('Details Service', ({ expect, spy, itShouldExtendBaseService }) => {
     itShouldExtendBaseService(() => service);
 
     it('should listen for DETAILS_CHANGED', () => {
-      expect(on).to.be.calledWithExactly(Events.DETAILS_CHANGED, service.fetchDetails);
+      expect(on).to.be.calledWithExactly(Events.DETAILS_CHANGED, service.fetchDetails, service);
     });
   });
 
