@@ -62,12 +62,12 @@ class UrlService extends BaseService<UrlService.Options> {
     switch (route) {
       case Routes.SEARCH:
         request = Utils.searchStateToRequest(<UrlBeautifier.SearchUrlState>urlState, this.app.flux.store.getState());
-        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated(<any>{ request }));
+        this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated({ request }));
         break;
       case Routes.PAST_PURCHASE:
         // tslint:disable-next-line max-line-length
         request = Utils.pastPurchaseStateToRequest(<UrlBeautifier.SearchUrlState>urlState, this.app.flux.store.getState());
-        this.app.flux.store.dispatch(<any>this.app.flux.actions.fetchPastPurchaseProducts({ request }));
+        this.app.flux.store.dispatch(this.app.flux.actions.fetchPastPurchaseProducts({ request }));
         break;
       case Routes.DETAILS:
         this.app.flux.store.dispatch(
