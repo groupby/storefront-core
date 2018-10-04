@@ -427,6 +427,28 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
     });
   });
 
+  describe('emitUrlUpdated()', () => {
+    it('should emit if given oldUrl is different from newUrl', () => {
+      const payload = '/search?q=hi';
+      const emit = spy();
+      service['app'] = <any>{ flux: { emit } }
+
+      service.emitUrlUpdated('www.one.com/search?q=hi', 'www.two.com/search?q=hi', payload);
+
+      expect(emit).to.be.calledWithExactly(Events.URL_UPDATED, payload);
+    });
+
+    it('should do nothing if oldUrl and newUrl are equal', () => {
+      const payload = '/search?q=hi';
+      const emit = spy();
+      service['app'] = <any>{ flux: { emit } }
+
+      service.emitUrlUpdated('www.one.com/search?q=hi', 'www.one.com/search?q=hi', payload);
+
+      expect(emit).to.be.not.be.called;
+    });
+  });
+
   describe('filterState()', () => {
     it('should filter config from state and remove products when history length is 0', () => {
       const data = { a: 'b', present: { products: [1,2,3,4,5] } };

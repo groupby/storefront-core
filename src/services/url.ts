@@ -111,9 +111,7 @@ class UrlService extends BaseService<UrlService.Options> {
         );
 
         const newUrl = WINDOW().location.href;
-        if (oldUrl !== newUrl) {
-          this.app.flux.emit(Events.URL_UPDATED, url);
-        }
+        this.emitUrlUpdated(oldUrl, newUrl, url);
         this.handleUrlWithoutListeners();
       } catch (e) {
         this.app.log.warn('unable to push state to browser history', e);
@@ -142,11 +140,15 @@ class UrlService extends BaseService<UrlService.Options> {
       this.refreshState(state);
 
       const newUrl = WINDOW().location.href;
-      if (oldUrl !== newUrl) {
-        this.app.flux.emit(Events.URL_UPDATED, url);
-      }
+      this.emitUrlUpdated(oldUrl, newUrl, url);
     } catch (e) {
       this.app.log.warn('unable to replace browser history', e);
+    }
+  }
+
+  emitUrlUpdated(oldUrl: string, newUrl: string, payload: string) {
+    if (oldUrl !== newUrl) {
+      this.app.flux.emit(Events.URL_UPDATED, payload);
     }
   }
 
