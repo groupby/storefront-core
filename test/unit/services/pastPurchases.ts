@@ -1,4 +1,4 @@
-import { Events } from '@storefront/flux-capacitor';
+import { Events, Routes } from '@storefront/flux-capacitor';
 import * as sinon from 'sinon';
 import Service from '../../../src/services/pastPurchases';
 import StoreFront from '../../../src/storefront';
@@ -18,12 +18,13 @@ suite('PastPurchase Service', ({ expect, spy, itShouldExtendBaseService }) => {
   describe('constructor()', () => {
     itShouldExtendBaseService(() => service);
 
-    it('should listen for PASTPURCHASES_CHANGED', () => {
+    it('should listen for AUTOCOMPLETE_QUERY_UPDATED and PASTPURCHASE_CHANGED', () => {
       const receiveSaytPastPurchases = spy();
       service['app'].flux.actions = <any>{ receiveSaytPastPurchases };
       expect(on).to.be.calledWith(Events.AUTOCOMPLETE_QUERY_UPDATED);
       on.getCall(0).args[1]();
       expect(receiveSaytPastPurchases).to.be.calledWithExactly([]);
+      expect(on).to.be.calledWithExactly(Events.PAST_PURCHASE_CHANGED, service.fetchProducts, service);
     });
   });
 
@@ -43,6 +44,17 @@ suite('PastPurchase Service', ({ expect, spy, itShouldExtendBaseService }) => {
 
       expect(dispatch).to.be.calledWithExactly(fetchPastPurchasesAction);
       expect(fetchPastPurchases).to.be.called;
+    });
+  });
+
+  describe('fetchProducts()', () => {
+    it('should save state', () => {
+      const saveState = spy();
+      app.flux = <any>{ saveState };
+
+      service.fetchProducts();
+
+      expect(saveState).to.be.calledWith(Routes.PAST_PURCHASE);
     });
   });
 });

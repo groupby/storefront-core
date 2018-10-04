@@ -5,7 +5,6 @@ import StoreFront from '../storefront';
 
 @core
 class CollectionsService extends LazyService {
-
   lazyInit() {
     this.fetchCollectionCounts();
     this.app.flux.on(Events.RECALL_CHANGED, this.waitForResults);
@@ -16,8 +15,8 @@ class CollectionsService extends LazyService {
   fetchCollectionCounts = () => {
     const state = this.app.flux.store.getState();
     const selected = Selectors.collection(state);
-    Selectors.collections(state).allIds
-      .filter((collection) => collection !== selected)
+    Selectors.collections(state)
+      .allIds.filter((collection) => collection !== selected)
       .forEach((collection) => this.app.flux.countRecords(collection));
   }
 }

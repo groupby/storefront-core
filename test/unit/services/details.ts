@@ -1,10 +1,10 @@
 import { Events, Routes } from '@storefront/flux-capacitor';
 import * as sinon from 'sinon';
-import Service from '../../../src/services/search';
+import Service from '../../../src/services/details';
 import StoreFront from '../../../src/storefront';
 import suite from './_suite';
 
-suite('Search Service', ({ expect, spy, itShouldExtendBaseService }) => {
+suite('Details Service', ({ expect, spy, itShouldExtendBaseService }) => {
   let app: StoreFront;
   let service: Service;
   let on: sinon.SinonSpy;
@@ -18,8 +18,8 @@ suite('Search Service', ({ expect, spy, itShouldExtendBaseService }) => {
   describe('constructor()', () => {
     itShouldExtendBaseService(() => service);
 
-    it('should listen for SEARCH_CHANGED', () => {
-      expect(on).to.be.calledWithExactly(Events.SEARCH_CHANGED, service.fetchProducts, service);
+    it('should listen for DETAILS_CHANGED', () => {
+      expect(on).to.be.calledWithExactly(Events.DETAILS_CHANGED, service.fetchDetails, service);
     });
   });
 
@@ -29,16 +29,14 @@ suite('Search Service', ({ expect, spy, itShouldExtendBaseService }) => {
     });
   });
 
-  describe('fetchProducts()', () => {
-    it('should emit sayt:hide and save state', () => {
+  describe('fetchDetails()', () => {
+    it('should save state', () => {
       const saveState = spy();
-      const emit = spy();
-      app.flux = <any>{ saveState, emit };
+      app.flux = <any>{ saveState };
 
-      service.fetchProducts();
+      service.fetchDetails();
 
-      expect(emit).to.be.calledWithExactly('sayt:hide');
-      expect(saveState).to.be.calledWith(Routes.SEARCH);
+      expect(saveState).to.be.calledWith(Routes.DETAILS);
     });
   });
 });

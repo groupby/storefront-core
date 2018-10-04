@@ -1,4 +1,4 @@
-import { Events, Selectors } from '@storefront/flux-capacitor';
+import { Adapters, Events, Selectors } from '@storefront/flux-capacitor';
 import * as sinon from 'sinon';
 import CoreSelectors from '../../../src/core/selectors';
 import { BaseService, CORE } from '../../../src/core/service';
@@ -40,6 +40,39 @@ suite('URL Service', ({ expect, spy, stub }) => {
         win.location = { pathname: '/not/base/path' };
 
         expect(Utils.getBasePath()).to.eq('/base/path');
+      });
+    });
+
+    describe('searchUrlState()', () => {
+      it('should return search url state', () => {
+        const state: any = { a: 'b' };
+        const query = 'hi';
+        const page = 2;
+        const pageSize = 30;
+        const refinements = [
+          { type: 'Value', navigationName: 'first', value: 'one' },
+          { type: 'Range', navigationName: 'second', low: 1, high: 2 }
+        ];
+        const sort = { c: 'd' };
+        const collection = 'a collection';
+        stub(Selectors, 'query').withArgs(state).returns(query);
+        stub(Selectors, 'page').withArgs(state).returns(page);
+        stub(Selectors, 'pageSize').withArgs(state).returns(pageSize);
+        stub(Selectors, 'selectedRefinements').withArgs(state).returns(refinements);
+        stub(Selectors, 'sort').withArgs(state).returns(sort);
+        stub(Selectors, 'collection').withArgs(state).returns(collection);
+
+        expect(Utils.searchUrlState(state)).to.eql({
+          query,
+          page,
+          pageSize,
+          refinements: [
+            { field: 'first', value: 'one' },
+            { field: 'second', low: 1, high: 2 }
+          ],
+          sort,
+          collection
+        });
       });
     });
 
@@ -96,237 +129,125 @@ suite('URL Service', ({ expect, spy, stub }) => {
       });
     });
 
-    describe('getNavigations()', () => {
-      it('should return correct allIds and byId', () => {
-        const refinements = [
-          { field: 'colors', value: 'blue' },
-          { field: 'brand', value: 'nike' },
-          { field: 'colors', value: 'red' },
-          { field: 'price', low: '1', high: '3' },
-        ];
-        const request: any = { refinements };
-        const expectedAllIds = ['colors', 'brand', 'price'];
-        const expectedById = {
-          colors: {
-            field: 'colors',
-            label: 'colors',
-            range: false,
-            refinements: [{ value: 'blue' }, { value: 'red' }],
-            selected: [0, 1],
-          },
-          brand: {
-            field: 'brand',
-            label: 'brand',
-            range: false,
-            refinements: [{ value: 'nike' }],
-            selected: [0],
-          },
-          price: {
-            field: 'price',
-            label: 'price',
-            range: true,
-            refinements: [{ low: '1', high: '3' }],
-            selected: [0],
-          },
-        };
-
-        const { allIds, byId } = Utils.getNavigations(request);
-
-        expect(allIds).to.be.eql(expectedAllIds);
-        expect(byId).to.be.eql(expectedById);
-      });
-    });
-
-    describe('mergePastPurchaseState()', () => {
-      it('should merge state properly when given new request', () => {
+    describe('searchStateToRequest()', () => {
+      it('should return search request based off given state', () => {
+        const collection = 'a collection';
+        const page = 324;
+        const pageSize = 25;
+        const query = 'dress';
+        const refinements = [1,2,3,4,5];
+        const sort = { a: 'b' };
         const state: any = {
-          data: {
-            present: {
-              other: {},
-              pastPurchases: {
-                query: { c: 'd' },
-                page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 } },
-                navigations: {},
-                sort: {
-                  items: [{ field: 'price' }, { field: 'price', descending: true }],
-                  selected: 0,
-                },
-              },
-            },
-          },
+          collection,
+          page,
+          pageSize,
+          query,
+          refinements,
+          sort
         };
-        const request: any = {
-          page: 14,
-          pageSize: 20,
-          query: 'grape ape',
-          refinements: [
-            { type: 'Value', field: 'brand', value: 'nike' },
-            { type: 'Value', field: 'colour', value: 'orange' },
-            { type: 'Range', field: 'price', low: 20, high: 40 },
-          ],
-          sort: { field: 'price', descending: true },
-        };
-        const searchId = 12;
-        const nav = { allIds: ['a'], byId: { a: '1' } };
-        const navigations = stub(Utils, 'getNavigations').returns(nav);
+        const store: any = { c: 'd' };
+        const skip = 30;
+        stub(Adapters.Request, 'extractRefinement').returnsArg(1);
+        stub(Adapters.Request, 'extractSkip').withArgs(page).returns(skip);
+        stub(Adapters.Request, 'extractSort').withArgs(sort).returns(sort);
 
-        const newState = Utils.mergePastPurchaseState(state, request);
-
-        expect(newState).to.eql({
-          data: {
-            present: {
-              other: {},
-              pastPurchases: {
-                query: 'grape ape',
-                page: {
-                  e: 'f',
-                  current: 14,
-                  sizes: { g: 'h', items: [10, 20, 50], selected: 1 },
-                },
-                navigations: nav,
-                sort: { items: [{ field: 'price' }, { field: 'price', descending: true }], selected: 0 },
-              },
-            },
-          },
+        expect(Utils.searchStateToRequest(state, store)).to.eql({
+          pageSize,
+          skip,
+          collection,
+          query,
+          refinements,
+          sort,
         });
       });
 
-      it('should merge state properly when not given new request', () => {
-        const searchId = 13;
-        const state: any = {
-          session: {
-            searchId,
-          },
-          data: {
-            present: {
-              a: 'b',
-              pastPurchases: {
-                query: { c: 'd', original: 'whatever' },
-                page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 }, current: 10 },
-                navigations: { i: 'j', allIds: ['brand', 'format'], byId: { brand: {}, format: {} } },
-                sort: {
-                  items: [{ field: 'price' }, { field: 'price', descending: true }],
-                  selected: 0,
-                },
-              },
-              collections: { selected: 0 },
-            },
-          },
-        };
-        const request: any = { refinements: [] };
+      it('should return search request based off store', () => {
+        const collection = 'a collection';
+        const page = 324;
+        const pageSize = 25;
+        const query = 'dress';
+        const sort = { a: 'b' };
+        const state: any = {};
+        const store: any = { c: 'd' };
+        const skip = 30;
+        stub(Selectors, 'pageSize').withArgs(store).returns(pageSize);
+        stub(Adapters.Request, 'clampPageSize').withArgs(1, pageSize).returns(pageSize);
+        stub(Selectors, 'collection').withArgs(store).returns(collection);
+        stub(Selectors, 'currentQuery').withArgs(store).returns(query);
+        stub(Adapters.Request, 'extractRefinement').returnsArg(1);
+        stub(Adapters.Request, 'extractSkip').withArgs(1).returns(skip);
+        stub(Selectors, 'sort').withArgs(store).returns(sort);
+        stub(Adapters.Request, 'extractSort').withArgs(sort).returns(sort);
 
-        const newState = Utils.mergePastPurchaseState(state, request);
-
-        expect(newState).to.eql(state);
+        expect(Utils.searchStateToRequest(state, store)).to.eql({
+          pageSize,
+          skip,
+          collection,
+          query,
+          refinements: [],
+          sort,
+        });
       });
     });
 
-    describe('mergeSearchState()', () => {
-      it('should merge state properly when given new request', () => {
+    describe('pastPurchaseStateToRequest()', () => {
+      it('should return past purchase request based off given state', () => {
+        const collection = 'a collection';
+        const page = 324;
+        const pageSize = 25;
+        const query = 'dress';
+        const refinements = [1,2,3,4,5];
+        const sort = { a: 'b' };
         const state: any = {
-          data: {
-            present: {
-              a: 'b',
-              query: { c: 'd' },
-              page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 } },
-              navigations: { i: 'j' },
-              sorts: {
-                items: [{ field: 'price' }, { field: 'price', descending: true }],
-                selected: 0,
-              },
-              collections: { selected: 0 },
-            },
-          },
+          collection,
+          page,
+          pageSize,
+          query,
+          refinements,
+          sort
         };
-        const request: any = {
-          page: 14,
-          pageSize: 20,
-          query: 'grape ape',
-          refinements: [
-            { type: 'Value', field: 'brand', value: 'nike' },
-            { type: 'Value', field: 'colour', value: 'orange' },
-            { type: 'Range', field: 'price', low: 20, high: 40 },
-          ],
-          sort: { field: 'price', descending: true },
-        };
-        const searchId = 12;
+        const store: any = { c: 'd' };
+        const skip = 30;
+        stub(Adapters.Request, 'extractRefinement').returnsArg(1);
+        stub(Adapters.Request, 'extractSkip').withArgs(page).returns(skip);
+        stub(Adapters.Request, 'extractSort').withArgs(sort).returns(sort);
 
-        const newState = Utils.mergeSearchState(state, request);
-
-        expect(newState).to.eql({
-          data: {
-            present: {
-              a: 'b',
-              query: {
-                c: 'd',
-                original: 'grape ape',
-              },
-              page: {
-                e: 'f',
-                current: 14,
-                sizes: { g: 'h', items: [10, 20, 50], selected: 1 },
-              },
-              navigations: {
-                i: 'j',
-                allIds: ['brand', 'colour', 'price'],
-                byId: {
-                  // tslint:disable-next-line max-line-length
-                  brand: {
-                    field: 'brand',
-                    label: 'brand',
-                    range: false,
-                    refinements: [{ value: 'nike' }],
-                    selected: [0],
-                  },
-                  // tslint:disable-next-line max-line-length
-                  colour: {
-                    field: 'colour',
-                    label: 'colour',
-                    range: false,
-                    refinements: [{ value: 'orange' }],
-                    selected: [0],
-                  },
-                  price: {
-                    field: 'price',
-                    label: 'price',
-                    range: true,
-                    refinements: [{ low: 20, high: 40 }],
-                    selected: [0],
-                  },
-                },
-              },
-              sorts: { items: [{ field: 'price' }, { field: 'price', descending: true }], selected: 1 },
-              collections: { selected: 0 },
-            },
-          },
+        expect(Utils.pastPurchaseStateToRequest(state, store)).to.eql({
+          pageSize,
+          skip,
+          collection,
+          query,
+          refinements,
+          sort,
         });
       });
 
-      it('should merge state properly when not given new request', () => {
-        const searchId = 13;
-        const state: any = {
-          session: {
-            searchId,
-          },
-          data: {
-            present: {
-              a: 'b',
-              query: { c: 'd', original: 'whatever' },
-              page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 }, current: 10 },
-              navigations: { i: 'j', allIds: ['brand', 'format'], byId: { brand: {}, format: {} } },
-              sorts: {
-                items: [{ field: 'price' }, { field: 'price', descending: true }],
-                selected: 0,
-              },
-              collections: { selected: 0 },
-            },
-          },
-        };
-        const request: any = { refinements: [] };
+      it('should return past purchase request based off store', () => {
+        const collection = 'a collection';
+        const page = 324;
+        const pageSize = 25;
+        const query = 'dress';
+        const sort = { a: 'b' };
+        const state: any = {};
+        const store: any = { c: 'd' };
+        const skip = 30;
+        stub(Selectors, 'pastPurchasePageSize').withArgs(store).returns(pageSize);
+        stub(Adapters.Request, 'clampPageSize').withArgs(1, pageSize).returns(pageSize);
+        stub(Selectors, 'collection').withArgs(store).returns(collection);
+        stub(Selectors, 'pastPurchaseQuery').withArgs(store).returns(query);
+        stub(Adapters.Request, 'extractRefinement').returnsArg(1);
+        stub(Adapters.Request, 'extractSkip').withArgs(1).returns(skip);
+        stub(Selectors, 'sort').withArgs(store).returns(sort);
+        stub(Adapters.Request, 'extractSort').withArgs(sort).returns(sort);
 
-        const newState = Utils.mergeSearchState(state, request);
-
-        expect(newState).to.eql(state);
+        expect(Utils.pastPurchaseStateToRequest(state, store)).to.eql({
+          pageSize,
+          skip,
+          collection,
+          query,
+          refinements: [],
+          sort,
+        });
       });
     });
   });

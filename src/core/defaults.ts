@@ -74,7 +74,6 @@ const DEFAULTS: Partial<Configuration> = {
     },
   },
   details: {
-    alwaysFetch: false,
     overrides: {},
   },
   collections: {
@@ -116,10 +115,10 @@ const DEFAULTS: Partial<Configuration> = {
       },
       redirects: {},
       routes: {
-        [Routes.SEARCH]: `/${Routes.SEARCH}`,
-        [Routes.DETAILS]: `/${Routes.DETAILS}`,
-        [Routes.NAVIGATION]: `/${Routes.NAVIGATION}`,
-        [Routes.PAST_PURCHASE]: `/${Routes.PAST_PURCHASE}`,
+        search: `/${Routes.SEARCH}`,
+        details: `/${Routes.DETAILS}`,
+        navigation: `/${Routes.NAVIGATION}`,
+        pastpurchase: `/${Routes.PAST_PURCHASE}`,
       },
     },
     tracker: {
