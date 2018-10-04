@@ -64,7 +64,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
   });
 
   describe('handleUrlWithoutListeners()', () => {
-    it('should handleCurrentLocation', () => {
+    it('should call handleCurrentLocation', () => {
       const handleCurrentLocation = service.handleCurrentLocation = spy();
 
       service.handleUrlWithoutListeners();
