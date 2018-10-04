@@ -52,22 +52,22 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
   });
 
   describe('init()', () => {
-    it('should listenForHistoryChange and handleUrlWithoutListeners', () => {
+    it('should listenForHistoryChange and handleUrl', () => {
       const listenForHistoryChange = service.listenForHistoryChange = spy();
-      const handleUrlWithoutListeners = service.handleUrlWithoutListeners = spy();
+      const handleUrl = service.handleUrl = spy();
 
       service.init();
 
       expect(listenForHistoryChange).to.be.calledOnce;
-      expect(handleUrlWithoutListeners).to.be.calledOnce;
+      expect(handleUrl).to.be.calledOnce;
     });
   });
 
-  describe('handleUrlWithoutListeners()', () => {
+  describe('handleUrl()', () => {
     it('should call handleCurrentLocation', () => {
       const handleCurrentLocation = service.handleCurrentLocation = spy();
 
-      service.handleUrlWithoutListeners();
+      service.handleUrl();
 
       expect(handleCurrentLocation).to.be.calledOnce;
     });
@@ -82,7 +82,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       service.beautifier = <any>{ parse };
       service['app'] = <any>{ log: { warn } };
 
-      service.handleUrlWithoutListeners();
+      service.handleUrl();
 
       expect(parse).to.be.calledWith(href);
       expect(warn).to.be.called;
@@ -103,7 +103,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
         },
       };
 
-      service.handleUrlWithoutListeners();
+      service.handleUrl();
 
       expect(parse).to.be.calledWith(href);
     });
@@ -312,7 +312,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const fluxState = { a: 'b' };
       const filterState = service.filterState = spy(() => state);
       const emit = spy();
-      const handleUrlWithoutListeners = service.handleUrlWithoutListeners = spy();
+      const handleUrl = service.handleUrl = spy();
       win.history = { pushState };
       win.location = { href: 'something different' };
       stub(Selectors, 'query').returns(query);
@@ -338,7 +338,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       expect(filterState).to.be.calledWithExactly(fluxState);
       expect(pushState).to.be.calledWithExactly({ url, state: { data }, app: STOREFRONT_APP_ID }, '', url);
       expect(emit).to.be.calledWithExactly(Events.URL_UPDATED, url);
-      expect(handleUrlWithoutListeners).to.be.calledOnce;
+      expect(handleUrl).to.be.calledOnce;
     });
 
     it('should handle errors thrown by pushState', () => {

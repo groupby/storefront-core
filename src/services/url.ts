@@ -34,10 +34,10 @@ class UrlService extends BaseService<UrlService.Options> {
 
   init() {
     this.listenForHistoryChange();
-    this.handleUrlWithoutListeners();
+    this.handleUrl();
   }
 
-  handleUrlWithoutListeners() {
+  handleUrl() {
     try {
       this.handleCurrentLocation();
     } catch (e) {
@@ -112,7 +112,7 @@ class UrlService extends BaseService<UrlService.Options> {
 
         const newUrl = WINDOW().location.href;
         this.emitUrlUpdated(oldUrl, newUrl, url);
-        this.handleUrlWithoutListeners();
+        this.handleUrl();
       } catch (e) {
         this.app.log.warn('unable to push state to browser history', e);
       }
