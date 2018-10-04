@@ -4,7 +4,7 @@ import StoreFront from '../storefront';
 
 @core
 class DetailsService extends BaseService<DetailsService.Options> {
-  constructor(app: StoreFront, opts: any) {
+  constructor(app: StoreFront, opts: DetailsService.Options) {
     super(app, opts);
 
     this.app.flux.on(Events.DETAILS_CHANGED, this.fetchDetails, this);

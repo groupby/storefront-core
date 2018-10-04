@@ -4,7 +4,7 @@ import StoreFront from '../storefront';
 
 class PastPurchaseService extends BaseService<PastPurchaseService.Options> {
 
-  constructor(app: StoreFront, opts: any) {
+  constructor(app: StoreFront, opts: PastPurchaseService.Options) {
     super(app, opts);
 
     this.app.flux.on(Events.AUTOCOMPLETE_QUERY_UPDATED, () => this.app.flux.actions.receiveSaytPastPurchases([]));
@@ -21,7 +21,7 @@ class PastPurchaseService extends BaseService<PastPurchaseService.Options> {
 }
 
 namespace PastPurchaseService {
-  export interface Options { }
+  export interface Options {}
 }
 
 export default PastPurchaseService;
