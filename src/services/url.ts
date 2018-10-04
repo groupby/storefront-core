@@ -22,7 +22,7 @@ class UrlService extends BaseService<UrlService.Options> {
     pastpurchase: Utils.pastPurchaseUrlState,
   };
 
-  constructor(app: StoreFront, opts: any) {
+  constructor(app: StoreFront, opts: UrlService.Options) {
     super(app, opts);
     if (typeof this.opts.beautifier === 'function') {
       this.beautifier = this.opts.beautifier(this.app, this.generateRoutes());
