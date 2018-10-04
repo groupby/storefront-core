@@ -110,7 +110,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
   });
 
   describe('handleCurrentLocation()', () => {
-    it('should parse response and triggerRequestFromUrl', () => {
+    it('should parse response and call triggerRequestFromUrl', () => {
       const href = 'https://example.com/route';
       const route = '/route';
       const request = 'request';
@@ -260,7 +260,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const newState = { g: 'h' };
       win.location = { assign };
       service.beautifier = <any>{ build };
-      service['opts'] = { redirects: (URL) => externalUrl };
+      service['opts'] = { redirects: () => externalUrl };
       service.urlState = <any>{
         [route]: () => newState,
       };
@@ -457,14 +457,9 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const sessionWithConfig = { ...session, config };
       const otherData = {
         e: 'f',
-        j: {
-          h: 1,
-        },
+        j: { h: 1 },
         o: [2, 3, 4],
-        n: {
-          i: 'r',
-          k: {},
-        },
+        n: { i: 'r', k: {} },
       };
       const state: any = { ...otherData, session: sessionWithConfig, data };
       Object.freeze(state);
