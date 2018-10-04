@@ -18,12 +18,12 @@ suite('Services', ({ expect }) => {
       expect(Services).to.eql({
         autocomplete,
         collections,
+        details,
         logging,
         pastPurchases,
         recommendations,
         redirect,
         search,
-        details,
         tracker,
         url
       });

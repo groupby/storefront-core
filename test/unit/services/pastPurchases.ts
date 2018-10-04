@@ -24,6 +24,7 @@ suite('PastPurchase Service', ({ expect, spy, itShouldExtendBaseService }) => {
       expect(on).to.be.calledWith(Events.AUTOCOMPLETE_QUERY_UPDATED);
       on.getCall(0).args[1]();
       expect(receiveSaytPastPurchases).to.be.calledWithExactly([]);
+      expect(on).to.be.calledWithExactly(Events.PAST_PURCHASE_CHANGED, service.fetchProducts, service);
     });
   });
 
