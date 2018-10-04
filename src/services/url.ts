@@ -47,7 +47,7 @@ class UrlService extends BaseService<UrlService.Options> {
 
   handleCurrentLocation() {
     const parsed = <any>this.beautifier.parse<UrlBeautifier.SearchUrlState>(WINDOW().location.href);
-    Promise.resolve(parsed)
+    return Promise.resolve(parsed)
       .then((resp) => {
         const { route, request: urlState } = resp;
         this.triggerRequestFromUrl(route, urlState);

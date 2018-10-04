@@ -110,21 +110,21 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
   });
 
   describe('handleCurrentLocation()', () => {
-    it('should parse response and triggerRequestFromUrl', (done) => {
+    it('should parse response and triggerRequestFromUrl', () => {
       const href = 'https://example.com/route';
       const route = '/route';
       const request = 'request';
-      const triggerRequestFromUrl = service.triggerRequestFromUrl = spy(() => {
-        expect(triggerRequestFromUrl).to.be.calledWith(route, request);
-        done();
-      });
+      const triggerRequestFromUrl = service.triggerRequestFromUrl = spy();
       const parse = stub().resolves({ route, request });
       win.location = { href };
       service.beautifier = <any>{ parse };
 
-      service.handleCurrentLocation();
+      const p = service.handleCurrentLocation();
 
       expect(parse).to.be.calledWith(href);
+      return p.then((response) => {
+        expect(triggerRequestFromUrl).to.be.calledWith(route, request);
+      });
     });
   });
 
