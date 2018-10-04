@@ -61,23 +61,20 @@ namespace UrlUtils {
 
   export const searchStateToRequest = (state: UrlBeautifier.SearchUrlState, store: Store.State): Partial<Request> => {
     const {
-      collection: urlCollection,
-      page: urlPage,
-      pageSize: urlPageSize,
-      query: urlQuery,
-      refinements: urlRefinements,
-      sort: urlSort,
+      collection = Selectors.collection(store),
+      page = 1,
+      pageSize: urlPageSize = Selectors.pageSize(store),
+      query = Selectors.currentQuery(store),
+      refinements: urlRefinements = [],
+      sort: urlSort = Selectors.sort(store),
     } = state;
     let request: Partial<Request> = {};
-    const size = urlPageSize || Selectors.pageSize(store);
-    const pageSize = Adapters.Request.clampPageSize(urlPage || 1, size);
-    const skip = Adapters.Request.extractSkip(urlPage || 1, pageSize);
-    const collection = urlCollection || Selectors.collection(store);
-    const query = urlQuery || Selectors.currentQuery(store);
+    const pageSize = Adapters.Request.clampPageSize(page, urlPageSize);
+    const skip = Adapters.Request.extractSkip(page, pageSize);
     const refinements = <any>urlRefinements.map((refinement) =>
       Adapters.Request.extractRefinement(refinement.field, <any>refinement)
     );
-    const sort = <any>Adapters.Request.extractSort(urlSort || Selectors.sort(store));
+    const sort = <any>Adapters.Request.extractSort(urlSort);
 
     return {
       pageSize,
@@ -92,23 +89,20 @@ namespace UrlUtils {
   // tslint:disable-next-line max-line-length
   export const pastPurchaseStateToRequest = (state: UrlBeautifier.SearchUrlState, store: Store.State): Partial<Request> => {
     const {
-      collection: urlCollection,
-      page: urlPage,
-      pageSize: urlPageSize,
-      query: urlQuery,
-      refinements: urlRefinements,
-      sort: urlSort,
+      collection = Selectors.collection(store),
+      page = 1,
+      pageSize: urlPageSize = Selectors.pastPurchasePageSize(store),
+      query = Selectors.pastPurchaseQuery(store),
+      refinements: urlRefinements = [],
+      sort: urlSort = Selectors.sort(store),
     } = state;
     let request: Partial<Request> = {};
-    const size = urlPageSize || Selectors.pastPurchasePageSize(store);
-    const pageSize = Adapters.Request.clampPageSize(urlPage || 1, size);
-    const skip = Adapters.Request.extractSkip(urlPage || 1, pageSize);
-    const collection = urlCollection || Selectors.collection(store);
-    const query = urlQuery || Selectors.pastPurchaseQuery(store);
+    const pageSize = Adapters.Request.clampPageSize(page, urlPageSize);
+    const skip = Adapters.Request.extractSkip(page, pageSize);
     const refinements = <any>urlRefinements.map((refinement) =>
       Adapters.Request.extractRefinement(refinement.field, <any>refinement)
     );
-    const sort = <any>Adapters.Request.extractSort(urlSort || Selectors.sort(store));
+    const sort = <any>Adapters.Request.extractSort(urlSort);
 
     return {
       pageSize,
