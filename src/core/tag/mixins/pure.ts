@@ -20,7 +20,7 @@ namespace Pure {
     const updatePrev = () => {
       prevState = tag.state;
       prevProps = tag.props;
-      prevAliases = Pure.extractLocalAliases(tag);
+      prevAliases = tag.getAllAliases();
     };
 
     tag.one(Phase.MOUNT, updatePrev);
@@ -35,7 +35,7 @@ namespace Pure {
         && !!Object.keys(stateChange).length;
       const nextProps = Props.buildProps(tag, nextOpts);
       const nextState = stateChange != null ? { ...tag.state, ...stateChange['state'] } : tag.state;
-      const nextAliases = isLegacyAliasing ? Pure.resolveAllAliases(tag) : Pure.resolveAliases(tag);
+      const nextAliases = tag.getAllAliases();
       const propsUpdated = !Pure.shallowEquals(prevProps, nextProps);
       const stateUpdated = !Pure.shallowEquals(prevState, nextState);
       const aliasesUpdated = !Pure.shallowEquals(prevAliases, nextAliases);

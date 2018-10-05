@@ -49,7 +49,7 @@ export function alias<P extends object = any, S extends object = any, A extends 
   return (target: TagConstructor) => {
     utils.setMetadata(target, PROVIDES_KEY, {
       ...(utils.getMetadata(target, PROVIDES_KEY) as any),
-      [name]: (_, state: S) => () => state,
+      [name]: (_, state: S) => state,
     });
   };
 }
@@ -58,10 +58,12 @@ export function provide<P extends object = any, S extends object = any, A extend
   name: string,
   resolver: (props: P, state: S, aliases: A) => any = (_, state) => state
 ) {
+//    console.log('DEBUG provide decorator', name, resolver);
   return (target: TagConstructor) => {
+//    console.log('DEBUG provide decorator', name, resolver);
     utils.setMetadata(target, PROVIDES_KEY, {
       ...(utils.getMetadata(target, PROVIDES_KEY) as any),
-      [name]: moize((props: P, state: S) => (aliases: A) => resolver(props, state, aliases)),
+      [name]: resolver,
     });
   };
 }

@@ -14,12 +14,14 @@ export const TAG_DESC = Symbol.for('tag_description');
 export const ALIAS_DESCRIPTION = Symbol.for('alias_description');
 
 class Tag<P extends object = any, S extends object = any, A extends object = any> {
-  _provides: Record<string, ((props: P & Tag.Props, state: S) => (aliases: A) => void)> = {};
+  _provides: Record<string, ((props: P & Tag.Props, state: S, aliases: A) => void)> = {};
   _consumes: string[] = [];
   _eventHandlers: [string, () => void][] = [];
   isInitialized: boolean = false;
   props: P & Tag.Props = <any>{};
   state: S = <any>{};
+  provide: (alias: string, resolve?: (p: any, s: any, a: any) => any) => void;
+  getAllAliases: () => Record<string, any>;
 
   set(state: Partial<S> | true) {
     if (state === true) {
@@ -50,27 +52,19 @@ class Tag<P extends object = any, S extends object = any, A extends object = any
     this.flux.once(event, handler);
   }
 
-  provide(alias: string, resolve: (props: P, state: S, aliases: A) => void = (_, state) => state) {
-    if (this.isInitialized) {
-      throw new Error('cannot provide a new alias after the compontent has been initialized');
-    }
+  //provide(alias: string, resolve: (props: P, state: S, aliases: A) => any = (_, state) => state) {
+  //  if (typeof resolve !== 'function') {
+  //    throw new Error('must provide a callback function to calculate alias value');
+  //  }
 
-    if (typeof resolve !== 'function') {
-      throw new Error('must provide a callback function to calculate alias value');
-    }
+  //  this._provides[alias] = resolve;
+  //}
 
-    this._provides[alias] = moize((p: P, s: S) => (a: A) => resolve(p, s, a));
-  }
-
-  consume(alias: string) {
-    if (this.isInitialized) {
-      throw new Error('cannot consume a new alias after the compontent has been initialized');
-    }
-
-    if (!this._consumes.includes(alias)) {
-      this._consumes.push(alias);
-    }
-  }
+  //consume(alias: string) {
+  //  if (!this._consumes.includes(alias)) {
+  //    this._consumes.push(alias);
+  //  }
+  //}
 
   _removeEventHandlers = () => this._eventHandlers.forEach(([event, handler]) => this.flux.off(event, handler));
 }
@@ -84,6 +78,7 @@ interface Tag<P extends object, S extends object, A extends object>
   opts: P;
   actions: typeof ActionCreators;
   isMounted: boolean;
+  aliases: object;
   init(): void;
   // legacy aliasing
   _aliases?: object; // tslint:disable-line member-ordering
@@ -113,11 +108,15 @@ namespace Tag {
       log,
 
       init(this: Riot.TagInstance) {
+//        console.log('DEBUG init');
         Mixins.applyMixin(this, Mixins.lifecycle);
         Mixins.applyMixin(this, Mixins.metadata);
         // aliasing mixin
         Mixins.applyMixin(this, Mixins.props);
-        Mixins.applyMixin(this, config.options.legacyAliasing ? Mixins.aliasing : Mixins.provideConsume);
+        //Mixins.applyMixin(this, config.options.legacyAliasing ? Mixins.aliasing : Mixins.provideConsume);
+//        console.log('DEBUG before Prototype aliasing');
+        Mixins.applyMixin(this, Mixins.prototypeAliasing);
+//        console.log('DEBUG after Prototype aliasing');
         Mixins.applyMixin(this, Mixins.Pure.pureMixin(config.options.legacyAliasing));
 
         // order of these ones shouldn't matter
@@ -176,7 +175,7 @@ namespace Tag {
         .filter((key) => keys.includes(key))
         .reduce(
           (aliases, key) =>
-            Object.assign(aliases, { [key]: { tag, resolve: () => provides[key](props, state)(parentAliases) } }),
+            Object.assign(aliases, { [key]: { tag, resolve: () => provides[key](props, state, parentAliases) } }),
           {}
         ),
     };
@@ -197,7 +196,7 @@ namespace Tag {
         (aliases, key) =>
           Object.assign(aliases, {
             [key]: {
-              resolve: () => provides[key](tag.props, tag.state)(parentAliases),
+              resolve: () => provides[key](tag.props, tag.state, parentAliases),
             },
           }),
         {}
