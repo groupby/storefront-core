@@ -39,7 +39,7 @@ declare module 'gb-tracker-client/slim' {
       productId: string;
       title: string;
       price: number;
-      quantity: number;
+      quantity?: number;
       collection?: string;
       category?: string;
       sku?: string;

@@ -22,7 +22,15 @@ suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
   beforeEach(() => {
     on = spy();
     app = <any>{ config: { customerId: CUSTOMER_ID, area: AREA, structure: STRUCTURE }, flux: { on } };
-    opts = {};
+    opts = <any>{
+      sendSearchEvent: () => ({}),
+      sendViewCartEvent: () => ({}),
+      sendAddToCartEvent: () => ({}),
+      sendRemoveFromCartEvent: () => ({}),
+      sendOrderEvent: () => ({}),
+      sendViewProductEvent: () => ({}),
+      sendMoreRefinementsEvent: () => ({})
+    };
     tracker = stub(utils, 'GbTracker');
     transformer = stub(ProductTransformer, 'transformer').returns(USER_TRANSFORM);
     service = new Service(app, opts);
@@ -41,14 +49,11 @@ suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
     });
 
     it('should listen for events', () => {
-      expect(on).to.have.callCount(7)
-        .and.calledWith(Events.BEACON_SEARCH, service.sendSearchEvent)
-        .and.calledWith(Events.BEACON_VIEW_CART, service.sendViewCartEvent)
-        .and.calledWith(Events.BEACON_ADD_TO_CART, service.sendAddToCartEvent)
-        .and.calledWith(Events.BEACON_REMOVE_FROM_CART, service.sendRemoveFromCartEvent)
-        .and.calledWith(Events.BEACON_VIEW_PRODUCT, service.sendViewProductEvent)
-        .and.calledWith(Events.BEACON_ORDER, service.sendOrderEvent)
-        .and.calledWith(Events.BEACON_MORE_REFINEMENTS, service.sendMoreRefinementsEvent);
+      const setListeners = stub(Service.prototype, 'setListeners');
+
+      new Service(app, opts);
+
+      expect(setListeners).to.be.calledWith(app);
     });
   });
 
@@ -72,6 +77,60 @@ suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
       service.init();
 
       expect(disableWarnings).to.be.called;
+    });
+  });
+
+  describe('setListeners()', () => {
+    it('should listen for events', () => {
+      const applyOptsOverride = spy(service, 'applyOptsOverride');
+      const sendSearchEvent = service.sendSearchEvent = spy();
+      const sendViewCartEvent = service.sendViewCartEvent = spy();
+      const sendAddToCartEvent = service.sendAddToCartEvent = spy();
+      const sendRemoveFromCartEvent = service.sendRemoveFromCartEvent = spy();
+      const sendOrderEvent = service.sendOrderEvent = spy();
+      const sendViewProductEvent = service.sendViewProductEvent = spy();
+      const sendMoreRefinementsEvent = service.sendMoreRefinementsEvent = spy();
+      const match = (fn, override) => sinon.match((value) => {
+        value();
+        expect(applyOptsOverride).to.be.calledWith(fn, override);
+        expect(fn).to.be.called;
+        return true;
+      });
+      on = app.flux.on = spy();
+
+      service.setListeners(app);
+
+      expect(on).to.have.callCount(7);
+      // tslint:disable max-line-length
+      expect(on).to.be.calledWith(Events.BEACON_SEARCH, match(sendSearchEvent, opts.sendSearchEvent));
+      expect(on).to.be.calledWith(Events.BEACON_VIEW_CART, match(sendViewCartEvent, opts.sendViewCartEvent));
+      expect(on).to.be.calledWith(Events.BEACON_ADD_TO_CART, match(sendAddToCartEvent, opts.sendAddToCartEvent));
+      expect(on).to.be.calledWith(Events.BEACON_REMOVE_FROM_CART, match(sendRemoveFromCartEvent, opts.sendRemoveFromCartEvent));
+      expect(on).to.be.calledWith(Events.BEACON_ORDER, match(sendOrderEvent, opts.sendOrderEvent));
+      expect(on).to.be.calledWith(Events.BEACON_VIEW_PRODUCT, match(sendViewProductEvent, opts.sendViewProductEvent));
+      expect(on).to.be.calledWith(Events.BEACON_MORE_REFINEMENTS, match(sendMoreRefinementsEvent, opts.sendMoreRefinementsEvent));
+      // tslint:enable
+    });
+  });
+
+  describe('applyOptsOverride', () => {
+    it('should return a function that calls the input function with a value', () => {
+      const value = { a: 'b' };
+      const fn = spy();
+
+      service.applyOptsOverride(fn, null)(value);
+
+      expect(fn).to.be.calledWithExactly(value);
+    });
+
+    it('should return a function that calls the input function with a value and override', () => {
+      const value = { a: 'b' };
+      const fn = spy();
+      const override = () => null;
+
+      service.applyOptsOverride(fn, override)(value);
+
+      expect(fn).to.be.calledWithExactly(value, override);
     });
   });
 
@@ -102,9 +161,40 @@ suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
     });
   });
 
+  describe('buildEvent()', () => {
+    it('should build and send an event', () => {
+      const event: any = { a: 'b' };
+      const currentEvent = { c: 'd' };
+      const result = { e: 'f' };
+      const override = spy(() => result);
+      const method: any = 'hello';
+      const sendEvent = service.sendEvent = spy();
+      stub(service, 'addMetadata').withArgs(event).returns(currentEvent);
+
+      service.buildEvent(override, event);
+
+      expect(override).to.be.calledWithExactly(event, currentEvent);
+    });
+
+    it('should build and send an event, applying value', () => {
+      const event: any = { a: 'b' };
+      const currentEvent = { c: 'd' };
+      const result = { e: 'f' };
+      const override = spy(() => result);
+      const method: any = 'hello';
+      const sendEvent = service.sendEvent = spy();
+      const value = { g: 'h' };
+      stub(service, 'addMetadata').withArgs(event).returns(currentEvent);
+
+      service.buildEvent(override, event, value);
+
+      expect(override).to.be.calledWithExactly(value, currentEvent);
+    });
+  });
+
   describe('sendSearchEvent()', () => {
     const id = '12345';
-    const metadata = { a: 'b' };
+    const metadata = [{ a: 'b' }];
 
     it('should send search event with origin and metadata', () => {
       const origin = 'myOrigin';
@@ -119,7 +209,6 @@ suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
         metadata,
         search: { id, origin: { ...DEFAULT_ORIGINS, [origin]: true }, },
       });
-      expect(getMetadata).to.be.calledWith(tagOrigin);
     });
 
     it('should fall back to default search origin with empty origin', () => {
@@ -148,6 +237,22 @@ suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
       });
     });
 
+    it('should override event with the override function if it exists', () => {
+      const sendEvent = service.sendEvent = spy();
+      const currEvent = {
+        metadata,
+        search: { id, origin: { ...DEFAULT_ORIGINS, search: true }, },
+      };
+      const result = { a: 'b' };
+      const override = spy(() => result);
+      service.getMetadata = stub().returns(metadata);
+      service.getSearchOrigin = () => null;
+
+      service.sendSearchEvent(id, override);
+
+      expect(sendEvent).to.be.calledWith('sendAutoSearchEvent', result);
+      expect(override).to.be.calledWithExactly(id, currEvent);
+    });
   });
 
   describe('sendViewCartEvent()', () => {
@@ -161,6 +266,20 @@ suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
 
       expect(addMetadata).to.be.calledWith(event);
       expect(sendEvent).to.be.calledWith('sendViewCartEvent', withMetadata);
+    });
+
+    it('should override event with the override function if it exists', () => {
+      const event: any = { a: 'b' };
+      const withMetadata = { c: 'd' };
+      const sendEvent = service.sendEvent = spy();
+      const addMetadata = service.addMetadata = spy(() => withMetadata);
+      const result = { e: 'f' };
+      const override = spy(() => result);
+
+      service.sendViewCartEvent(event, override);
+
+      expect(sendEvent).to.be.calledWith('sendViewCartEvent', result);
+      expect(override).to.be.calledWithExactly(event, withMetadata);
     });
   });
 
@@ -176,6 +295,20 @@ suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
       expect(addMetadata).to.be.calledWith(event);
       expect(sendEvent).to.be.calledWith('sendAddToCartEvent', withMetadata);
     });
+
+    it('should override event with the override function if it exists', () => {
+      const event: any = { a: 'b' };
+      const withMetadata = { c: 'd' };
+      const sendEvent = service.sendEvent = spy();
+      const addMetadata = service.addMetadata = spy(() => withMetadata);
+      const result = { e: 'f' };
+      const override = spy(() => result);
+
+      service.sendAddToCartEvent(event, override);
+
+      expect(sendEvent).to.be.calledWith('sendAddToCartEvent', result);
+      expect(override).to.be.calledWithExactly(event, withMetadata);
+    });
   });
 
   describe('sendRemoveFromCartEvent()', () => {
@@ -190,6 +323,20 @@ suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
       expect(addMetadata).to.be.calledWith(event);
       expect(sendEvent).to.be.calledWith('sendRemoveFromCartEvent', withMetadata);
     });
+
+    it('should override event with the override function if it exists', () => {
+      const event: any = { a: 'b' };
+      const withMetadata = { c: 'd' };
+      const sendEvent = service.sendEvent = spy();
+      const addMetadata = service.addMetadata = spy(() => withMetadata);
+      const result = { e: 'f' };
+      const override = spy(() => result);
+
+      service.sendRemoveFromCartEvent(event, override);
+
+      expect(sendEvent).to.be.calledWith('sendRemoveFromCartEvent', result);
+      expect(override).to.be.calledWithExactly(event, withMetadata);
+    });
   });
 
   describe('sendOrderEvent()', () => {
@@ -203,6 +350,20 @@ suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
 
       expect(addMetadata).to.be.calledWith(event);
       expect(sendEvent).to.be.calledWith('sendOrderEvent', withMetadata);
+    });
+
+    it('should override event with the override function if it exists', () => {
+      const event: any = { a: 'b' };
+      const withMetadata = { c: 'd' };
+      const sendEvent = service.sendEvent = spy();
+      const addMetadata = service.addMetadata = spy(() => withMetadata);
+      const result = { e: 'f' };
+      const override = spy(() => result);
+
+      service.sendOrderEvent(event, override);
+
+      expect(sendEvent).to.be.calledWith('sendOrderEvent', result);
+      expect(override).to.be.calledWithExactly(event, withMetadata);
     });
   });
 
@@ -230,6 +391,26 @@ suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
       });
       expect(sendEvent).to.be.calledWith('sendViewProductEvent', withMetadata);
     });
+
+    it('should override event with the override function if it exists', () => {
+      const id = '1234';
+      const collection = 'myCollection';
+      const title = 'top hat';
+      const price = 132.40;
+      const allMeta = { a: 'b' };
+      const withMetadata = { c: 'd' };
+      const record = { allMeta, collection };
+      const sendEvent = service.sendEvent = spy();
+      const addMetadata = service.addMetadata = spy(() => withMetadata);
+      const result = { e: 'f' };
+      const override = spy(() => result);
+      service.transform = spy(() => ({ data: { id, title, price } }));
+
+      service.sendViewProductEvent({ allMeta, collection }, override);
+
+      expect(sendEvent).to.be.calledWith('sendViewProductEvent', result);
+      expect(override).to.be.calledWithExactly({ allMeta, collection }, withMetadata);
+    });
   });
 
   describe('sendMoreRefinementsEvent()', () => {
@@ -244,6 +425,20 @@ suite('Tracker Service', ({ expect, spy, stub, itShouldExtendBaseService }) => {
       expect(addMetadata).to.be.calledWith({ moreRefinements: { id } });
 
       expect(sendEvent).to.be.calledWith('sendMoreRefinementsEvent', withMetadata);
+    });
+
+    it('should override event with the override function if it exists', () => {
+      const id = 'colour';
+      const withMetadata = { c: 'd' };
+      const sendEvent = service.sendEvent = spy();
+      const addMetadata = service.addMetadata = spy(() => withMetadata);
+      const result = { e: 'f' };
+      const override = spy(() => result);
+
+      service.sendMoreRefinementsEvent(id, override);
+
+      expect(sendEvent).to.be.calledWith('sendMoreRefinementsEvent', result);
+      expect(override).to.be.calledWithExactly(id, withMetadata);
     });
   });
 
