@@ -80,7 +80,7 @@
     "typescript": "^2.4.2"
   },
   "dependencies": {
-    "@storefront/flux-capacitor": "1.58.1",
+    "@storefront/flux-capacitor": "1.58.0",
     "@types/clone": "^0.1.30",
     "@types/deep-assign": "^0.1.0",
     "@types/js-cookie": "^2.0.28",
@@ -95,7 +95,7 @@
     "loglevel": "^1.4.1",
     "moize": "^5.2.3",
     "riot": "^3.9.5",
-    "url-parse": "^1.1.9"
+    "url-parse": "^1.4.3"
   },
   "peerDependencies": {
     "groupby-api": "^2.5.0"
