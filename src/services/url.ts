@@ -137,7 +137,6 @@ class UrlService extends BaseService<UrlService.Options> {
         WINDOW().document.title,
         url
       );
-      this.refreshState(state);
 
       const newUrl = WINDOW().location.href;
       this.emitUrlUpdated(oldUrl, newUrl, url);
@@ -153,12 +152,18 @@ class UrlService extends BaseService<UrlService.Options> {
   }
 
   filterState(state: Store.State) {
-    const { session: { config, ...session }, ...rootConfig } = state;
-    if (this.app.config.history.length === 0) {
-      const data = { ...rootConfig.data, present: { ...rootConfig.data.present, products: [] } };
-      return { ...rootConfig, session, data };
-    }
-    return { ...rootConfig, session };
+    const { session: { config, ...session }, data, ...rootConfig } = state;
+    const products = this.app.config.history.length === 0 ? [] : data.present.products;
+
+    return {
+      ...rootConfig,
+      session,
+      data: {
+        ...data,
+        past: [],
+        present: { ...data.present, products },
+      },
+    };
   }
 
   rewind = (event: PopStateEvent) => {

@@ -87,7 +87,7 @@ const DEFAULTS: Partial<Configuration> = {
   },
 
   history: {
-    length: 5,
+    length: 1,
   },
 
   services: {

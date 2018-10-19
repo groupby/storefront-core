@@ -378,7 +378,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
   });
 
   describe('replaceHistory()', () => {
-    it('should replace the current state in history and refreshState', () => {
+    it('should replace the current state in history', () => {
       const url = 'http://example.com';
       const title = 'my page';
       const state = { a: 'b' };
@@ -386,7 +386,6 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       const getState = spy(() => state);
       const filterState = (service.filterState = spy((value) => value));
       const emit = spy();
-      const refreshState = service.refreshState = spy();
       service['app'] = <any>{ flux: { store: { getState }, emit } };
       win.history = { replaceState };
       win.location = { href: 'something different' };
@@ -404,7 +403,6 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
         title,
         url
       );
-      expect(refreshState).to.be.calledWithExactly(state);
       expect(emit).to.be.calledWithExactly(Events.URL_UPDATED, url);
     });
 
@@ -451,7 +449,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
 
   describe('filterState()', () => {
     it('should filter config from state and remove products when history length is 0', () => {
-      const data = { a: 'b', present: { products: [1,2,3,4,5] } };
+      const data = { a: 'b', past: [{ a: 'b' }], present: { products: [1,2,3,4,5] } };
       const config = { history: { length: 0 } };
       const session = { a: 'b', c: 'd' };
       const sessionWithConfig = { ...session, config };
@@ -472,7 +470,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       expect(stateWithoutConfig).to.eql({
         ...otherData,
         session,
-        data: { ...data, present: { products: [] } }
+        data: { ...data, past: [], present: { products: [] } }
       });
     });
 
@@ -490,6 +488,12 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
           i: 'r',
           k: {},
         },
+        data: {
+          past: [{ a: 'b' }],
+          present: {
+            products: [{ c: 'd' }],
+          },
+        },
       };
       const state: any = { ...otherData, session: sessionWithConfig };
       Object.freeze(state);
@@ -502,6 +506,10 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
       expect(stateWithoutConfig).to.eql({
         ...otherData,
         session,
+        data: {
+          ...otherData.data,
+          past: [],
+        },
       });
     });
   });
