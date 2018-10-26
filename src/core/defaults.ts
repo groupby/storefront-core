@@ -70,7 +70,6 @@ const DEFAULTS: Partial<Configuration> = {
       biasStrength: 'Medium_Increase',
       biasInfluence: 5,
       securedPayload: null,
-      navigations: {},
     },
   },
   details: {
