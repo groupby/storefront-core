@@ -130,15 +130,17 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
 
   describe('triggerRequest()', () => {
     describe('SEARCH', () => {
-      it('should build request and fetch', () => {
+      it('should build request and fetch, and refreshState', () => {
         const FETCH_PRODUCTS_WHEN_HYDRATED = 'FETCH_PRODUCTS_WHEN_HYDRATED';
         const state = { a: 'b' };
         const urlState: any = { e: 'f' };
         const newState = { c: 'd' };
-        const request = { e: 'f' };
+        const request = { g: 'h' };
         const dispatch = spy();
         const fetchProductsWhenHydrated = spy(() => FETCH_PRODUCTS_WHEN_HYDRATED);
+        const refreshState = service.refreshState = spy();
         stub(Utils, 'searchStateToRequest').withArgs(urlState, state).returns(request);
+        stub(Utils, 'mergeSearchState').withArgs(state, urlState).returns(newState);
         service['app'] = <any>{
           flux: {
             store: { dispatch, getState: () => state },
@@ -148,21 +150,24 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
 
         service.triggerRequest(Routes.SEARCH, urlState);
 
+        expect(refreshState).to.be.calledWith(newState);
         expect(fetchProductsWhenHydrated).to.be.calledWith({ request });
         expect(dispatch).to.be.calledWith(FETCH_PRODUCTS_WHEN_HYDRATED);
       });
     });
 
     describe('PAST_PURCHASE', () => {
-      it('should build request and fetch', () => {
+      it('should build request and fetch, and refreshState', () => {
         const FETCH_PAST_PURCHASE_PRODUCTS = 'FETCH_PAST_PURCHASE_PRODUCTS';
         const state = { a: 'b' };
         const urlState: any = { e: 'f' };
         const newState = { c: 'd' };
-        const request = { e: 'f' };
+        const request = { g: 'h' };
         const dispatch = spy();
         const fetchPastPurchaseProducts = spy(() => FETCH_PAST_PURCHASE_PRODUCTS);
+        const refreshState = service.refreshState = spy();
         stub(Utils, 'pastPurchaseStateToRequest').withArgs(urlState, state).returns(request);
+        stub(Utils, 'mergePastPurchaseState').withArgs(state, urlState).returns(newState);
         service['app'] = <any>{
           flux: {
             store: { dispatch, getState: () => state },
@@ -172,6 +177,7 @@ suite('URL Service', ({ expect, spy, stub, itShouldBeCore, itShouldExtendBaseSer
 
         service.triggerRequest(Routes.PAST_PURCHASE, urlState);
 
+        expect(refreshState).to.be.calledWith(newState);
         expect(fetchPastPurchaseProducts).to.be.calledWith({ request });
         expect(dispatch).to.be.calledWith(FETCH_PAST_PURCHASE_PRODUCTS);
       });

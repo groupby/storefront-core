@@ -59,14 +59,18 @@ class UrlService extends BaseService<UrlService.Options> {
 
   triggerRequest(route: string, urlState: UrlBeautifier.SearchUrlState | UrlBeautifier.DetailsUrlState) {
     let request;
+    let newState;
     switch (route) {
       case Routes.SEARCH:
         request = Utils.searchStateToRequest(<UrlBeautifier.SearchUrlState>urlState, this.app.flux.store.getState());
+        newState = Utils.mergeSearchState(this.app.flux.store.getState(), <UrlBeautifier.SearchUrlState>urlState);
+        this.refreshState(newState);
         this.app.flux.store.dispatch(this.app.flux.actions.fetchProductsWhenHydrated({ request }));
         break;
       case Routes.PAST_PURCHASE:
-        // tslint:disable-next-line max-line-length
         request = Utils.pastPurchaseStateToRequest(<UrlBeautifier.SearchUrlState>urlState, this.app.flux.store.getState());
+        newState = Utils.mergePastPurchaseState(this.app.flux.store.getState(), <UrlBeautifier.SearchUrlState>urlState);
+        this.refreshState(newState);
         this.app.flux.store.dispatch(this.app.flux.actions.fetchPastPurchaseProducts({ request }));
         break;
       case Routes.DETAILS:

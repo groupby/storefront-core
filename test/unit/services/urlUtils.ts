@@ -250,5 +250,222 @@ suite('URL Service', ({ expect, spy, stub }) => {
         });
       });
     });
+
+    describe('mergePastPurchaseState()', () => {
+      it('should merge state properly when given new request', () => {
+        const state: any = {
+          data: {
+            present: {
+              other: {},
+              pastPurchases: {
+                query: { c: 'd' },
+                page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 } },
+                navigations: {},
+                sort: {
+                  items: [{ field: 'price' }, { field: 'price', descending: true }],
+                  selected: 0,
+                },
+              },
+            },
+          },
+        };
+        const request: any = {
+          page: 14,
+          pageSize: 20,
+          query: 'grape ape',
+          refinements: [
+            { type: 'Value', field: 'brand', value: 'nike' },
+            { type: 'Value', field: 'brand', value: 'adidas' },
+            { type: 'Value', field: 'colour', value: 'orange' },
+            { type: 'Range', field: 'price', low: 20, high: 40 },
+          ],
+          sort: { field: 'price', descending: true },
+        };
+        const searchId = 12;
+
+        const newState = Utils.mergePastPurchaseState(state, request);
+
+        expect(newState).to.eql({
+          data: {
+            present: {
+              other: {},
+              pastPurchases: {
+                query: 'grape ape',
+                page: {
+                  e: 'f',
+                  current: 14,
+                  sizes: { g: 'h', items: [10, 20, 50], selected: 1 },
+                },
+                navigations: {
+                  allIds: ['brand', 'colour', 'price'],
+                  byId: {
+                    brand: {
+                      field: 'brand',
+                      label: 'brand',
+                      range: false,
+                      refinements: [{ value: 'nike'}, { value: 'adidas' }],
+                      selected: [0, 1]
+                    },
+                    colour: {
+                      field: 'colour',
+                      label: 'colour',
+                      range: false,
+                      refinements: [{ value: 'orange' }],
+                      selected: [0]
+                    },
+                    price: {
+                      field: 'price',
+                      label: 'price',
+                      range: true,
+                      refinements: [{ high: 40, low: 20 }],
+                      selected: [0]
+                    }
+                  }
+                },
+                sort: { items: [{ field: 'price' }, { field: 'price', descending: true }], selected: 0 },
+              },
+            },
+          },
+        });
+      });
+
+      it('should merge state properly when not given new request', () => {
+        const searchId = 13;
+        const state: any = {
+          session: {
+            searchId,
+          },
+          data: {
+            present: {
+              a: 'b',
+              pastPurchases: {
+                query: { c: 'd', original: 'whatever' },
+                page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 }, current: 10 },
+                navigations: { i: 'j', allIds: ['brand', 'format'], byId: { brand: {}, format: {} } },
+                sort: {
+                  items: [{ field: 'price' }, { field: 'price', descending: true }],
+                  selected: 0,
+                },
+              },
+              collections: { selected: 0 },
+            },
+          },
+        };
+        const request: any = { refinements: [] };
+
+        const newState = Utils.mergePastPurchaseState(state, request);
+
+        expect(newState).to.eql(state);
+      });
+    });
+
+    describe('mergeSearchState()', () => {
+      it('should merge state properly when given new request', () => {
+        const state: any = {
+          data: {
+            present: {
+              a: 'b',
+              query: { c: 'd' },
+              page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 } },
+              navigations: { i: 'j' },
+              sorts: {
+                items: [{ field: 'price' }, { field: 'price', descending: true }],
+                selected: 0,
+              },
+              collections: { selected: 0 },
+            },
+          },
+        };
+        const request: any = {
+          page: 14,
+          pageSize: 20,
+          query: 'grape ape',
+          refinements: [
+            { type: 'Value', field: 'brand', value: 'nike' },
+            { type: 'Value', field: 'colour', value: 'orange' },
+            { type: 'Range', field: 'price', low: 20, high: 40 },
+          ],
+          sort: { field: 'price', descending: true },
+        };
+        const searchId = 12;
+
+        const newState = Utils.mergeSearchState(state, request);
+
+        expect(newState).to.eql({
+          data: {
+            present: {
+              a: 'b',
+              query: {
+                c: 'd',
+                original: 'grape ape',
+              },
+              page: {
+                e: 'f',
+                current: 14,
+                sizes: { g: 'h', items: [10, 20, 50], selected: 1 },
+              },
+              navigations: {
+                i: 'j',
+                allIds: ['brand', 'colour', 'price'],
+                byId: {
+                  // tslint:disable-next-line max-line-length
+                  brand: {
+                    field: 'brand',
+                    label: 'brand',
+                    range: false,
+                    refinements: [{ value: 'nike' }],
+                    selected: [0],
+                  },
+                  // tslint:disable-next-line max-line-length
+                  colour: {
+                    field: 'colour',
+                    label: 'colour',
+                    range: false,
+                    refinements: [{ value: 'orange' }],
+                    selected: [0],
+                  },
+                  price: {
+                    field: 'price',
+                    label: 'price',
+                    range: true,
+                    refinements: [{ low: 20, high: 40 }],
+                    selected: [0],
+                  },
+                },
+              },
+              sorts: { items: [{ field: 'price' }, { field: 'price', descending: true }], selected: 1 },
+              collections: { selected: 0 },
+            },
+          },
+        });
+      });
+
+      it('should merge state properly when not given new request', () => {
+        const searchId = 13;
+        const state: any = {
+          session: {
+            searchId,
+          },
+          data: {
+            present: {
+              a: 'b',
+              query: { c: 'd', original: 'whatever' },
+              page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 }, current: 10 },
+              navigations: { i: 'j', allIds: ['brand', 'format'], byId: { brand: {}, format: {} } },
+              sorts: {
+                items: [{ field: 'price' }, { field: 'price', descending: true }],
+                selected: 0,
+              },
+              collections: { selected: 0 },
+            },
+          },
+        };
+        const request: any = { refinements: [] };
+
+        const newState = Utils.mergeSearchState(state, request);
+
+        expect(newState).to.eql(state);
+      });
+    });
   });
 });
