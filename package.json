@@ -88,7 +88,7 @@
     "@types/loglevel": "~1.4.29",
     "@types/riot": "^3.6.1",
     "clone": "^2.1.1",
-    "gb-tracker-client": "3.5.5",
+    "gb-tracker-client": "^3.5.5",
     "js-cookie": "^2.1.4",
     "lodash.camelcase": "^4.3.0",
     "lodash.merge": "^4.6.0",
