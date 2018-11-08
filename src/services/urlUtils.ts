@@ -122,32 +122,42 @@ namespace UrlUtils {
     });
   };
 
-  export const getNavigations = (request: UrlBeautifier.SearchUrlState) => {
+  // tslint:disable-next-line max-line-length
+  export const getNavigations = (state: Store.Indexed<Store.Navigation> | Store.AvailableNavigations, request: UrlBeautifier.SearchUrlState) => {
     return {
-      allIds: getAllIds(request),
-      byId: getById(request),
+      allIds: getAllIds(state, request),
+      byId: getById(state, request),
     };
   };
 
-  export const getAllIds = (request: UrlBeautifier.SearchUrlState) => {
-    return request.refinements.reduce((fields, refinement) => {
-      if (!fields.includes(refinement.field)) {
-        fields.push(refinement.field);
-      }
-      return fields;
-    }, []);
+  // tslint:disable-next-line max-line-length
+  export const getAllIds = (state: Store.Indexed<Store.Navigation> | Store.AvailableNavigations, request: UrlBeautifier.SearchUrlState) => {
+    return state.allIds.concat(
+      ...request.refinements.map(({ field }) => field).filter((field) => !state.allIds.includes(field))
+    );
   };
 
-  export const getById = (request: UrlBeautifier.SearchUrlState) => {
-    return request.refinements.reduce((navigations, refinement) => {
+  // tslint:disable-next-line max-line-length
+  export const getById = (state: Store.Indexed<Store.Navigation> | Store.AvailableNavigations, request: UrlBeautifier.SearchUrlState) => {
+    const byId = { ...state.byId };
+
+    request.refinements.forEach((refinement) => {
       const field = refinement.field;
       const transformed =
         'low' in refinement ? { low: refinement['low'], high: refinement['high'] } : { value: refinement['value'] };
-      if (field in navigations) {
-        const navigation = navigations[field];
-        navigation.selected.push(navigation.refinements.push(transformed) - 1);
+      if (byId[field]) {
+        const navigation = byId[field];
+        const existingIndex = navigation.refinements
+          .findIndex((ref) =>
+            Adapters.Search.refinementsMatch(<any>transformed, <any>ref, navigation.range ? 'Range' : 'Value')
+          );
+        if (existingIndex === -1) {
+          navigation.selected.push(navigation.refinements.push(<any>transformed) - 1);
+        } else if (!navigation.selected.includes(existingIndex)) {
+          navigation.selected.push(existingIndex);
+        }
       } else {
-        navigations[field] = <Store.Navigation>{
+        byId[field] = <Store.Navigation>{
           field,
           label: field,
           range: 'low' in refinement,
@@ -155,8 +165,9 @@ namespace UrlUtils {
           selected: [0],
         };
       }
-      return navigations;
-    }, {});
+    });
+
+    return byId;
   };
 
   export const mergePastPurchaseState = (state: Store.State, request: UrlBeautifier.SearchUrlState) => {
@@ -197,12 +208,12 @@ namespace UrlUtils {
   };
 
   export const mergePastPurchaseNavigationsState = (state: Store.State, request: UrlBeautifier.SearchUrlState) => {
-    const presentState = state.data.present;
-    const navigations = getNavigations(request);
+    const navigationsObject = Selectors.pastPurchaseNavigationsObject(state);
+    const { allIds, byId } = getNavigations(navigationsObject, request);
     return {
-      ...presentState.pastPurchases.navigations,
-      allIds: navigations.allIds.length > 0 ? navigations.allIds : presentState.pastPurchases.navigations.allIds,
-      byId: Object.keys(navigations.byId).length > 0 ? navigations.byId : presentState.pastPurchases.navigations.byId,
+      ...navigationsObject,
+      allIds,
+      byId,
     };
   };
 
@@ -256,12 +267,12 @@ namespace UrlUtils {
   };
 
   export const mergeSearchNavigationsState = (state: Store.State, request: UrlBeautifier.SearchUrlState) => {
-    const presentState = state.data.present;
-    const { allIds, byId } = getNavigations(request);
+    const navigationsObject = Selectors.navigationsObject(state);
+    const { allIds, byId } = getNavigations(navigationsObject, request);
     return {
-      ...presentState.navigations,
-      allIds: allIds.length > 0 ? allIds : presentState.navigations.allIds,
-      byId: Object.keys(byId).length > 0 ? byId : presentState.navigations.byId,
+      ...navigationsObject,
+      allIds,
+      byId,
     };
   };
 }

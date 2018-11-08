@@ -260,7 +260,25 @@ suite('URL Service', ({ expect, spy, stub }) => {
               pastPurchases: {
                 query: { c: 'd' },
                 page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 } },
-                navigations: {},
+                navigations: {
+                  allIds: ['brand', 'somethingElse'],
+                  byId: {
+                    brand: {
+                      field: 'brand',
+                      label: 'brand',
+                      range: false,
+                      refinements: [{ value: 'adidas' }],
+                      selected: [0]
+                    },
+                    somethingElse: {
+                      field: 'somethingElse',
+                      label: 'somethingElse',
+                      range: false,
+                      refinements: [{ value: 'ok' }],
+                      selected: [0]
+                    }
+                  }
+                },
                 sort: {
                   items: [{ field: 'price' }, { field: 'price', descending: true }],
                   selected: 0,
@@ -297,14 +315,21 @@ suite('URL Service', ({ expect, spy, stub }) => {
                   sizes: { g: 'h', items: [10, 20, 50], selected: 1 },
                 },
                 navigations: {
-                  allIds: ['brand', 'colour', 'price'],
+                  allIds: ['brand', 'somethingElse', 'colour', 'price'],
                   byId: {
                     brand: {
                       field: 'brand',
                       label: 'brand',
                       range: false,
-                      refinements: [{ value: 'nike'}, { value: 'adidas' }],
+                      refinements: [{ value: 'adidas' }, { value: 'nike' }],
                       selected: [0, 1]
+                    },
+                    somethingElse: {
+                      field: 'somethingElse',
+                      label: 'somethingElse',
+                      range: false,
+                      refinements: [{ value: 'ok' }],
+                      selected: [0]
                     },
                     colour: {
                       field: 'colour',
@@ -367,7 +392,25 @@ suite('URL Service', ({ expect, spy, stub }) => {
               a: 'b',
               query: { c: 'd' },
               page: { e: 'f', sizes: { g: 'h', items: [10, 20, 50], selected: 0 } },
-              navigations: { i: 'j' },
+              navigations: {
+                allIds: ['brand', 'price'],
+                byId: {
+                  brand: {
+                    field: 'brand',
+                    label: 'brand',
+                    range: false,
+                    refinements: [{ value: 'nike' }],
+                    selected: [0]
+                  },
+                  price: {
+                    field: 'price',
+                    label: 'price',
+                    range: true,
+                    refinements: [{ high: 10, low: 0 }, { high: 40, low: 20 }],
+                    selected: []
+                  }
+                }
+              },
               sorts: {
                 items: [{ field: 'price' }, { field: 'price', descending: true }],
                 selected: 0,
@@ -405,10 +448,8 @@ suite('URL Service', ({ expect, spy, stub }) => {
                 sizes: { g: 'h', items: [10, 20, 50], selected: 1 },
               },
               navigations: {
-                i: 'j',
-                allIds: ['brand', 'colour', 'price'],
+                allIds: ['brand', 'price', 'colour'],
                 byId: {
-                  // tslint:disable-next-line max-line-length
                   brand: {
                     field: 'brand',
                     label: 'brand',
@@ -416,19 +457,18 @@ suite('URL Service', ({ expect, spy, stub }) => {
                     refinements: [{ value: 'nike' }],
                     selected: [0],
                   },
-                  // tslint:disable-next-line max-line-length
+                  price: {
+                    field: 'price',
+                    label: 'price',
+                    range: true,
+                    refinements: [{ high: 10, low: 0 }, { low: 20, high: 40 }],
+                    selected: [1],
+                  },
                   colour: {
                     field: 'colour',
                     label: 'colour',
                     range: false,
                     refinements: [{ value: 'orange' }],
-                    selected: [0],
-                  },
-                  price: {
-                    field: 'price',
-                    label: 'price',
-                    range: true,
-                    refinements: [{ low: 20, high: 40 }],
                     selected: [0],
                   },
                 },
