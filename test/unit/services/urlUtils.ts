@@ -129,24 +129,77 @@ suite('URL Service', ({ expect, spy, stub }) => {
       });
     });
 
+    describe('stateToBaseRequest', () => {
+      let collection;
+      let refinements;
+      let sort;
+
+      beforeEach(() => {
+        collection = 'a collection';
+        refinements = [1,2,3,4,5];
+        sort = { a: 'b' };
+      });
+
+      it('should configure a base request using the state', () => {
+        const state: any = {
+          collection,
+          refinements,
+          sort,
+        };
+        const store: any = {};
+        stub(Adapters.Request, 'extractRefinement').returnsArg(1);
+        stub(Adapters.Request, 'extractSort').withArgs(sort).returns(sort);
+
+        expect(Utils.stateToBaseRequest(state, store)).to.eql({
+          collection,
+          refinements,
+          sort,
+        });
+      });
+
+      it('should configure a base request using the store', () => {
+        const state: any = {};
+        const store: any = { c: 'd' };
+        stub(Adapters.Request, 'extractSort').withArgs(sort).returns(sort);
+        stub(Selectors, 'collection').withArgs(store).returns(collection);
+        stub(Selectors, 'sort').withArgs(store).returns(sort);
+
+        expect(Utils.stateToBaseRequest(state, store)).to.eql({
+          collection,
+          sort,
+        });
+      });
+    });
+
     describe('searchStateToRequest()', () => {
+      let collection;
+      let page;
+      let pageSize;
+      let query;
+      let refinements;
+      let skip;
+      let sort;
+
+      beforeEach(() => {
+        collection = 'a collection';
+        page = 324;
+        pageSize = 25;
+        query = 'dress';
+        refinements = [1,2,3,4,5];
+        skip = 30;
+        sort = { a: 'b' };
+      });
+
       it('should return search request based off given state', () => {
-        const collection = 'a collection';
-        const page = 324;
-        const pageSize = 25;
-        const query = 'dress';
-        const refinements = [1,2,3,4,5];
-        const sort = { a: 'b' };
         const state: any = {
           collection,
           page,
           pageSize,
           query,
           refinements,
-          sort
+          sort,
         };
         const store: any = { c: 'd' };
-        const skip = 30;
         stub(Adapters.Request, 'extractRefinement').returnsArg(1);
         stub(Adapters.Request, 'extractSkip').withArgs(page).returns(skip);
         stub(Adapters.Request, 'extractSort').withArgs(sort).returns(sort);
@@ -162,19 +215,12 @@ suite('URL Service', ({ expect, spy, stub }) => {
       });
 
       it('should return search request based off store', () => {
-        const collection = 'a collection';
-        const page = 324;
-        const pageSize = 25;
-        const query = 'dress';
-        const sort = { a: 'b' };
         const state: any = {};
         const store: any = { c: 'd' };
-        const skip = 30;
         stub(Selectors, 'pageSize').withArgs(store).returns(pageSize);
         stub(Adapters.Request, 'clampPageSize').withArgs(1, pageSize).returns(pageSize);
         stub(Selectors, 'collection').withArgs(store).returns(collection);
         stub(Selectors, 'currentQuery').withArgs(store).returns(query);
-        stub(Adapters.Request, 'extractRefinement').returnsArg(1);
         stub(Adapters.Request, 'extractSkip').withArgs(1).returns(skip);
         stub(Selectors, 'sort').withArgs(store).returns(sort);
         stub(Adapters.Request, 'extractSort').withArgs(sort).returns(sort);
@@ -184,20 +230,45 @@ suite('URL Service', ({ expect, spy, stub }) => {
           skip,
           collection,
           query,
-          refinements: [],
           sort,
+        });
+      });
+
+      it('should omit properties which cannot be extracted from the state or store', () => {
+        const state: any = {};
+        const store: any = {};
+        stub(Selectors, 'pageSize').returns(null);
+        stub(Selectors, 'collection').withArgs(store).returns(collection);
+        stub(Selectors, 'currentQuery').withArgs(store).returns(query);
+        stub(Selectors, 'sort').withArgs(store).returns(null);
+
+        expect(Utils.searchStateToRequest(state, store)).to.eql({
+          collection,
+          query,
         });
       });
     });
 
     describe('pastPurchaseStateToRequest()', () => {
+      let collection;
+      let page;
+      let pageSize;
+      let query;
+      let refinements;
+      let skip;
+      let sort;
+
+      beforeEach(() => {
+        collection = 'a collection';
+        page = 324;
+        pageSize = 25;
+        query = 'dress';
+        refinements = [1,2,3,4,5];
+        skip = 30;
+        sort = { a: 'b' };
+      });
+
       it('should return past purchase request based off given state', () => {
-        const collection = 'a collection';
-        const page = 324;
-        const pageSize = 25;
-        const query = 'dress';
-        const refinements = [1,2,3,4,5];
-        const sort = { a: 'b' };
         const state: any = {
           collection,
           page,
@@ -207,7 +278,7 @@ suite('URL Service', ({ expect, spy, stub }) => {
           sort
         };
         const store: any = { c: 'd' };
-        const skip = 30;
+        stub(Adapters.Request, 'clampPageSize').withArgs(page, pageSize).returns(pageSize);
         stub(Adapters.Request, 'extractRefinement').returnsArg(1);
         stub(Adapters.Request, 'extractSkip').withArgs(page).returns(skip);
         stub(Adapters.Request, 'extractSort').withArgs(sort).returns(sort);
@@ -223,19 +294,12 @@ suite('URL Service', ({ expect, spy, stub }) => {
       });
 
       it('should return past purchase request based off store', () => {
-        const collection = 'a collection';
-        const page = 324;
-        const pageSize = 25;
-        const query = 'dress';
-        const sort = { a: 'b' };
         const state: any = {};
         const store: any = { c: 'd' };
-        const skip = 30;
         stub(Selectors, 'pastPurchasePageSize').withArgs(store).returns(pageSize);
         stub(Adapters.Request, 'clampPageSize').withArgs(1, pageSize).returns(pageSize);
         stub(Selectors, 'collection').withArgs(store).returns(collection);
         stub(Selectors, 'pastPurchaseQuery').withArgs(store).returns(query);
-        stub(Adapters.Request, 'extractRefinement').returnsArg(1);
         stub(Adapters.Request, 'extractSkip').withArgs(1).returns(skip);
         stub(Selectors, 'sort').withArgs(store).returns(sort);
         stub(Adapters.Request, 'extractSort').withArgs(sort).returns(sort);
@@ -245,8 +309,21 @@ suite('URL Service', ({ expect, spy, stub }) => {
           skip,
           collection,
           query,
-          refinements: [],
           sort,
+        });
+      });
+
+      it('should omit properties which cannot be extracted from the state or store', () => {
+        const state: any = {};
+        const store: any = {};
+        stub(Selectors, 'pastPurchasePageSize').withArgs(store).returns(null);
+        stub(Selectors, 'collection').withArgs(store).returns(collection);
+        stub(Selectors, 'pastPurchaseQuery').withArgs(store).returns(query);
+        stub(Selectors, 'sort').withArgs(store).returns(null);
+
+        expect(Utils.pastPurchaseStateToRequest(state, store)).to.eql({
+          collection,
+          query,
         });
       });
     });

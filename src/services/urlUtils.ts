@@ -59,59 +59,62 @@ namespace UrlUtils {
     };
   };
 
-  export const searchStateToRequest = (state: UrlBeautifier.SearchUrlState, store: Store.State): Partial<Request> => {
+  export const stateToBaseRequest = (state: UrlBeautifier.SearchUrlState, store: Store.State): Partial<Request> => {
     const {
-      collection = Selectors.collection(store),
       page = 1,
-      pageSize: urlPageSize = Selectors.pageSize(store),
-      query = Selectors.currentQuery(store),
+      pageSize,
+      query,
+      collection = Selectors.collection(store),
       refinements: urlRefinements = [],
       sort: urlSort = Selectors.sort(store),
     } = state;
-    let request: Partial<Request> = {};
-    const pageSize = Adapters.Request.clampPageSize(page, urlPageSize);
-    const skip = Adapters.Request.extractSkip(page, pageSize);
-    const refinements = <any>urlRefinements.map((refinement) =>
-      Adapters.Request.extractRefinement(refinement.field, <any>refinement)
-    );
-    const sort = <any>Adapters.Request.extractSort(urlSort);
+    const request: Partial<Request> = {};
 
-    return {
-      pageSize,
-      skip,
-      collection,
-      query,
-      refinements,
-      sort,
-    };
+    if (query) {
+      request.query = query;
+    }
+
+    if (page && pageSize) {
+      request.pageSize = Adapters.Request.clampPageSize(page, pageSize);
+    }
+
+    if (page && request.pageSize) {
+      request.skip = Adapters.Request.extractSkip(page, request.pageSize);
+    }
+
+    if (collection) {
+      request.collection = collection;
+    }
+
+    if (urlRefinements.length) {
+      request.refinements = <any>urlRefinements.map((refinement) =>
+        Adapters.Request.extractRefinement(refinement.field, <any>refinement)
+      );
+    }
+
+    if (urlSort) {
+      request.sort = <any>Adapters.Request.extractSort(urlSort);
+    }
+
+    return request;
   };
 
-  // tslint:disable-next-line max-line-length
+  export const searchStateToRequest = (state: UrlBeautifier.SearchUrlState, store: Store.State): Partial<Request> => {
+    const {
+      pageSize = Selectors.pageSize(store),
+      query = Selectors.currentQuery(store),
+    } = state;
+
+    return stateToBaseRequest({ ...state, pageSize, query }, store);
+  };
+
   export const pastPurchaseStateToRequest = (state: UrlBeautifier.SearchUrlState, store: Store.State): Partial<Request> => {
     const {
-      collection = Selectors.collection(store),
-      page = 1,
-      pageSize: urlPageSize = Selectors.pastPurchasePageSize(store),
+      pageSize = Selectors.pastPurchasePageSize(store),
       query = Selectors.pastPurchaseQuery(store),
-      refinements: urlRefinements = [],
-      sort: urlSort = Selectors.sort(store),
     } = state;
-    let request: Partial<Request> = {};
-    const pageSize = Adapters.Request.clampPageSize(page, urlPageSize);
-    const skip = Adapters.Request.extractSkip(page, pageSize);
-    const refinements = <any>urlRefinements.map((refinement) =>
-      Adapters.Request.extractRefinement(refinement.field, <any>refinement)
-    );
-    const sort = <any>Adapters.Request.extractSort(urlSort);
 
-    return {
-      pageSize,
-      skip,
-      collection,
-      query,
-      refinements,
-      sort,
-    };
+    return stateToBaseRequest({ ...state, pageSize, query }, store);
   };
 
   export const getSortIndex = (stateSort: Store.Sort[], requestSort: Store.Sort) => {
