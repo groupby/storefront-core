@@ -1,4 +1,10 @@
-# StoreFront Core
+# [MOVED] StoreFront Core
+
+* * *
+
+**This repository has been moved to <https://github.com/groupby/storefront>.**
+
+* * *
 
 [![npm (scoped with tag)](https://img.shields.io/npm/v/@storefront/core.svg?style=flat-square)](https://www.npmjs.com/package/@storefront/core)
 [![CircleCI branch](https://img.shields.io/circleci/project/github/groupby/storefront-core/master.svg?style=flat-square)](https://circleci.com/gh/groupby/storefront-core/tree/master)
